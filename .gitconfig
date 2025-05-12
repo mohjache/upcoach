@@ -1,0 +1,3 @@
+[gpg]
+	program = gpg
+	format = openpgp 
