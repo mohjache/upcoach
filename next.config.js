@@ -5,6 +5,10 @@
 import "./src/env.js";
 
 /** @type {import("next").NextConfig} */
-const config = {};
+const config = {
+  images: {
+    remotePatterns: [new URL("https://3gyi2yzoja.ufs.sh/**")],
+  },
+};
 
 export default config;
