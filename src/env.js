@@ -7,7 +7,6 @@ export const env = createEnv({
    * isn't built with invalid env vars.
    */
   server: {
-    CONVEX_DEPLOYMENT: z.string(),
     CONVEX_DEPLOY_KEY: z.string(),
     NODE_ENV: z
       .enum(["development", "test", "production"])
@@ -32,7 +31,6 @@ export const env = createEnv({
   runtimeEnv: {
     CONVEX_DEPLOY_KEY: process.env.CONVEX_DEPLOY_KEY,
     NEXT_PUBLIC_CONVEX_URL: process.env.NEXT_PUBLIC_CONVEX_URL,
-    CONVEX_DEPLOYMENT: process.env.CONVEX_DEPLOYMENT,
     NODE_ENV: process.env.NODE_ENV,
     // NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
   },
