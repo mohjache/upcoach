@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import Image from "next/image";
 import { cn } from "~/lib/utils";
 import { useQuery } from "convex/react";
-import { api } from "~/convex/_generated/api";
+import { api } from "convex/_generated/api";
 
 // export type UserReview = {
 //   id: string;

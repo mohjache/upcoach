@@ -15,8 +15,7 @@
     "utils": "~/lib/utils",
     "ui": "~/components/ui",
     "lib": "~/lib",
-    "hooks": "~/hooks",
-    "convex": "~/convex"
+    "hooks": "~/hooks"
   },
   "iconLibrary": "lucide"
 }
