@@ -1,7 +1,9 @@
+"use client";
 import { ReviewsList } from "~/components/ReviewsList";
 
+
+
 export default function HomePage() {
-  // const mockData: UserReview[] = [
   //   {
   //     id: "123456",
   //     reviewedBy: {
@@ -52,5 +54,3 @@ export default function HomePage() {
     </main>
   );
 }
-
-

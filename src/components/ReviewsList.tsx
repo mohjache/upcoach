@@ -5,18 +5,7 @@ import Image from "next/image";
 import { cn } from "~/lib/utils";
 import { useQuery } from "convex/react";
 import { api } from "~/../convex/_generated/api";
-
-// export type UserReview = {
-//   id: string;
-//   previewImage: string;
-//   reviewedBy: {
-//     userId: string;
-//     name: string;
-//   };
-//   status: "uploaded" | "assigned" | "reviewed";
-//   notes: string;
-//   reviewDate: string;
-// };
+import { Skeleton } from "./ui/skeleton";
 
 const statusColors = {
   uploaded: "bg-blue-100 text-blue-800",
@@ -28,51 +17,60 @@ export function ReviewsList() {
   const reviews = useQuery(api.userReview.getUserReviews);
   return (
     <div className="space-y-4">
-      {reviews?.map((review) => (
-        <Card key={review._id}>
-          <div className="relative flex">
-            <div className="absolute top-2 right-2">
-              <span
-                className={cn(
-                  "rounded-full px-2 py-1 text-xs font-medium",
-                  statusColors[review.status as keyof typeof statusColors],
+      {reviews === undefined ? (
+        <div className="space-y-4">
+          <Skeleton className="h-8 w-full" />
+          <Skeleton className="h-8 w-full" />
+          <Skeleton className="h-8 w-full" />
+        </div>
+      ) : (
+        reviews.map((review) => (
+          <Card key={review._id}>
+            <div className="relative flex">
+              <div className="absolute top-2 right-2">
+                <span
+                  className={cn(
+                    "rounded-full px-2 py-1 text-xs font-medium",
+                    statusColors[review.status as keyof typeof statusColors],
+                  )}
+                >
+                  {review.status.charAt(0).toUpperCase() +
+                    review.status.slice(1)}
+                </span>
+              </div>
+              <div className="relative ml-2 h-24 w-24">
+                {review.previewImage && (
+                  <Image
+                    src={review.previewImage}
+                    alt={`Preview image for review}`}
+                    fill
+                    className="rounded-lg object-cover"
+                  />
                 )}
-              >
-                {review.status.charAt(0).toUpperCase() + review.status.slice(1)}
-              </span>
-            </div>
-            <div className="relative ml-2 h-24 w-24">
-              {review.previewImage && (
-                <Image
-                  src={review.previewImage}
-                  alt={`Preview image for review}`}
-                  fill
-                  className="rounded-lg object-cover"
-                />
-              )}
-            </div>
-            <div className="flex-1">
-              <CardHeader>
-                {review.reviewedBy ? (
-                  <CardTitle>Reviewed by {review.reviewedBy}</CardTitle>
-                ) : (
-                  <CardTitle>Notes</CardTitle>
-                )}
-              </CardHeader>
-              <CardContent>
-                {review.reviewDate && (
-                  <p className="text-muted-foreground text-sm">
-                    Review Date:{" "}
-                    {new Date(review.reviewDate).toLocaleDateString()}
-                  </p>
-                )}
+              </div>
+              <div className="flex-1">
+                <CardHeader>
+                  {review.reviewedBy ? (
+                    <CardTitle>Reviewed by {review.reviewedBy}</CardTitle>
+                  ) : (
+                    <CardTitle>Notes</CardTitle>
+                  )}
+                </CardHeader>
+                <CardContent>
+                  {review.reviewDate && (
+                    <p className="text-muted-foreground text-sm">
+                      Review Date:{" "}
+                      {new Date(review.reviewDate).toLocaleDateString()}
+                    </p>
+                  )}
 
-                <p className="text-d">{review.notes}</p>
-              </CardContent>
+                  <p className="text-d">{review.notes}</p>
+                </CardContent>
+              </div>
             </div>
-          </div>
-        </Card>
-      ))}
+          </Card>
+        ))
+      )}
     </div>
   );
 }
