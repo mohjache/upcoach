@@ -1,7 +1,10 @@
 "use client";
+import { UserButton, SignInButton } from "@clerk/nextjs";
+import { Authenticated, Unauthenticated } from "convex/react";
+import { Suspense } from "react";
+import { FallbackComponent } from "~/components/Fallback";
 import { ReviewsList } from "~/components/ReviewsList";
-
-
+import { Button } from "~/components/ui/button";
 
 export default function HomePage() {
   //   {
@@ -44,13 +47,40 @@ export default function HomePage() {
   //   },
   // ];
   return (
-    <main className="container mx-auto py-8">
-      <h1 className="mb-8 text-center text-3xl font-bold">
-        Welcome to upCoach!
-      </h1>
-      <div className="mx-auto max-w-2xl">
-        <ReviewsList />
-      </div>
-    </main>
+    <>
+      <TopNav />
+      <main className="container mx-auto py-8">
+        <h1 className="mb-8 text-center text-3xl font-bold">
+          Welcome to upCoach!
+        </h1>
+        <Authenticated>
+          <div className="mx-auto max-w-2xl">
+            <ReviewsList />
+          </div>
+        </Authenticated>
+      </main>
+    </>
   );
 }
+
+export const TopNav = () => {
+  return (
+    <div className="flex h-16 justify-between border-b px-4">
+      <div className="mr-4 flex">
+        <a className="mr-6 flex items-center space-x-2" href="/">
+          <span className="font-bold">upCoach</span>
+        </a>
+      </div>
+      <div className="flex items-center justify-center">
+        <Authenticated>
+          <UserButton />
+        </Authenticated>
+        <Unauthenticated>
+          <SignInButton>
+            <Button>Sign In</Button>
+          </SignInButton>
+        </Unauthenticated>
+      </div>
+    </div>
+  );
+};

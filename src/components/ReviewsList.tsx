@@ -6,6 +6,7 @@ import { cn } from "~/lib/utils";
 import { useQuery } from "convex/react";
 import { api } from "~/../convex/_generated/api";
 import { Skeleton } from "./ui/skeleton";
+import { FallbackComponent } from "./Fallback";
 
 const statusColors = {
   uploaded: "bg-blue-100 text-blue-800",
@@ -18,11 +19,7 @@ export function ReviewsList() {
   return (
     <div className="space-y-4">
       {reviews === undefined ? (
-        <div className="space-y-4">
-          <Skeleton className="h-8 w-full" />
-          <Skeleton className="h-8 w-full" />
-          <Skeleton className="h-8 w-full" />
-        </div>
+        <FallbackComponent></FallbackComponent>
       ) : (
         reviews.map((review) => (
           <Card key={review._id}>
@@ -41,6 +38,8 @@ export function ReviewsList() {
               <div className="relative ml-2 h-24 w-24">
                 {review.previewImage && (
                   <Image
+                    blurDataURL="placeholder_image.svg"
+                    placeholder="blur"
                     src={review.previewImage}
                     alt={`Preview image for review}`}
                     fill
