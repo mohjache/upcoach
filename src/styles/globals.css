@@ -8,10 +8,11 @@
     "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 }
 
-body {
-  background: #000;
-  color: #fff;
+body{
+  background-color: oklch(0.205 0 0);
 }
+
+
 
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
@@ -124,7 +125,6 @@ body {
   * {
     @apply border-border outline-ring/50;
   }
-  body {
-    @apply bg-background text-foreground;
-  }
+  
 }
+
