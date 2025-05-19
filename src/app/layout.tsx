@@ -4,9 +4,6 @@ import { type Metadata } from "next";
 import { Geist } from "next/font/google";
 import { ConvexClientProvider } from "./Providers/ConvexProvider";
 import { ClerkProvider } from "@clerk/nextjs";
-import { Suspense } from "react";
-import { Skeleton } from "~/components/ui/skeleton";
-import { FallbackComponent } from "~/components/Fallback";
 
 export const metadata: Metadata = {
   title: "UpCoach",

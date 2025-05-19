@@ -5,7 +5,6 @@ import Image from "next/image";
 import { cn } from "~/lib/utils";
 import { useQuery } from "convex/react";
 import { api } from "~/../convex/_generated/api";
-import { Skeleton } from "./ui/skeleton";
 import { FallbackComponent } from "./Fallback";
 
 const statusColors = {
@@ -28,7 +27,7 @@ export function ReviewsList() {
                 <span
                   className={cn(
                     "rounded-full px-2 py-1 text-xs font-medium",
-                    statusColors[review.status as keyof typeof statusColors],
+                    statusColors[review.status],
                   )}
                 >
                   {review.status.charAt(0).toUpperCase() +
