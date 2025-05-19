@@ -18,7 +18,7 @@ export const TopNav = () => {
         </Authenticated>
         <Unauthenticated>
           <SignInButton>
-            <Button>Sign In</Button>
+            <Button className="cursor-pointer">Sign In</Button>
           </SignInButton>
         </Unauthenticated>
       </div>
