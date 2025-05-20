@@ -14,7 +14,10 @@ export const TopNav = () => {
           <UserButton />
         </SignedIn>
         <SignedOut>
-          <SignInButton>
+          <SignInButton
+            fallbackRedirectUrl={"/"}
+            forceRedirectUrl={"/dashboard"}
+          >
             <Button className="bg-primary-foreground text-primary hover:bg-primary-foreground/70 cursor-pointer rounded-lg px-6 py-3 font-semibold transition-colors">
               Sign In
             </Button>
