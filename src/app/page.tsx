@@ -9,11 +9,8 @@ export default function HomePage() {
   return (
     <>
       <Authenticated>
-        <main className="container mx-auto py-8">
-          <h1 className="text-primary-foreground mb-8 text-center text-3xl font-bold">
-            Welcome to upCoach!
-          </h1>
-
+        {/* offset top by topnav */}
+        <main className="container mx-auto pt-24 pb-8">
           <div className="mx-auto max-w-2xl">
             <ReviewsList />
           </div>
