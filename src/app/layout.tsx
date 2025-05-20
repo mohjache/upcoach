@@ -2,10 +2,9 @@ import "~/styles/globals.css";
 
 import { type Metadata } from "next";
 import { Geist } from "next/font/google";
-import { ConvexClientProvider } from "../Providers/ConvexProvider";
+
 import { ClerkProvider } from "@clerk/nextjs";
 import { TopNav } from "~/components/TopNav";
-import { Suspense } from "react";
 
 export const metadata: Metadata = {
   title: "UpCoach",
