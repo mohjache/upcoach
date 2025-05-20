@@ -1,3 +1,4 @@
+"use client";
 import { ReviewsList } from "~/components/ReviewsList";
 
 const Page = () => {
