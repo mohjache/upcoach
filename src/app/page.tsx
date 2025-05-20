@@ -13,7 +13,7 @@ export default function HomePage() {
           <p className="mb-8 text-lg sm:text-xl">
             Through world-class remote coaching
           </p>
-          <SignInButton>
+          <SignInButton forceRedirectUrl={"/dashboard"} fallbackRedirectUrl={"/"}>
             <Button className="bg-primary-foreground text-primary hover:bg-primary-foreground/70 cursor-pointer rounded-lg px-6 py-3 font-semibold transition-colors">
               Get Started
             </Button>

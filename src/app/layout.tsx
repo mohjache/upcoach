@@ -5,6 +5,7 @@ import { Geist } from "next/font/google";
 
 import { ClerkProvider } from "@clerk/nextjs";
 import { TopNav } from "~/components/TopNav";
+import { ConvexClientProvider } from "~/Providers/ConvexProvider";
 
 export const metadata: Metadata = {
   title: "UpCoach",
@@ -24,8 +25,10 @@ export default function RootLayout({
     <html lang="en" className={`${geist.variable}`}>
       <body>
         <ClerkProvider>
-          <TopNav />
-          {children}
+          <ConvexClientProvider>
+            <TopNav />
+            {children}
+          </ConvexClientProvider>
         </ClerkProvider>
       </body>
     </html>
