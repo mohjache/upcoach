@@ -19,6 +19,8 @@ export default defineSchema({
     ),
     notes: v.string(),
     reviewDate: v.optional(v.string()),
+    hasSynced: v.boolean(),
+    youtubeLink: v.string(),
   })
     .index("by_status", ["status"])
     .index("by_createdUser", ["userId"]),
