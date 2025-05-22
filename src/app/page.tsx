@@ -1,12 +1,11 @@
-import { SignedIn, SignedOut, SignInButton } from "@clerk/nextjs";
+"use client";
 
-import { redirect } from "next/navigation";
+import { SignInButton } from "@clerk/nextjs";
+import { Authenticated, Unauthenticated } from "convex/react";
+import Link from "next/link";
 import { Button } from "~/components/ui/button";
 
-export default async function HomePage() {
-  const handleRedirect = () => {
-    redirect("/dashboard");
-  };
+export default function HomePage() {
   return (
     <>
       <div className="bg-primary text-primary-foreground flex min-h-screen flex-col items-center justify-center">
@@ -17,24 +16,22 @@ export default async function HomePage() {
           <p className="mb-8 text-lg sm:text-xl">
             Through world-class remote coaching
           </p>
-          <SignedOut>
+          <Unauthenticated>
             <SignInButton>
               <Button className="bg-primary-foreground text-primary hover:bg-primary-foreground/70 cursor-pointer rounded-lg px-6 py-3 font-semibold transition-colors">
                 Get Started
               </Button>
             </SignInButton>
-          </SignedOut>
+          </Unauthenticated>
 
-          <SignedIn>
+          <Authenticated>
             <Button
               className="bg-primary-foreground text-primary hover:bg-primary-foreground/70 cursor-pointer rounded-lg px-6 py-3 font-semibold transition-colors"
-              onClick={() => {
-                handleRedirect();
-              }}
+              asChild
             >
-              Go to Dashboard
+              <Link href="/dashboard">Go to Dashboard</Link>
             </Button>
-          </SignedIn>
+          </Authenticated>
         </div>
       </div>
     </>

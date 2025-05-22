@@ -1,6 +1,8 @@
-import { UserButton, SignInButton, SignedIn, SignedOut } from "@clerk/nextjs";
+"use client";
+import { UserButton, SignInButton } from "@clerk/nextjs";
 import { Button } from "./ui/button";
 import Link from "next/link";
+import { Authenticated, Unauthenticated } from "convex/react";
 export const dynamic = "force-dynamic";
 
 export const TopNav = () => {
@@ -12,16 +14,16 @@ export const TopNav = () => {
         </Link>
       </div>
       <div className="flex items-center justify-center">
-        <SignedIn>
+        <Authenticated>
           <UserButton />
-        </SignedIn>
-        <SignedOut>
+        </Authenticated>
+        <Unauthenticated>
           <SignInButton>
             <Button className="bg-primary-foreground text-primary hover:bg-primary-foreground/70 cursor-pointer rounded-lg px-6 py-3 font-semibold transition-colors">
               Sign In
             </Button>
           </SignInButton>
-        </SignedOut>
+        </Unauthenticated>
       </div>
     </div>
   );
