@@ -1,15 +1,9 @@
 import { SignedIn, SignedOut, SignInButton } from "@clerk/nextjs";
-import { auth, currentUser } from "@clerk/nextjs/server";
+
 import { redirect } from "next/navigation";
 import { Button } from "~/components/ui/button";
 
 export default async function HomePage() {
-  const { userId } = await auth();
-
-  if (userId) {
-    redirect("/dashboard");
-  }
-
   const handleRedirect = () => {
     redirect("/dashboard");
   };

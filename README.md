@@ -1,6 +1,13 @@
 # UpCoach
 Building something to make review work outside of your coaching sessions so that drilling by myself becomes more efficient.
 
+## Tech Stack
+- Nextjs deployed on Vercel .
+- Domains and DNS also through Vercel.
+- Convex for state management, async tasks, db.
+- Clerk for Auth.
+- Resend for Emails.
+
 ##  Todo list
 
 - [x] Make it deploy.
@@ -16,4 +23,6 @@ Building something to make review work outside of your coaching sessions so that
 - [ ] As coach I can see my students reviews and add my own notes.
 - [ ] As a student I can see when my coach has reviewed my work.
 - [ ] Add summary to dashboard that collates feedback from coaching into a summary. Add gamification 1/3 reviews before this unlocks.
+
+
 
