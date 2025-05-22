@@ -22,7 +22,16 @@ export default function Page() {
 
   return (
     <main className="container mx-auto pt-24 pb-8">
-      {review ? <UpdateReviewForm review={review} /> : <FallbackComponent />}
+      <h1 className="text-primary-foreground mb-8 text-center text-3xl font-bold">
+        Update Review
+      </h1>
+      {review ? (
+        <UpdateReviewForm review={review} />
+      ) : (
+        <div className="mx-auto max-w-2xl">
+          <FallbackComponent />
+        </div>
+      )}
     </main>
   );
 }

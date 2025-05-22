@@ -56,9 +56,7 @@ export const UpdateReviewForm = ({
 
   return (
     <main className="container mx-auto pb-8">
-      <h1 className="text-primary-foreground mb-8 text-center text-3xl font-bold">
-        Update Review
-      </h1>
+     
 
       <Card className="mx-auto max-w-2xl">
         <CardContent>
