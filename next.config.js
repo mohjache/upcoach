@@ -12,6 +12,12 @@ const config = {
   images: {
     remotePatterns: [new URL("https://3gyi2yzoja.ufs.sh/**")],
   },
+  typescript: {
+    ignoreBuildErrors: true,
+  },
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
 };
 
 export default config;

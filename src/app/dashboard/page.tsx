@@ -1,5 +1,5 @@
 "use client";
-import { Authenticated } from "convex/react";
+
 import { ReviewsList } from "~/components/ReviewsList";
 export const dynamic = "force-dynamic";
 const Page = () => {
