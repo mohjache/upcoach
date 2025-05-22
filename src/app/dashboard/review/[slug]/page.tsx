@@ -7,6 +7,8 @@ import { api } from "~/../convex/_generated/api";
 import { FallbackComponent } from "~/components/Fallback";
 import { UpdateReviewForm } from "~/components/Forms/updateReviewForm";
 
+export const dynamic = "force-dynamic";
+
 export default function Page() {
   const params = useParams();
 
