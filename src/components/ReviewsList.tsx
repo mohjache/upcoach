@@ -7,7 +7,7 @@ import {
   CardHeader,
   CardTitle,
 } from "~/components/ui/card";
-import { cn } from "~/lib/utils";
+
 import { useQuery } from "convex/react";
 import { api } from "~/../convex/_generated/api";
 import { FallbackComponent } from "./Fallback";
@@ -92,7 +92,7 @@ export function ReviewsList() {
                         View
                       </Link>
                     </Button>
-                    <Button size="sm" className="cursor-pointer">
+                    <Button size="sm" className="cursor-pointer" asChild>
                       <Link href={"/dashboard/review/" + review._id}>Edit</Link>
                     </Button>
                   </CardFooter>
