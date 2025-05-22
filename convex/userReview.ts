@@ -9,10 +9,13 @@ export const getUserReviews = query({
       throw new Error("Not authenticated");
     }
 
-    console.log("Getting first 10 reviews");
+    console.log("Getting first 3 reviews");
     const reviews = await ctx.db
       .query("userReviews")
-      .filter((q) => q.eq(q.field("userId"), identity.tokenIdentifier))
+      .withIndex("by_createdUser", (q) =>
+        q.eq("userId", identity.tokenIdentifier),
+      )
+
       .order("desc")
       .take(3);
 
