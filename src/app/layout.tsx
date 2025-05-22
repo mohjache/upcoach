@@ -24,7 +24,9 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${geist.variable}`}>
       <body>
-        <ClerkProvider afterSignOutUrl={"./"}>
+        <ClerkProvider
+          afterSignOutUrl={process.env.NEXT_PUBLIC_REDIRECT_AFTER_SIGNOUT_URL}
+        >
           <ConvexClientProvider>
             <TopNav />
             {children}
