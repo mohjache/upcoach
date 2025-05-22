@@ -56,8 +56,9 @@ export const UpdateReviewForm = ({
 
   return (
     <main className="container mx-auto pb-8">
-     
-
+      <div className="mx-auto max-w-2xl">
+        <Link href="/dashboard">← Back to Dashboard</Link>
+      </div>
       <Card className="mx-auto max-w-2xl">
         <CardContent>
           <Form {...form}>

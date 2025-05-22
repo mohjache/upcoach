@@ -25,6 +25,7 @@ import { useForm } from "react-hook-form";
 import { useMutation } from "convex/react";
 import { api } from "~/../convex/_generated/api";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 const formSchema = z.object({
   youtubeLink: z.string().url().min(10).max(250),
@@ -58,6 +59,10 @@ export default function Page() {
       <h1 className="text-primary-foreground mb-8 text-center text-3xl font-bold">
         Create Review
       </h1>
+
+      <div className="mx-auto max-w-2xl">
+        <Link href="/dashboard">← Back to Dashboard</Link>
+      </div>
 
       <Card className="mx-auto max-w-2xl">
         <CardHeader>
