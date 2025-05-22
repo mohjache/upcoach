@@ -24,7 +24,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${geist.variable}`}>
       <body>
-        <ClerkProvider afterSignOutUrl={"/"}>
+        <ClerkProvider afterSignOutUrl={"./"}>
           <ConvexClientProvider>
             <TopNav />
             {children}
