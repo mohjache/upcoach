@@ -8,7 +8,7 @@ import {
   CardTitle,
 } from "~/components/ui/card";
 
-import { useQuery } from "convex/react";
+import { AuthLoading, useQuery } from "convex/react";
 import { api } from "~/../convex/_generated/api";
 import { FallbackComponent } from "./Fallback";
 import { Button } from "./ui/button";

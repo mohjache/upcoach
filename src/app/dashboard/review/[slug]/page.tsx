@@ -1,5 +1,5 @@
 "use client";
-import { useQuery } from "convex/react";
+import { AuthLoading, useQuery } from "convex/react";
 import { useParams } from "next/navigation";
 import { useEffect } from "react";
 
@@ -14,10 +14,6 @@ export default function Page() {
 
   const { slug } = params;
 
-  const review = useQuery(api.userReview.getUserReviewById, {
-    id: slug as string,
-  });
-
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
@@ -27,6 +23,21 @@ export default function Page() {
       <h1 className="text-primary-foreground mb-8 text-center text-3xl font-bold">
         Update Review
       </h1>
+      <AuthLoading>
+        <FallbackComponent></FallbackComponent>
+      </AuthLoading>
+      <EditReview slug={slug as string} />
+    </main>
+  );
+}
+
+const EditReview = ({ slug }: { slug: string }) => {
+  const review = useQuery(api.userReview.getUserReviewById, {
+    id: slug,
+  });
+
+  return (
+    <>
       {review ? (
         <UpdateReviewForm review={review} />
       ) : (
@@ -34,6 +45,6 @@ export default function Page() {
           <FallbackComponent />
         </div>
       )}
-    </main>
+    </>
   );
-}
+};
