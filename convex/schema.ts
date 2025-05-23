@@ -18,10 +18,23 @@ export default defineSchema({
       v.literal("reviewed"),
     ),
     notes: v.string(),
+    reviewerNotes: v.optional(v.string()),
     reviewDate: v.optional(v.string()),
     hasSynced: v.boolean(),
     youtubeLink: v.string(),
   })
     .index("by_status", ["status"])
-    .index("by_createdUser", ["userId"]),
+    .index("by_createdUser", ["userId"])
+    .index("by_reviewer", ["reviewedBy"]),
+  reviewRequests: defineTable({
+    userId: v.string(),
+    userReviews: v.optional(v.array(v.id("userReviews"))),
+    email: v.optional(v.string()),
+    fulfilled: v.boolean(),
+    dateFulfilled: v.optional(v.string()),
+  })
+    .index("by_fulfilled", ["fulfilled"])
+    .index("by_fulfilled_createdUser", ["fulfilled", "userId"])
+    .index("by_createdUser", ["userId"])
+    .index("by_reviewer", ["email"]),
 });

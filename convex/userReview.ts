@@ -1,10 +1,12 @@
+import { paginationOptsValidator } from "convex/server";
 import { query, mutation } from "./_generated/server";
 import { v } from "convex/values";
+import type { UpcoachUserIdentity } from "./reviewRequests";
 
 export const getUserReviews = query({
   args: {},
   handler: async (ctx, args) => {
-    const identity = await ctx.auth.getUserIdentity();
+    const identity = (await ctx.auth.getUserIdentity()) as UpcoachUserIdentity;
     if (identity === null) {
       throw new Error("Not authenticated");
     }
@@ -27,7 +29,7 @@ export const getUserReviewById = query({
     id: v.string(),
   },
   handler: async (ctx, args) => {
-    const identity = await ctx.auth.getUserIdentity();
+    const identity = (await ctx.auth.getUserIdentity()) as UpcoachUserIdentity;
     if (identity === null) {
       throw new Error("Not authenticated");
     }
@@ -56,7 +58,7 @@ export const createUserReview = mutation({
     }),
   },
   handler: async (ctx, args) => {
-    const identity = await ctx.auth.getUserIdentity();
+    const identity = (await ctx.auth.getUserIdentity()) as UpcoachUserIdentity;
     if (identity === null) {
       throw new Error("Not authenticated");
     }
@@ -82,7 +84,7 @@ export const updateUserReview = mutation({
     }),
   },
   handler: async (ctx, args) => {
-    const identity = await ctx.auth.getUserIdentity();
+    const identity = (await ctx.auth.getUserIdentity()) as UpcoachUserIdentity;
     if (identity === null) {
       throw new Error("Not authenticated");
     }
@@ -102,6 +104,30 @@ export const updateUserReview = mutation({
     const reviewId = await ctx.db.patch(args.dto.id, {
       notes: args.dto.notes,
     });
+  },
+});
+
+export const getUserReviewByReviewerId = query({
+  args: {
+    paginationOpts: paginationOptsValidator,
+    id: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const identity = (await ctx.auth.getUserIdentity()) as UpcoachUserIdentity;
+    if (identity === null) {
+      throw new Error("Not authenticated");
+    }
+
+    console.log("Getting review by reviewer id ", args.id);
+    const reviews = await ctx.db
+      .query("userReviews")
+      .withIndex("by_reviewer", (q) =>
+        q.eq("reviewedBy", identity.tokenIdentifier),
+      )
+      .order("desc")
+      .paginate(args.paginationOpts);
+
+    return reviews;
   },
 });
 

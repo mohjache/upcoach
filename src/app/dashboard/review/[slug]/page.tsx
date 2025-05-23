@@ -1,7 +1,7 @@
 "use client";
-import { AuthLoading, useQuery } from "convex/react";
+import { Authenticated, AuthLoading, useQuery } from "convex/react";
 import { useParams } from "next/navigation";
-import { useEffect } from "react";
+import { Suspense, useEffect } from "react";
 
 import { api } from "~/../convex/_generated/api";
 import { FallbackComponent } from "~/components/Fallback";
@@ -13,6 +13,10 @@ export default function Page() {
   const params = useParams();
 
   const { slug } = params;
+
+  const review = useQuery(api.userReview.getUserReviewById, {
+    id: slug as string,
+  });
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -26,25 +30,11 @@ export default function Page() {
       <AuthLoading>
         <FallbackComponent></FallbackComponent>
       </AuthLoading>
-      <EditReview slug={slug as string} />
+      <Authenticated>
+        <Suspense fallback={<FallbackComponent></FallbackComponent>}>
+          {review && <UpdateReviewForm review={review} />}
+        </Suspense>
+      </Authenticated>
     </main>
   );
 }
-
-const EditReview = ({ slug }: { slug: string }) => {
-  const review = useQuery(api.userReview.getUserReviewById, {
-    id: slug,
-  });
-
-  return (
-    <>
-      {review ? (
-        <UpdateReviewForm review={review} />
-      ) : (
-        <div className="mx-auto max-w-2xl">
-          <FallbackComponent />
-        </div>
-      )}
-    </>
-  );
-};
