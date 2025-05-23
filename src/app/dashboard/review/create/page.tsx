@@ -32,8 +32,6 @@ const formSchema = z.object({
   notes: z.string().min(1).max(1000),
 });
 
-export const dynamic = "force-dynamic";
-
 export default function Page() {
   const router = useRouter();
   const createReview = useMutation(api.userReview.createUserReview);

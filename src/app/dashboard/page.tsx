@@ -3,7 +3,7 @@
 import { Authenticated, AuthLoading } from "convex/react";
 import { FallbackComponent } from "~/components/Fallback";
 import { ReviewsList } from "~/components/ReviewsList";
-export const dynamic = "force-dynamic";
+
 const Page = () => {
   return (
     <main className="container mx-auto pt-24 pb-8">

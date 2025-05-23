@@ -11,14 +11,15 @@ import {
 
 import { useQuery } from "convex/react";
 import { api } from "~/../convex/_generated/api";
-import { FallbackComponent } from "./Fallback";
+
 import { Button } from "./ui/button";
 import Link from "next/link";
 import { Badge } from "./ui/badge";
 import { ReviewPreviewImage } from "./ReviewPreviewImage";
 import { Skeleton } from "./ui/skeleton";
 import type { Doc } from "@/convex/_generated/dataModel";
-import type { JSX } from "react";
+import CreateReviewButton from "./Buttons/CreateReviewButton";
+import EditReviewButton from "./Buttons/EditReviewButton";
 
 export function ReviewsList() {
   const reviews = useQuery(api.userReview.getUserReviews);
@@ -29,12 +30,7 @@ export function ReviewsList() {
   return (
     <>
       <div className="flex justify-end">
-        <Button
-          className="text-primary/80 mb-2 cursor-pointer rounded-lg bg-green-300 px-6 py-3 font-semibold transition-colors hover:bg-green-300/70"
-          asChild
-        >
-          <Link href="/dashboard/review/create">Create Review</Link>
-        </Button>
+        <CreateReviewButton></CreateReviewButton>
       </div>
       <Card className="mb-4">
         <div className="relative flex">
@@ -134,11 +130,7 @@ export function ReviewsList() {
                           View
                         </Link>
                       </Button>
-                      <Button size="sm" className="cursor-pointer" asChild>
-                        <Link href={"/dashboard/review/" + review._id}>
-                          Edit
-                        </Link>
-                      </Button>
+                      <EditReviewButton id={review._id}></EditReviewButton>
                     </CardFooter>
                   </div>
                 </div>
