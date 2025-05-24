@@ -3,7 +3,6 @@ import { UserButton, SignInButton } from "@clerk/nextjs";
 import { Button } from "./ui/button";
 import Link from "next/link";
 import { Authenticated, Unauthenticated } from "convex/react";
-export const dynamic = "force-dynamic";
 
 export const TopNav = () => {
   return (
@@ -28,3 +27,5 @@ export const TopNav = () => {
     </div>
   );
 };
+
+

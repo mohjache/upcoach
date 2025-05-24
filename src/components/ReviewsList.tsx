@@ -20,6 +20,7 @@ import { Skeleton } from "./ui/skeleton";
 import type { Doc } from "@/convex/_generated/dataModel";
 import CreateReviewButton from "./Buttons/CreateReviewButton";
 import EditReviewButton from "./Buttons/EditReviewButton";
+import type { JSX } from "react";
 
 export function ReviewsList() {
   const reviews = useQuery(api.userReview.getUserReviews);

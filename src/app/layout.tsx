@@ -4,7 +4,6 @@ import { type Metadata } from "next";
 import { Geist } from "next/font/google";
 
 import { ClerkProvider } from "@clerk/nextjs";
-import { TopNav } from "~/components/TopNav";
 import { ConvexClientProvider } from "~/Providers/ConvexProvider";
 
 export const metadata: Metadata = {
@@ -27,10 +26,7 @@ export default function RootLayout({
         <ClerkProvider
           afterSignOutUrl={process.env.NEXT_PUBLIC_REDIRECT_AFTER_SIGNOUT_URL}
         >
-          <ConvexClientProvider>
-            <TopNav />
-            {children}
-          </ConvexClientProvider>
+          <ConvexClientProvider>{children}</ConvexClientProvider>
         </ClerkProvider>
       </body>
     </html>
