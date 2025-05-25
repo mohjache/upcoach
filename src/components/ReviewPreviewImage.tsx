@@ -9,24 +9,26 @@ export const ReviewPreviewImage = ({
   return (
     <>
       {previewImage ? (
-        <Image
-          blurDataURL="placeholder_image.svg"
-          placeholder="blur"
-          src={previewImage}
-          alt={`Preview image for review}`}
-          fill
-          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-          className="rounded-lg object-cover"
-        />
+        <div className="flex h-18 w-32">
+          <Image
+            blurDataURL="placeholder_image.svg"
+            placeholder="blur"
+            src={previewImage}
+            alt={`Preview image for review}`}
+            width={128}
+            height={72}
+            className="rounded-lg object-cover"
+          />
+        </div>
       ) : (
-        <div className="flex h-18 w-18 items-center justify-center rounded-lg bg-gray-200 text-center text-sm text-gray-500">
+        <div className="flex h-18 w-32 items-center justify-center rounded-lg bg-gray-200 text-center text-sm text-gray-500">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
             strokeWidth={1.5}
             stroke="currentColor"
-            className="h-6 w-6"
+            className="h-8 w-8"
           >
             <path
               strokeLinecap="round"

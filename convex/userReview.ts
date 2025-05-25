@@ -1,5 +1,13 @@
 import { paginationOptsValidator } from "convex/server";
-import { query, mutation } from "./_generated/server";
+import {
+  query,
+  mutation,
+  action,
+  internalAction,
+  internalMutation,
+} from "./_generated/server";
+// Import the api reference
+import { api, internal } from "./_generated/api";
 import { v } from "convex/values";
 import type { UpcoachUserIdentity } from "./reviewRequests";
 
@@ -73,6 +81,17 @@ export const createUserReview = mutation({
       hasSynced: false,
       youtubeLink: args.dto.youtubeLink,
     });
+
+    if (args.dto.youtubeLink !== null) {
+      await ctx.scheduler.runAfter(
+        0,
+        internal.userReview.pulldownYoutubeMetadata,
+        {
+          reviewId: reviewId,
+          youtubeLink: args.dto.youtubeLink,
+        },
+      );
+    }
   },
 });
 
@@ -100,6 +119,21 @@ export const updateUserReview = mutation({
     }
 
     console.log("update review", args.dto.id);
+
+    if (!review.rawVideoMetadata) {
+      console.log(
+        "pulling down youtube metadata calling internal function",
+        review.youtubeLink,
+      );
+      await ctx.scheduler.runAfter(
+        0,
+        internal.userReview.pulldownYoutubeMetadata,
+        {
+          youtubeLink: review.youtubeLink,
+          reviewId: review._id,
+        },
+      );
+    }
 
     const reviewId = await ctx.db.patch(args.dto.id, {
       notes: args.dto.notes,
@@ -131,7 +165,94 @@ export const getUserReviewByReviewerId = query({
   },
 });
 
+export const pulldownYoutubeMetadata = internalAction({
+  args: { youtubeLink: v.string(), reviewId: v.id("userReviews") },
+  handler: async (ctx, args) => {
+    console.log("pulling down youtube metadata", args.youtubeLink);
+    const urlEncodedString = encodeURIComponent(args.youtubeLink);
+
+    const response = await fetch(
+      `https://youtube.com/oembed?url=${urlEncodedString}&format=json`,
+    );
+    if (!response.ok) {
+      return "error";
+    }
+
+    //    And can also be used here ↴
+    const result = (await response.json()) as YoutubeMetadata;
+
+    console.log("pulling down youtube metadata", result);
+    //save metadata to db.
+    await ctx.scheduler.runAfter(
+      0,
+      internal.userReview.internalUpdateUserReviewMetadata,
+      {
+        dto: {
+          id: args.reviewId,
+          rawVideoMetadata: {
+            ...result,
+          },
+        },
+      },
+    );
+    return "success";
+  },
+});
+
+export const internalUpdateUserReviewMetadata = internalMutation({
+  args: {
+    dto: v.object({
+      id: v.id("userReviews"),
+      rawVideoMetadata: v.object({
+        title: v.string(),
+        author_name: v.string(),
+        author_url: v.string(),
+        type: v.string(),
+        height: v.number(),
+        thumbnail_url: v.string(),
+        html: v.string(),
+        provider_name: v.string(),
+        provider_url: v.string(),
+        width: v.number(),
+        version: v.string(),
+        thumbnail_height: v.number(),
+        thumbnail_width: v.number(),
+      }),
+    }),
+  },
+  handler: async (ctx, args) => {
+    const review = await ctx.db.get(args.dto.id);
+
+    if (review === null) {
+      throw new Error("Review not found");
+    }
+
+    console.log("update metadata for review", args.dto.id);
+
+    const reviewId = await ctx.db.patch(args.dto.id, {
+      previewImage: args.dto.rawVideoMetadata.thumbnail_url,
+      rawVideoMetadata: args.dto.rawVideoMetadata,
+    });
+  },
+});
+
 export type CreateUserReviewDto = {
   userId: string;
   status: string;
+};
+
+export type YoutubeMetadata = {
+  title: string;
+  author_name: string;
+  author_url: string;
+  type: string;
+  height: number;
+  width: number;
+  version: string;
+  provider_name: string;
+  provider_url: string;
+  thumbnail_url: string;
+  thumbnail_height: number;
+  thumbnail_width: number;
+  html: string;
 };

@@ -9,7 +9,7 @@ import {
   CardTitle,
 } from "~/components/ui/card";
 
-import { useQuery } from "convex/react";
+import { useAction, useQuery } from "convex/react";
 import { api } from "~/../convex/_generated/api";
 
 import { Button } from "./ui/button";
@@ -24,9 +24,6 @@ import type { JSX } from "react";
 
 export function ReviewsList() {
   const reviews = useQuery(api.userReview.getUserReviews);
-  // const currentPendingRequests = useQuery(
-  //   api.reviewRequests.getPendingRequests,
-  // );
 
   return (
     <>
@@ -49,6 +46,7 @@ export function ReviewsList() {
                   reviews={reviews}
                   reviewRequests={currentPendingRequests}
                 ></ReviewsSummary>
+                Test the youtube metadata function
               </div>
             </CardContent>
             <CardFooter className="mt-2 flex justify-end">
@@ -98,7 +96,7 @@ export function ReviewsList() {
                     </CardHeader>
                     <CardContent>
                       <div className="mt-2 flex flex-row gap-2">
-                        <div className="h-18 w-18">
+                        <div className="h-18 w-32">
                           <ReviewPreviewImage
                             previewImage={review.previewImage}
                           />
