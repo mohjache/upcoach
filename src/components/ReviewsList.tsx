@@ -24,16 +24,16 @@ import type { JSX } from "react";
 
 export function ReviewsList() {
   const reviews = useQuery(api.userReview.getUserReviews);
-  const currentPendingRequests = useQuery(
-    api.reviewRequests.getPendingRequests,
-  );
+  // const currentPendingRequests = useQuery(
+  //   api.reviewRequests.getPendingRequests,
+  // );
 
   return (
     <>
       <div className="flex justify-end">
         <CreateReviewButton></CreateReviewButton>
       </div>
-      <Card className="mb-4">
+      {/* <Card className="mb-4">
         <div className="relative flex">
           <div className="flex-1">
             <CardHeader>
@@ -66,7 +66,7 @@ export function ReviewsList() {
             </CardFooter>
           </div>
         </div>
-      </Card>
+      </Card> */}
       <div className="space-y-4">
         {reviews === undefined || reviews?.length === 0 ? (
           <></>

@@ -1,4 +1,3 @@
-import { SignInButton } from "@clerk/nextjs";
 import Link from "next/link";
 
 import { Button } from "~/components/ui/button";
@@ -13,11 +12,11 @@ export default function HomePage() {
           </Link>
         </div>
         <div className="flex items-center justify-center">
-          <SignInButton>
+          {/* <SignInButton>
             <Button className="bg-primary-foreground text-primary hover:bg-primary-foreground/70 cursor-pointer rounded-lg px-6 py-3 font-semibold transition-colors">
               Dashboard
             </Button>
-          </SignInButton>
+          </SignInButton> */}
         </div>
       </div>
 
@@ -30,11 +29,12 @@ export default function HomePage() {
             Through world-class remote coaching
           </p>
 
-          <SignInButton>
-            <Button className="bg-primary-foreground text-primary hover:bg-primary-foreground/70 cursor-pointer rounded-lg px-6 py-3 font-semibold transition-colors">
-              Get Started
-            </Button>
-          </SignInButton>
+          <Button
+            className="bg-primary-foreground text-primary hover:bg-primary-foreground/70 cursor-pointer rounded-lg px-6 py-3 font-semibold transition-colors"
+            asChild
+          >
+            <Link href="/dashboard">Get Started</Link>
+          </Button>
         </div>
       </div>
     </>
