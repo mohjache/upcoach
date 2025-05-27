@@ -30,41 +30,6 @@ export function ReviewsList() {
       <div className="flex justify-end">
         <CreateReviewButton></CreateReviewButton>
       </div>
-      {/* <Card className="mb-4">
-        <div className="relative flex">
-          <div className="flex-1">
-            <CardHeader>
-              <CardTitle>
-                <div className="flex flex-row items-center gap-2">
-                  <span className="text-sm">Welcome Back!</span>
-                </div>
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="mt-2 flex flex-row gap-2">
-                <ReviewsSummary
-                  reviews={reviews}
-                  reviewRequests={currentPendingRequests}
-                ></ReviewsSummary>
-                Test the youtube metadata function
-              </div>
-            </CardContent>
-            <CardFooter className="mt-2 flex justify-end">
-              <Button
-                variant={"outline"}
-                className={
-                  currentPendingRequests === undefined ||
-                  currentPendingRequests?.length > 0
-                    ? "disabled rounded-lgpx-6 disabled cursor-pointer py-3"
-                    : "rounded-lgpx-6 disabled cursor-pointer py-3"
-                }
-              >
-                Request Review
-              </Button>
-            </CardFooter>
-          </div>
-        </div>
-      </Card> */}
       <div className="space-y-4">
         {reviews === undefined || reviews?.length === 0 ? (
           <></>

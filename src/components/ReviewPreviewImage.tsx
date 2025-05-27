@@ -53,18 +53,6 @@ export const ReviewVideoThumbnail = ({
 }: {
   youtubeLink: string | undefined;
 }) => {
-  // const [embedUrl, setEmbedUrl] = useState<string | null>(null);
-
-  // useEffect(() => {
-  //   if (youtubeLink) {
-  //     const embedUrl = youtubeLink
-  //       ?.split("&")[0]
-  //       ?.replace("/watch?v=", "/embed/");
-  //     setEmbedUrl(embedUrl ?? null);
-  //     console.log(embedUrl);
-  //   }
-  // }, [youtubeLink]);
-
   return (
     <>
       {youtubeLink ? (
