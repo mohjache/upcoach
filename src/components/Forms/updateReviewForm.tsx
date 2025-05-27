@@ -68,8 +68,11 @@ export const UpdateReviewForm = ({
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
               <ReviewVideoThumbnail
                 youtubeLink={
-                  (review as unknown as { rawMetadata: { srcUrl: string } })
-                    ?.rawMetadata?.srcUrl
+                  (
+                    review as {
+                      rawVideoMetadata: { srcUrl: string };
+                    }
+                  ).rawVideoMetadata.srcUrl
                 }
               />
 
