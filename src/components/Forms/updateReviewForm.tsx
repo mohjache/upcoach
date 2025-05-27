@@ -69,7 +69,7 @@ export const UpdateReviewForm = ({
               <ReviewVideoThumbnail
                 youtubeLink={
                   (review as unknown as { rawMetadata: { srcUrl: string } })
-                    .rawMetadata.srcUrl
+                    ?.rawMetadata?.srcUrl
                 }
               />
 
