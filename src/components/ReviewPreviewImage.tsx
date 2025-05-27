@@ -62,7 +62,7 @@ export const ReviewVideoThumbnail = ({
             allowFullScreen={true}
             title="YouTube video player for review"
             allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-            className="flex h-36 w-full rounded-lg lg:h-72"
+            className="flex h-46 w-full rounded-lg lg:h-88"
           ></iframe>
         </div>
       ) : (
