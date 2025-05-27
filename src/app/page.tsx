@@ -1,8 +1,12 @@
+"use client";
+
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 import { Button } from "~/components/ui/button";
 
 export default function HomePage() {
+  const router = useRouter();
   return (
     <>
       <div className="bg-primary text-primary-foreground fixed top-0 right-0 left-0 z-50 flex h-16 justify-between px-4 lg:px-32">
@@ -11,13 +15,7 @@ export default function HomePage() {
             <span className="font-bold">upCoach</span>
           </Link>
         </div>
-        <div className="flex items-center justify-center">
-          {/* <SignInButton>
-            <Button className="bg-primary-foreground text-primary hover:bg-primary-foreground/70 cursor-pointer rounded-lg px-6 py-3 font-semibold transition-colors">
-              Dashboard
-            </Button>
-          </SignInButton> */}
-        </div>
+        <div className="flex items-center justify-center"></div>
       </div>
 
       <div className="bg-primary text-primary-foreground flex min-h-screen flex-col items-center justify-center">
@@ -31,9 +29,9 @@ export default function HomePage() {
 
           <Button
             className="bg-primary-foreground text-primary hover:bg-primary-foreground/70 cursor-pointer rounded-lg px-6 py-3 font-semibold transition-colors"
-            asChild
+            onClick={() => router.push("/dashboard")}
           >
-            <Link href="/dashboard">Get Started</Link>
+            Get Started
           </Button>
         </div>
       </div>
