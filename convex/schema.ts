@@ -32,6 +32,7 @@ export default defineSchema({
         version: v.string(),
         thumbnail_height: v.number(),
         thumbnail_width: v.number(),
+        srcUrl: v.string(),
       }),
     ),
     notes: v.string(),

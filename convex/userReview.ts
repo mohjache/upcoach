@@ -182,7 +182,10 @@ export const pulldownYoutubeMetadata = internalAction({
     const result = (await response.json()) as YoutubeMetadata;
 
     console.log("pulling down youtube metadata", result);
-    //save metadata to db.
+
+    const srcUrl = /src="([^"]+)"/.exec(result.html)?.[1] ?? "";
+
+    // Schedule metadata update to run immediately
     await ctx.scheduler.runAfter(
       0,
       internal.userReview.internalUpdateUserReviewMetadata,
@@ -191,6 +194,7 @@ export const pulldownYoutubeMetadata = internalAction({
           id: args.reviewId,
           rawVideoMetadata: {
             ...result,
+            srcUrl: srcUrl,
           },
         },
       },
@@ -217,6 +221,7 @@ export const internalUpdateUserReviewMetadata = internalMutation({
         version: v.string(),
         thumbnail_height: v.number(),
         thumbnail_width: v.number(),
+        srcUrl: v.string(),
       }),
     }),
   },
@@ -255,4 +260,5 @@ export type YoutubeMetadata = {
   thumbnail_height: number;
   thumbnail_width: number;
   html: string;
+  srcUrl: string;
 };

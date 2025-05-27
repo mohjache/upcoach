@@ -22,7 +22,10 @@ import { api } from "~/../convex/_generated/api";
 import { useRouter } from "next/navigation";
 
 import type { Doc, Id } from "@/convex/_generated/dataModel";
-import { ReviewPreviewImage } from "../ReviewPreviewImage";
+import {
+  ReviewPreviewImage,
+  ReviewVideoThumbnail,
+} from "../ReviewPreviewImage";
 import Link from "next/link";
 
 const formSchema = z.object({
@@ -63,15 +66,14 @@ export const UpdateReviewForm = ({
         <CardContent>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-              <div className="h-16 w-16">
-                <ReviewPreviewImage
-                  previewImage={
-                    (review as { previewImage: string | undefined })
-                      .previewImage
-                  }
-                />
-              </div>
-              <Button variant="outline" size="sm" asChild>
+              <ReviewVideoThumbnail
+                youtubeLink={
+                  (review as unknown as { rawMetadata: { srcUrl: string } })
+                    .rawMetadata.srcUrl
+                }
+              />
+
+              {/* <Button variant="outline" size="sm" asChild>
                 <Link
                   href={(review as { youtubeLink: string }).youtubeLink}
                   target="_blank"
@@ -94,7 +96,7 @@ export const UpdateReviewForm = ({
                   </svg>
                   View
                 </Link>
-              </Button>
+              </Button> */}
               <FormField
                 control={form.control}
                 name="notes"
