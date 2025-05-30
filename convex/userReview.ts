@@ -1,4 +1,4 @@
-import { paginationOptsValidator } from "convex/server";
+import { paginationOptsValidator, UserIdentity } from "convex/server";
 import {
   query,
   mutation,
@@ -9,7 +9,14 @@ import {
 // Import the api reference
 import { api, internal } from "./_generated/api";
 import { v } from "convex/values";
-import type { UpcoachUserIdentity } from "./reviewRequests";
+
+export type Roles = "admin" | "coach";
+
+export interface UpcoachUserIdentity extends UserIdentity {
+  metadata: {
+    role?: Roles;
+  };
+}
 
 export const getUserReviews = query({
   args: {},

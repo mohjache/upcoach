@@ -44,15 +44,20 @@ export default defineSchema({
     .index("by_status", ["status"])
     .index("by_createdUser", ["userId"])
     .index("by_reviewer", ["reviewedBy"]),
-  reviewRequests: defineTable({
-    userId: v.string(),
-    userReviews: v.optional(v.array(v.id("userReviews"))),
-    email: v.optional(v.string()),
-    fulfilled: v.boolean(),
-    dateFulfilled: v.optional(v.string()),
+  shareRequests: defineTable({
+    sharedBy: v.string(), // userId of the person sharing
+    email: v.string(), // email of the person to share with
+    status: v.union(
+      v.literal("pending"), // invitation sent but not accepted
+      v.literal("accepted"), // invitation accepted
+      v.literal("declined"), // invitation declined
+    ),
+    lastSent: v.optional(v.number()), // timestamp when the share invitation was last sent
+    expiresAt: v.number(), // timestamp when the share invitation expires
   })
-    .index("by_fulfilled", ["fulfilled"])
-    .index("by_fulfilled_createdUser", ["fulfilled", "userId"])
-    .index("by_createdUser", ["userId"])
-    .index("by_reviewer", ["email"]),
+    .index("by_sharedBy", ["sharedBy"])
+    .index("by_email", ["email"])
+    .index("by_status", ["status"]),
 });
+
+// Add a new table for sharing reviews with non-registered users

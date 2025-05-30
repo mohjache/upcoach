@@ -9,32 +9,33 @@ import {
   CardTitle,
 } from "~/components/ui/card";
 
-import { useAction, useQuery } from "convex/react";
+import { useQuery } from "convex/react";
 import { api } from "~/../convex/_generated/api";
 
 import { Button } from "./ui/button";
 import Link from "next/link";
 import { Badge } from "./ui/badge";
 import { ReviewPreviewImage } from "./ReviewPreviewImage";
-import { Skeleton } from "./ui/skeleton";
-import type { Doc } from "@/convex/_generated/dataModel";
 import CreateReviewButton from "./Buttons/CreateReviewButton";
 import EditReviewButton from "./Buttons/EditReviewButton";
-import type { JSX } from "react";
+import InviteReviewerButton from "./Buttons/InviteReviewerButton";
 
 export function ReviewsList() {
   const reviews = useQuery(api.userReview.getUserReviews);
 
   return (
     <>
-      <div className="flex justify-end">
-        <CreateReviewButton></CreateReviewButton>
-      </div>
       <div className="space-y-4">
         {reviews === undefined || reviews?.length === 0 ? (
-          <></>
+          <div className="flex justify-end">
+            <CreateReviewButton></CreateReviewButton>
+          </div>
         ) : (
           <>
+            <div className="flex justify-between">
+              <InviteReviewerButton></InviteReviewerButton>
+              <CreateReviewButton></CreateReviewButton>
+            </div>
             {reviews.map((review) => (
               <Card key={review._id} className="mb-4">
                 <div className="relative flex">
@@ -106,45 +107,45 @@ export function ReviewsList() {
     </>
   );
 }
-const ReviewsSummary = ({
-  reviews,
-  reviewRequests,
-}: {
-  reviews: Doc<"userReviews">[] | undefined;
-  reviewRequests: Doc<"reviewRequests">[] | undefined;
-}): JSX.Element => {
-  function getReviewsSummary(): JSX.Element {
-    if (!reviews) {
-      return <Skeleton className="h-8 w-full" />;
-    }
+// const ReviewsSummary = ({
+//   reviews,
+//   reviewRequests,
+// }: {
+//   reviews: Doc<"userReviews">[] | undefined;
+//   reviewRequests: Doc<"reviewRequests">[] | undefined;
+// }): JSX.Element => {
+//   function getReviewsSummary(): JSX.Element {
+//     if (!reviews) {
+//       return <Skeleton className="h-8 w-full" />;
+//     }
 
-    if (reviews.length === 0) {
-      return <p>Get start by creating your first review</p>;
-    }
+//     if (reviews.length === 0) {
+//       return <p>Get start by creating your first review</p>;
+//     }
 
-    if (reviews.length < 3) {
-      return (
-        <>
-          <p>You have done {reviews.length}/3 reviews so far</p>
-          <p>
-            We recommend you create at least 3 reviews before asking a coach for
-            feedback
-          </p>
-        </>
-      );
-    }
+//     if (reviews.length < 3) {
+//       return (
+//         <>
+//           <p>You have done {reviews.length}/3 reviews so far</p>
+//           <p>
+//             We recommend you create at least 3 reviews before asking a coach for
+//             feedback
+//           </p>
+//         </>
+//       );
+//     }
 
-    if (reviewRequests === undefined || reviewRequests?.length === 0) {
-      return (
-        <p>Congratulations you can request a coach to review your games.</p>
-      );
-    }
-    return (
-      <p>
-        You have a pending request to reivew your recent games we will find the
-        appropriate coach to review your games
-      </p>
-    );
-  }
-  return getReviewsSummary();
-};
+//     if (reviewRequests === undefined || reviewRequests?.length === 0) {
+//       return (
+//         <p>Congratulations you can request a coach to review your games.</p>
+//       );
+//     }
+//     return (
+//       <p>
+//         You have a pending request to reivew your recent games we will find the
+//         appropriate coach to review your games
+//       </p>
+//     );
+//   }
+//   return getReviewsSummary();
+// };
