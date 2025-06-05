@@ -1,7 +1,7 @@
 import { v } from "convex/values";
 import { internal } from "./_generated/api";
 import { internalAction, mutation, query } from "./_generated/server";
-import { UpcoachUserIdentity } from "./userReview";
+import { type UpcoachUserIdentity } from "./userReview";
 
 export const getShareRequestByEmail = query({
   args: {},

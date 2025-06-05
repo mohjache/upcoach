@@ -1,4 +1,4 @@
-import { paginationOptsValidator, UserIdentity } from "convex/server";
+import { paginationOptsValidator, type UserIdentity } from "convex/server";
 import {
   query,
   mutation,

@@ -13,8 +13,10 @@ import type {
   FilterApi,
   FunctionReference,
 } from "convex/server";
+import type * as http from "../http.js";
 import type * as shareRequest from "../shareRequest.js";
 import type * as userReview from "../userReview.js";
+import type * as users from "../users.js";
 
 /**
  * A utility for referencing Convex functions in your app's API.
@@ -25,8 +27,10 @@ import type * as userReview from "../userReview.js";
  * ```
  */
 declare const fullApi: ApiFromModules<{
+  http: typeof http;
   shareRequest: typeof shareRequest;
   userReview: typeof userReview;
+  users: typeof users;
 }>;
 export declare const api: FilterApi<
   typeof fullApi,
