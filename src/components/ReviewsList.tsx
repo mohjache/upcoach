@@ -71,7 +71,7 @@ export function ReviewsList() {
                       </div>
                     </CardContent>
                     <CardFooter className="mt-2 mb-4 flex justify-between">
-                      <Button variant="outline" size="sm" asChild>
+                      <Button variant={"outline"} size="sm" asChild>
                         <Link
                           href={review.youtubeLink}
                           target="_blank"

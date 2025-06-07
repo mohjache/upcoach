@@ -6,7 +6,7 @@ import { Authenticated, Unauthenticated } from "convex/react";
 
 export const TopNav = () => {
   return (
-    <div className="bg-primary text-primary-foreground fixed top-0 right-0 left-0 z-50 flex h-16 justify-between px-4 lg:px-32">
+    <div className="bg-background text-primary fixed top-0 right-0 left-0 z-50 flex h-16 justify-between px-4 lg:px-32">
       <div className="mr-4 flex">
         <Link href="/" className="mr-6 flex items-center space-x-2">
           <span className="font-bold">upCoach</span>
@@ -27,5 +27,3 @@ export const TopNav = () => {
     </div>
   );
 };
-
-

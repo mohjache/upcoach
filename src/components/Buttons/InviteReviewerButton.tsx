@@ -23,7 +23,8 @@ const InviteReviewerButton = () => {
 
   return (
     <Button
-      className="text-primary/80 bg-primary-foreground hover:bg-primary-foreground/80 mb-2 cursor-pointer rounded-lg px-6 py-3 font-semibold transition-colors"
+      variant={"secondary"}
+      className="cursor-pointer rounded-lg px-6 py-3 font-semibold"
       onClick={() => handleCreateInvite("test@example.com")}
     >
       {isLoading ? (
