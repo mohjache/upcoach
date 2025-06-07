@@ -27,9 +27,24 @@ export function ReviewsList() {
     <>
       <div className="space-y-4">
         {reviews === undefined || reviews?.length === 0 ? (
-          <div className="flex justify-end">
-            <CreateReviewButton></CreateReviewButton>
-          </div>
+          <>
+            <div className="flex justify-end">
+              <CreateReviewButton></CreateReviewButton>
+            </div>
+            <Card>
+              <div className="relative flex">
+                <div className="flex-1">
+                  <CardHeader>
+                    <CardTitle>Welcome to UpCoach</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p>Create your first review to get started</p>
+                  </CardContent>
+                  <CardFooter></CardFooter>
+                </div>
+              </div>
+            </Card>
+          </>
         ) : (
           <>
             <div className="flex justify-between">
