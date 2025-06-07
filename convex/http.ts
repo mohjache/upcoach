@@ -53,49 +53,47 @@ const handleClerkWebhook = httpAction(async (ctx, request) => {
   }
 
   //   // Handle the webhook
-  //   const eventType = evt.type;
+  const eventType = evt.type;
 
-  //   try {
-  //     switch (eventType) {
-  //       case "user.created":
-  //         await ctx.runMutation(api.users.createUser, {
-  //           clerkId: evt.data.id,
-  //           email: evt.data.email_addresses?.[0]?.email_address || "",
-  //           firstName: evt.data.first_name || undefined,
-  //           lastName: evt.data.last_name || undefined,
-  //           imageUrl: evt.data.image_url || undefined,
-  //           username: evt.data.username || undefined,
-  //         });
-  //         break;
+  try {
+    switch (eventType) {
+      case "user.created":
+        await ctx.runMutation(api.users.createUser, {
+          clerkId: evt.data.id,
+          email: evt.data.email_addresses?.[0]?.email_address ?? "",
+          firstName: evt.data.first_name ?? undefined,
+          lastName: evt.data.last_name ?? undefined,
+          imageUrl: evt.data.image_url ?? undefined,
+          username: evt.data.username ?? undefined,
+        });
+        break;
 
-  //       case "user.updated":
-  //         await ctx.runMutation(api.users.updateUser, {
-  //           clerkId: evt.data.id,
-  //           email: evt.data.email_addresses?.[0]?.email_address || "",
-  //           firstName: evt.data.first_name || undefined,
-  //           lastName: evt.data.last_name || undefined,
-  //           imageUrl: evt.data.image_url || undefined,
-  //           username: evt.data.username || undefined,
-  //         });
-  //         break;
+      case "user.updated":
+        await ctx.runMutation(api.users.updateUser, {
+          clerkId: evt.data.id,
+          email: evt.data.email_addresses?.[0]?.email_address ?? "",
+          firstName: evt.data.first_name ?? undefined,
+          lastName: evt.data.last_name ?? undefined,
+          imageUrl: evt.data.image_url ?? undefined,
+          username: evt.data.username ?? undefined,
+        });
+        break;
 
-  //       case "user.deleted":
-  //         await ctx.runMutation(api.users.deleteUser, {
-  //           clerkId: evt.data.id,
-  //         });
-  //         break;
+      case "user.deleted":
+        await ctx.runMutation(api.users.deleteUser, {
+          clerkId: evt.data.id,
+        });
+        break;
 
-  //       default:
-  //         console.log(`Unhandled event type: ${eventType}`);
-  //     }
+      default:
+        console.log(`Unhandled event type: ${eventType}`);
+    }
 
-  //     return new Response("Webhook processed successfully", { status: 200 });
-  //   } catch (error) {
-  //     console.error("Error processing webhook:", error);
-  //     return new Response("Error processing webhook", { status: 500 });
-  //   }
-
-  return new Response("Webhook processed successfully", { status: 200 });
+    return new Response("Webhook processed successfully", { status: 200 });
+  } catch (error) {
+    console.error("Error processing webhook:", error);
+    return new Response("Error processing webhook", { status: 500 });
+  }
 });
 
 // define the http router

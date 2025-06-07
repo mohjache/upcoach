@@ -61,13 +61,13 @@ export const createRequest = mutation({
 
     console.log("Creating share request");
 
-    // await ctx.db.insert("shareRequests", {
-    //   sharedBy: userId,
-    //   email: args.email,
-    //   status: "pending",
-    //   lastSent: Date.now(),
-    //   expiresAt: Date.now() + 1000 * 60 * 60 * 24 * 7, // 1 week
-    // });
+    await ctx.db.insert("shareRequests", {
+      sharedBy: userId,
+      email: args.email,
+      status: "pending",
+      lastSent: Date.now(),
+      expiresAt: Date.now() + 1000 * 60 * 60 * 24 * 7, // 1 week
+    });
   },
 });
 
