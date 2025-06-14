@@ -5,6 +5,7 @@ import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
 import { api } from "./_generated/api";
 import { type Id } from "./_generated/dataModel";
+import { type UpcoachUserIdentity } from "./userReview";
 
 export const createUser = mutation({
   args: {
@@ -35,6 +36,8 @@ export const createUser = mutation({
       lastName: args.lastName,
       imageUrl: args.imageUrl,
       username: args.username,
+      searchIndex:
+        `${args?.firstName} ${args?.lastName} ${args?.email}`.toLowerCase(),
       createdAt: now,
       updatedAt: now,
     });
@@ -79,6 +82,8 @@ export const updateUser = mutation({
       lastName: args.lastName,
       imageUrl: args.imageUrl,
       username: args.username,
+      searchIndex:
+        `${args?.firstName} ${args?.lastName} ${args?.email}`.toLowerCase(),
       updatedAt: Date.now(),
     });
 
@@ -119,36 +124,54 @@ export const getUserByClerkId = query({
   },
 });
 
-export const getUserByEmail = query({
+export const searchUsers = query({
   args: {
-    email: v.string(),
+    query: v.string(),
   },
   handler: async (ctx, args) => {
-    return await ctx.db
-      .query("clerkUsers")
-      .withIndex("by_email", (q) => q.eq("email", args.email))
-      .unique();
-  },
-});
-
-export const listUsers = query({
-  args: {},
-  handler: async (ctx) => {
-    return await ctx.db.query("clerkUsers").collect();
-  },
-});
-
-export const getCurrentUser = query({
-  args: {},
-  handler: async (ctx) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) {
-      return null;
+    const identity = (await ctx.auth.getUserIdentity()) as UpcoachUserIdentity;
+    if (identity === null) {
+      throw new Error("Not authenticated");
     }
 
-    return await ctx.db
+    if (!args.query) {
+      return [];
+    }
+
+    console.log("identity.userId", identity.subject);
+
+    const result = await ctx.db
       .query("clerkUsers")
-      .withIndex("by_clerk_id", (q) => q.eq("clerkId", identity.subject))
-      .unique();
+      .withSearchIndex("by_search_index", (q) =>
+        q.search("searchIndex", args.query),
+      )
+      .filter((q) => q.neq(q.field("clerkId"), identity.subject))
+      .take(5);
+
+    console.log("found users", result);
+    return result;
+  },
+});
+
+export const getUserOrganizations = query({
+  args: { userId: v.id("users") },
+  handler: async (ctx, args) => {
+    const memberships = await ctx.db
+      .query("organizationMemberships")
+      .withIndex("by_user", (q) => q.eq("userId", args.userId))
+      .collect();
+
+    const organizations = [];
+    for (const membership of memberships) {
+      const org = await ctx.db.get(membership.organizationId);
+      if (org) {
+        organizations.push({
+          ...org,
+          role: membership.role,
+        });
+      }
+    }
+
+    return organizations;
   },
 });

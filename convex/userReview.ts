@@ -16,6 +16,7 @@ export interface UpcoachUserIdentity extends UserIdentity {
   metadata: {
     role?: Roles;
   };
+  userId: string;
 }
 
 export const getUserReviews = query({

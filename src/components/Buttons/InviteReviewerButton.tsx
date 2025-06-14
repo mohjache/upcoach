@@ -4,6 +4,7 @@ import { Button } from "../ui/button";
 import { api } from "~/../convex/_generated/api";
 import { useMutation } from "convex/react";
 import { useState } from "react";
+import Link from "next/link";
 
 const InviteReviewerButton = () => {
   const createInvite = useMutation(api.shareRequest.createRequest);
@@ -25,13 +26,19 @@ const InviteReviewerButton = () => {
     <Button
       variant={"secondary"}
       className="cursor-pointer rounded-lg px-6 py-3 font-semibold"
-      onClick={() => handleCreateInvite("test@example.com")}
+      asChild
     >
-      {isLoading ? (
-        <div className="border-primary h-4 w-4 animate-spin rounded-full border-2 border-t-transparent" />
-      ) : (
-        "Share"
-      )}
+      <Link
+        href="/dashboard/invite"
+        className="flex items-center gap-2"
+        onClick={() => setIsLoading(true)}
+      >
+        {isLoading ? (
+          <div className="border-primary-foreground h-4 w-4 animate-spin rounded-full border-2 border-t-transparent" />
+        ) : (
+          "Share"
+        )}
+      </Link>
     </Button>
   );
 };

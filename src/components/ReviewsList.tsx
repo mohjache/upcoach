@@ -26,7 +26,7 @@ export function ReviewsList() {
   return (
     <>
       <div className="space-y-4">
-        {reviews === undefined || reviews?.length === 0 ? (
+        {reviews?.length === 0 ? (
           <>
             <div className="flex justify-end">
               <CreateReviewButton></CreateReviewButton>
@@ -51,7 +51,7 @@ export function ReviewsList() {
               <InviteReviewerButton></InviteReviewerButton>
               <CreateReviewButton></CreateReviewButton>
             </div>
-            {reviews.map((review) => (
+            {reviews?.map((review) => (
               <Card key={review._id} className="mb-4">
                 <div className="relative flex">
                   <div className="flex-1">

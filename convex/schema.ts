@@ -59,11 +59,36 @@ export default defineSchema({
     lastName: v.optional(v.string()),
     imageUrl: v.optional(v.string()),
     username: v.optional(v.string()),
+    searchIndex: v.optional(v.string()),
     createdAt: v.number(),
     updatedAt: v.number(),
   })
     .index("by_clerk_id", ["clerkId"])
-    .index("by_email", ["email"]),
+    .index("by_email", ["email"])
+    .searchIndex("by_search_index", {
+      searchField: "searchIndex",
+    }),
+  organizations: defineTable({
+    clerkId: v.string(),
+    name: v.string(),
+    slug: v.optional(v.string()),
+    imageUrl: v.optional(v.string()),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  }).index("by_clerk_id", ["clerkId"]),
+
+  organizationMemberships: defineTable({
+    userId: v.id("users"),
+    organizationId: v.id("organizations"),
+    clerkUserId: v.string(),
+    clerkOrganizationId: v.string(),
+    role: v.string(),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  })
+    .index("by_user", ["userId"])
+    .index("by_organization", ["organizationId"])
+    .index("by_clerk_ids", ["clerkUserId", "clerkOrganizationId"]),
 });
 
 // Add a new table for sharing reviews with non-registered users
