@@ -154,11 +154,11 @@ export const searchUsers = query({
 });
 
 export const getUserOrganizations = query({
-  args: { userId: v.id("users") },
+  args: { userId: v.id("clerkUsers") },
   handler: async (ctx, args) => {
     const memberships = await ctx.db
       .query("organizationMemberships")
-      .withIndex("by_user", (q) => q.eq("userId", args.userId))
+      .withIndex("by_user", (q) => q.eq("clerkUserId", args.userId))
       .collect();
 
     const organizations = [];

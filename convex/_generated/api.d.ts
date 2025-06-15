@@ -14,6 +14,8 @@ import type {
   FunctionReference,
 } from "convex/server";
 import type * as http from "../http.js";
+import type * as memberships from "../memberships.js";
+import type * as organizations from "../organizations.js";
 import type * as shareRequest from "../shareRequest.js";
 import type * as userReview from "../userReview.js";
 import type * as users from "../users.js";
@@ -28,6 +30,8 @@ import type * as users from "../users.js";
  */
 declare const fullApi: ApiFromModules<{
   http: typeof http;
+  memberships: typeof memberships;
+  organizations: typeof organizations;
   shareRequest: typeof shareRequest;
   userReview: typeof userReview;
   users: typeof users;

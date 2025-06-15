@@ -14,7 +14,7 @@ export default function Footer() {
               <span className="text-xl font-bold">upCoach</span>
             </Link>
             <p className="text-muted-foreground text-sm">
-              Elevate your badminton game through world-class remote coaching
+              Transform your coaching business with data-driven insights
             </p>
           </div>
 

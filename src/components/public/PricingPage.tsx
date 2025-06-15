@@ -2,6 +2,7 @@
 import React from "react";
 import { CheckCircle, ArrowRight } from "lucide-react";
 import { Button } from "../ui/button";
+import Link from "next/link";
 
 export default function PricingPage() {
   const plans = [
@@ -15,6 +16,7 @@ export default function PricingPage() {
         "Basic Reports on the organisation",
         "Email support",
       ],
+      link: "/onboarding",
       buttonText: "Start Free Trial",
       popular: false,
     },
@@ -27,6 +29,7 @@ export default function PricingPage() {
         "Advanced analytics",
         "Bulk student discounts",
       ],
+      link: "/onboarding",
       buttonText: "Start Free Trial",
       popular: true,
     },
@@ -41,6 +44,7 @@ export default function PricingPage() {
         "White-label options",
       ],
       buttonText: "Contact Sales",
+      link: "/#",
       popular: false,
     },
   ];
@@ -111,9 +115,12 @@ export default function PricingPage() {
                 <Button
                   className="bg-primary text-primary-foreground w-full hover:cursor-pointer"
                   size="lg"
+                  asChild
                 >
-                  {plan.buttonText}
-                  <ArrowRight className="ml-2 h-5 w-5" />
+                  <Link href={plan.link}>
+                    {plan.buttonText}
+                    <ArrowRight className="ml-2 h-5 w-5" />
+                  </Link>
                 </Button>
               </div>
             </div>

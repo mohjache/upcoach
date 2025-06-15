@@ -6,7 +6,7 @@ import { ReviewsList } from "~/components/Reviews/ReviewsList";
 
 const Page = () => {
   return (
-    <main className="container mx-auto pt-24 pb-8">
+    <main className="container mx-auto h-screen pt-24 pb-8">
       <div className="mx-auto max-w-2xl">
         <AuthLoading>
           <FallbackComponent></FallbackComponent>

@@ -73,22 +73,27 @@ export default defineSchema({
     name: v.string(),
     slug: v.optional(v.string()),
     imageUrl: v.optional(v.string()),
-    createdAt: v.number(),
-    updatedAt: v.number(),
+    createdBy: v.optional(v.string()),
+    publicMetadata: v.optional(v.any()),
+    privateMetadata: v.optional(v.any()),
+    maxAllowedMemberships: v.optional(v.number()),
+    adminDeleteEnabled: v.optional(v.boolean()),
+    membersCount: v.optional(v.number()),
+    pendingInvitationsCount: v.optional(v.number()),
   }).index("by_clerk_id", ["clerkId"]),
 
   organizationMemberships: defineTable({
-    userId: v.id("users"),
+    clerkUserId: v.id("clerkUsers"),
     organizationId: v.id("organizations"),
-    clerkUserId: v.string(),
-    clerkOrganizationId: v.string(),
     role: v.string(),
-    createdAt: v.number(),
-    updatedAt: v.number(),
+    publicMetadata: v.optional(v.any()),
+    privateMetadata: v.optional(v.any()),
+    createdAt: v.optional(v.number()),
+    updatedAt: v.optional(v.number()),
   })
-    .index("by_user", ["userId"])
+    .index("by_user", ["clerkUserId"])
     .index("by_organization", ["organizationId"])
-    .index("by_clerk_ids", ["clerkUserId", "clerkOrganizationId"]),
+    .index("by_user_and_org", ["clerkUserId", "organizationId"]),
 });
 
 // Add a new table for sharing reviews with non-registered users

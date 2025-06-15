@@ -1,9 +1,10 @@
 "use client";
 import React, { useState } from "react";
 
-import { Menu, X, TrendingUp } from "lucide-react";
+import { Menu, X, TrendingUp, ArrowRight } from "lucide-react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
+import { Button } from "../ui/button";
 
 export default function HeroNavbar() {
   const pathname = usePathname();
@@ -64,18 +65,19 @@ export default function HeroNavbar() {
           </div>
 
           <div className="hidden items-center space-x-4 md:flex">
-            <a
-              href="#"
-              className="hover:text-primary/80 px-3 py-2 text-sm font-medium transition-colors"
+            <Button size="lg" variant="ghost" asChild>
+              <Link href="/dashboard">Sign In</Link>
+            </Button>
+            <Button
+              size="lg"
+              className="bg-primary text-primary-foreground"
+              asChild
             >
-              Sign In
-            </a>
-            <a
-              href="#"
-              className="bg-primary text-primary-foreground transform rounded-lg px-6 py-2 text-sm font-medium transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg"
-            >
-              Start Free Trial
-            </a>
+              <Link href="/onboarding">
+                Start Free Trial
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </Link>
+            </Button>
           </div>
 
           <div className="md:hidden">
@@ -116,19 +118,17 @@ export default function HeroNavbar() {
             >
               Contact
             </a> */}
-            <div className="border-t border-gray-200 pt-4 pb-3">
-              <a
-                href="#"
-                className="text-primary hover:text-primary/80 block rounded-md px-3 py-2 text-base font-medium hover:bg-gray-50"
+            <div className="flex flex-col gap-2 border-t border-gray-200 pt-4 pb-3">
+              <Button size="lg" variant="ghost" asChild>
+                <Link href="/dashboard">Sign In</Link>
+              </Button>
+              <Button
+                size="lg"
+                className="bg-primary text-primary-foreground"
+                asChild
               >
-                Sign In
-              </a>
-              <a
-                href="#"
-                className="bg-primary mx-3 mt-2 block rounded-lg px-4 py-2 text-center text-base font-medium text-white"
-              >
-                Start Free Trial
-              </a>
+                <Link href="/onboarding">Start Free Trial</Link>
+              </Button>
             </div>
           </div>
         </div>

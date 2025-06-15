@@ -4,10 +4,11 @@
 import { httpRouter } from "convex/server";
 import { httpAction } from "./_generated/server";
 import { Webhook } from "svix";
-import { api } from "./_generated/api";
+import { api, internal } from "./_generated/api";
+import { Id } from "./_generated/dataModel";
 
-interface ClerkWebhookEvent {
-  type: string;
+interface ClerkWebhookUserEvent {
+  type: "user.created" | "user.updated" | "user.deleted";
   data: {
     id: string;
     email_addresses?: Array<{ email_address: string }>;
@@ -17,6 +18,66 @@ interface ClerkWebhookEvent {
     username?: string;
   };
 }
+
+interface ClerkWebhookOrganizationEvent {
+  type:
+    | "organization.created"
+    | "organization.updated"
+    | "organization.deleted";
+  data: {
+    id: string;
+    name: string;
+    slug: string;
+    image_url: string;
+  };
+}
+
+export interface ClerkWebhookOrganizationMembershipEvent {
+  type:
+    | "organizationMembership.created"
+    | "organizationMembership.updated"
+    | "organizationMembership.deleted";
+  data: {
+    id: string;
+    role: string;
+    public_metadata: Record<string, unknown>;
+    private_metadata: Record<string, unknown>;
+    created_at: number;
+    updated_at: number;
+    organization: {
+      id: string;
+      name: string;
+      slug: string;
+      image_url: string;
+      created_at: number;
+      updated_at: number;
+      has_image: boolean;
+      logo_url: string | null;
+      max_allowed_memberships: number;
+      members_count: number;
+      pending_invitations_count: number;
+      public_metadata: Record<string, unknown>;
+      admin_delete_enabled: boolean;
+    };
+    public_user_data: {
+      user_id: string;
+      first_name: string;
+      last_name: string;
+      image_url: string;
+      has_image: boolean;
+      identifier: string;
+      profile_image_url: string;
+    };
+    permissions: string[];
+    role_name: string;
+  };
+}
+
+type ClerkWebhookEvent =
+  | ClerkWebhookUserEvent
+  | ClerkWebhookOrganizationEvent
+  | ClerkWebhookOrganizationMembershipEvent;
+
 const handleClerkWebhook = httpAction(async (ctx, request) => {
   const webhookSecret = process.env.CLERK_WEBHOOK_SECRET;
 
@@ -85,7 +146,39 @@ const handleClerkWebhook = httpAction(async (ctx, request) => {
         });
         break;
 
+      //organization
+      case "organization.created":
+        await ctx.runMutation(
+          internal.organizations.handleOrganizationCreated,
+          {
+            organization: evt.data,
+          },
+        );
+        break;
+      case "organization.updated":
+        await ctx.runMutation(
+          internal.organizations.handleOrganizationUpdated,
+          {
+            organization: {
+              id: evt.data.id as Id<"organizations">,
+              name: evt.data.name,
+              slug: evt.data.slug,
+              image_url: evt.data.image_url,
+            },
+          },
+        );
+        break;
+      case "organization.deleted":
+        await ctx.runMutation(
+          internal.organizations.handleOrganizationDeleted,
+          {
+            organizationId: evt.data.id as Id<"organizations">,
+          },
+        );
+        break;
+
       default:
+        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
         console.log(`Unhandled event type: ${eventType}`);
     }
 

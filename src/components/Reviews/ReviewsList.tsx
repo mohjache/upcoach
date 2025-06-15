@@ -21,11 +21,14 @@ import EditReviewButton from "../Buttons/EditReviewButton";
 import InviteReviewerButton from "../Buttons/InviteReviewerButton";
 
 export function ReviewsList() {
-  const reviews = useQuery(api.userReview.getUserReviews);
+  //const reviews = useQuery(api.userReview.getUserReviews);
 
   return (
     <>
-      <div className="space-y-4">
+      <div className="flex h-screen flex-col items-center">
+        <h1 className="text-4xl font-bold">Welcome to UpCoach</h1>
+      </div>
+      {/* <div className="space-y-4">
         {reviews?.length === 0 ? (
           <>
             <div className="flex justify-end">
@@ -118,7 +121,7 @@ export function ReviewsList() {
             ))}
           </>
         )}
-      </div>
+      </div> */}
     </>
   );
 }

@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { Button } from "../ui/button";
 import { ArrowRight } from "lucide-react";
 
@@ -23,12 +24,15 @@ export default function HomePage() {
                 <Button
                   size="lg"
                   className="bg-primary text-primary-foreground"
+                  asChild
                 >
-                  Start Free Trial
-                  <ArrowRight className="ml-2 h-5 w-5" />
+                  <Link href="/onboarding">
+                    Start Free Trial
+                    <ArrowRight className="ml-2 h-5 w-5" />
+                  </Link>
                 </Button>
-                <Button size="lg" variant="outline">
-                  Sign in to existing account
+                <Button size="lg" variant="outline" asChild>
+                  <Link href="/dashboard">Sign in to existing account</Link>
                 </Button>
               </div>
             </div>
