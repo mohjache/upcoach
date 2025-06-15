@@ -7,8 +7,8 @@ export default function HomePage() {
   return (
     <div className="bg-background min-h-screen">
       {/* Hero Section */}
-      <div className="flex h-[calc(100vh-4rem)] items-center justify-center overflow-hidden">
-        <div className="mx-auto max-w-7xl px-4 py-24 sm:px-6 lg:px-8">
+      <div className="flex h-[calc(100vh-4rem)] flex-col items-center justify-center overflow-hidden">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <h1 className="text-primary text-4xl font-bold tracking-tight sm:text-6xl">
               Transform Your Coaching Business with Data-Driven Insights
@@ -29,7 +29,7 @@ export default function HomePage() {
       </div>
 
       {/* Features Section */}
-      <div className="py-24 sm:py-32">
+      <div className="py-12 sm:py-32">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-2xl text-center">
             <h2 className="text-primary text-3xl font-bold tracking-tight sm:text-4xl">
