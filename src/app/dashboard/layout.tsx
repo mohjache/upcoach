@@ -1,5 +1,5 @@
 import { ClerkProvider } from "@clerk/nextjs";
-import { TopNav } from "~/components/TopNav";
+import { TopNav } from "~/components/Navigation/TopNav";
 import { ConvexClientProvider } from "~/Providers/ConvexProvider";
 
 export default function RootLayout({

@@ -19,10 +19,18 @@ export default function HomePage() {
               drive growth and success.
             </p>
             <div className="mt-10 flex items-center justify-center gap-x-6">
-              <Button size="lg" className="bg-primary text-primary-foreground">
-                Start Free Trial
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </Button>
+              <div className="flex gap-4">
+                <Button
+                  size="lg"
+                  className="bg-primary text-primary-foreground"
+                >
+                  Start Free Trial
+                  <ArrowRight className="ml-2 h-5 w-5" />
+                </Button>
+                <Button size="lg" variant="outline">
+                  Sign in to existing account
+                </Button>
+              </div>
             </div>
           </div>
         </div>

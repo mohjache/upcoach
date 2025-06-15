@@ -12,13 +12,13 @@ import {
 import { useQuery } from "convex/react";
 import { api } from "~/../convex/_generated/api";
 
-import { Button } from "./ui/button";
+import { Button } from "../ui/button";
 import Link from "next/link";
-import { Badge } from "./ui/badge";
+import { Badge } from "../ui/badge";
 import { ReviewPreviewImage } from "./ReviewPreviewImage";
-import CreateReviewButton from "./Buttons/CreateReviewButton";
-import EditReviewButton from "./Buttons/EditReviewButton";
-import InviteReviewerButton from "./Buttons/InviteReviewerButton";
+import CreateReviewButton from "../Buttons/CreateReviewButton";
+import EditReviewButton from "../Buttons/EditReviewButton";
+import InviteReviewerButton from "../Buttons/InviteReviewerButton";
 
 export function ReviewsList() {
   const reviews = useQuery(api.userReview.getUserReviews);

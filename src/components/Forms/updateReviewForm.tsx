@@ -25,7 +25,7 @@ import type { Doc, Id } from "@/convex/_generated/dataModel";
 import {
   ReviewPreviewImage,
   ReviewVideoThumbnail,
-} from "../ReviewPreviewImage";
+} from "../Reviews/ReviewPreviewImage";
 import Link from "next/link";
 
 const formSchema = z.object({

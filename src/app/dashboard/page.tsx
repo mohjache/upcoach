@@ -2,7 +2,7 @@
 
 import { Authenticated, AuthLoading } from "convex/react";
 import { FallbackComponent } from "~/components/Fallback";
-import { ReviewsList } from "~/components/ReviewsList";
+import { ReviewsList } from "~/components/Reviews/ReviewsList";
 
 const Page = () => {
   return (

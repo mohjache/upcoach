@@ -1,6 +1,6 @@
 import { CheckCircle, ArrowRight } from "lucide-react";
-import HeroNavbar from "~/components/public/HeroNavbar";
-import PricingPage from "~/components/public/PricingPage";
+import HeroNavbar from "~/components/Public/HeroNavbar";
+import PricingPage from "~/components/Public/PricingPage";
 
 export default function Page() {
   const plans = [
