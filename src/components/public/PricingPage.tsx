@@ -7,32 +7,25 @@ export default function PricingPage() {
   const plans = [
     {
       name: "Starter",
-      price: 29,
-      description: "Perfect for small teams getting started with coaching",
+      price: 2,
+      descripton: "Perfect for small teams getting started with coaching",
       features: [
-        "Up to 25 employees",
-        "Basic coach matching",
-        "Goal tracking",
-        "Monthly progress reports",
+        "Up to 5 students and 5 employees",
+        "Goal tracking for students",
+        "Basic Reports on the organisation",
         "Email support",
-        "Mobile app access",
       ],
       buttonText: "Start Free Trial",
       popular: false,
     },
     {
       name: "Professional",
-      price: 79,
+      price: 4,
       description: "Ideal for growing companies serious about development",
       features: [
-        "Up to 100 employees",
-        "AI-powered coach matching",
+        "Unlimited employees",
         "Advanced analytics",
-        "Custom goal frameworks",
-        "Priority support",
-        "API access",
-        "Team performance insights",
-        "Integrations (Slack, Teams)",
+        "Bulk student discounts",
       ],
       buttonText: "Start Free Trial",
       popular: true,
@@ -40,15 +33,11 @@ export default function PricingPage() {
     {
       name: "Enterprise",
       price: null,
-      description: "For large organizations with complex coaching needs",
+      description: "For large organisations with complex coaching needs",
       features: [
-        "Unlimited employees",
-        "Dedicated success manager",
         "Custom integrations",
-        "Advanced security & compliance",
         "24/7 phone support",
         "Custom reporting",
-        "Single sign-on (SSO)",
         "White-label options",
       ],
       buttonText: "Contact Sales",
@@ -100,7 +89,7 @@ export default function PricingPage() {
                         ${plan.price}
                       </span>
                       <span className="text-foreground ml-2">
-                        /month per employee
+                        /month per client
                       </span>
                     </div>
                   ) : (

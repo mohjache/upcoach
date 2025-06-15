@@ -7,9 +7,9 @@ import Link from "next/link";
 
 export default function HeroNavbar() {
   const pathname = usePathname();
-  const [isOpen, setIsOpen] = useState(false);
 
   const isActive = (path: string) => pathname === path;
+  const [isOpen, setIsOpen] = useState(false);
 
   return (
     <nav className="border-accent border-b">
