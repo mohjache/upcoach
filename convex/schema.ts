@@ -86,8 +86,6 @@ export default defineSchema({
     clerkUserId: v.id("clerkUsers"),
     organizationId: v.id("organizations"),
     role: v.string(),
-    publicMetadata: v.optional(v.any()),
-    privateMetadata: v.optional(v.any()),
     createdAt: v.optional(v.number()),
     updatedAt: v.optional(v.number()),
   })

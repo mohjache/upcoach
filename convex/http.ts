@@ -5,7 +5,7 @@ import { httpRouter } from "convex/server";
 import { httpAction } from "./_generated/server";
 import { Webhook } from "svix";
 import { api, internal } from "./_generated/api";
-import { Id } from "./_generated/dataModel";
+import type { Id } from "./_generated/dataModel";
 
 interface ClerkWebhookUserEvent {
   type: "user.created" | "user.updated" | "user.deleted";
@@ -40,8 +40,7 @@ export interface ClerkWebhookOrganizationMembershipEvent {
   data: {
     id: string;
     role: string;
-    public_metadata: Record<string, unknown>;
-    private_metadata: Record<string, unknown>;
+
     created_at: number;
     updated_at: number;
     organization: {
@@ -56,7 +55,6 @@ export interface ClerkWebhookOrganizationMembershipEvent {
       max_allowed_memberships: number;
       members_count: number;
       pending_invitations_count: number;
-      public_metadata: Record<string, unknown>;
       admin_delete_enabled: boolean;
     };
     public_user_data: {
@@ -112,6 +110,8 @@ const handleClerkWebhook = httpAction(async (ctx, request) => {
     console.error("Error verifying webhook:", err);
     return new Response("Invalid signature", { status: 400 });
   }
+
+  console.log("evt", evt);
 
   //   // Handle the webhook
   const eventType = evt.type;
@@ -175,6 +175,62 @@ const handleClerkWebhook = httpAction(async (ctx, request) => {
             organizationId: evt.data.id as Id<"organizations">,
           },
         );
+        break;
+
+      // Organization membership events
+      case "organizationMembership.created":
+        console.log("organizationMembership.created", evt.data);
+        await ctx.runMutation(internal.memberships.handleMembershipCreated, {
+          membership: {
+            id: evt.data.id,
+            public_user_data: {
+              user_id: evt.data.public_user_data.user_id as Id<"clerkUsers">,
+            },
+            organization: {
+              id: evt.data.organization.id as Id<"organizations">,
+            },
+            role: evt.data.role,
+
+            created_at: evt.data.created_at,
+            updated_at: evt.data.updated_at,
+          },
+        });
+        break;
+      case "organizationMembership.updated":
+        console.log("organizationMembership.updated", evt.data);
+        await ctx.runMutation(internal.memberships.handleMembershipUpdated, {
+          membership: {
+            id: evt.data.id,
+            public_user_data: {
+              user_id: evt.data.public_user_data.user_id as Id<"clerkUsers">,
+            },
+            organization: {
+              id: evt.data.organization.id as Id<"organizations">,
+            },
+            role: evt.data.role,
+
+            created_at: evt.data.created_at,
+            updated_at: evt.data.updated_at,
+          },
+        });
+        break;
+      case "organizationMembership.deleted":
+        console.log("organizationMembership.deleted", evt.data);
+        await ctx.runMutation(internal.memberships.handleMembershipDeleted, {
+          membership: {
+            id: evt.data.id,
+            public_user_data: {
+              user_id: evt.data.public_user_data.user_id as Id<"clerkUsers">,
+            },
+            organization: {
+              id: evt.data.organization.id as Id<"organizations">,
+            },
+            role: evt.data.role,
+
+            created_at: evt.data.created_at,
+            updated_at: evt.data.updated_at,
+          },
+        });
         break;
 
       default:

@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
+import { api, internal } from "./_generated/api";
 import { internalMutation } from "./_generated/server";
 import { v } from "convex/values";
 
@@ -29,7 +30,7 @@ export const handleOrganizationCreated = internalMutation({
 export const handleOrganizationUpdated = internalMutation({
   args: {
     organization: v.object({
-      id: v.id("organizations"),
+      id: v.string(),
       name: v.optional(v.string()),
       slug: v.optional(v.string()),
       image_url: v.optional(v.string()),
@@ -43,6 +44,19 @@ export const handleOrganizationUpdated = internalMutation({
       .query("organizations")
       .withIndex("by_clerk_id", (q) => q.eq("clerkId", org.id))
       .unique();
+
+    if (!existingOrg) {
+      console.log(
+        `organisation with Clerk ID ${args.organization.id} not found, creating new user`,
+      );
+
+      await ctx.runMutation(
+        internal.organizations.handleOrganizationCreated,
+        args,
+      );
+
+      return;
+    }
 
     if (existingOrg) {
       await ctx.db.patch(existingOrg._id, {
