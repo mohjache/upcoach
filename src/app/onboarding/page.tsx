@@ -1,3 +1,4 @@
+"use client";
 import { CreateOrganization } from "@clerk/nextjs";
 import { Suspense } from "react";
 import { FallbackComponent } from "~/components/Fallback";
