@@ -92,6 +92,21 @@ export default defineSchema({
     .index("by_user", ["clerkUserId"])
     .index("by_organization", ["organizationId"])
     .index("by_user_and_org", ["clerkUserId", "organizationId"]),
+
+  clerkEvents: defineTable({
+    clerkEventId: v.string(),
+    eventType: v.string(),
+    eventData: v.any(),
+    createdAt: v.optional(v.number()),
+    status: v.union(
+      v.literal("pending"),
+      v.literal("processed"),
+      v.literal("failed"),
+    ),
+    updatedAt: v.optional(v.number()),
+  })
+    .index("by_event_type", ["eventType"])
+    .index("by_clerk_event_id", ["clerkEventId"]),
 });
 
 // Add a new table for sharing reviews with non-registered users

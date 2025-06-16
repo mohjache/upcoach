@@ -40,7 +40,6 @@ export interface ClerkWebhookOrganizationMembershipEvent {
   data: {
     id: string;
     role: string;
-
     created_at: number;
     updated_at: number;
     organization: {
@@ -111,7 +110,22 @@ const handleClerkWebhook = httpAction(async (ctx, request) => {
     return new Response("Invalid signature", { status: 400 });
   }
 
-  console.log("evt", evt);
+  const processedEvent = await ctx.runQuery(api.clerkEvents.queryEvent, {
+    clerkEventId: evt.data.id,
+  });
+  if (processedEvent) {
+    return new Response("Event already processed", { status: 200 });
+  }
+
+  await ctx.runMutation(internal.clerkEvents.handleMembershipCreated, {
+    clerkEvent: {
+      id: evt.data.id,
+      eventType: evt.type,
+      eventData: evt.data,
+      createdAt: Date.now(),
+      updatedAt: Date.now(),
+    },
+  });
 
   //   // Handle the webhook
   const eventType = evt.type;
@@ -238,9 +252,24 @@ const handleClerkWebhook = httpAction(async (ctx, request) => {
         console.log(`Unhandled event type: ${eventType}`);
     }
 
+    await ctx.runMutation(internal.clerkEvents.handleMembershipUpdated, {
+      clerkEvent: {
+        id: evt.data.id,
+        status: "processed",
+        updatedAt: Date.now(),
+      },
+    });
+
     return new Response("Webhook processed successfully", { status: 200 });
   } catch (error) {
     console.error("Error processing webhook:", error);
+    await ctx.runMutation(internal.clerkEvents.handleMembershipUpdated, {
+      clerkEvent: {
+        id: evt.data.id,
+        status: "failed",
+        updatedAt: Date.now(),
+      },
+    });
     return new Response("Error processing webhook", { status: 500 });
   }
 });
