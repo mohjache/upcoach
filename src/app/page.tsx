@@ -1,7 +1,7 @@
 "use client";
 
-import HeroNavbar from "~/components/Public/HeroNavbar";
-import HomePage from "~/components/Public/HomePage";
+import HeroNavbar from "~/components/public/HeroNavbar";
+import HomePage from "~/components/public/HomePage";
 
 export default function Page() {
   return (
