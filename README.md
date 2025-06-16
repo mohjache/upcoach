@@ -1,15 +1,14 @@
 ##  Todo list
-[ ] Build better landing page to focus on new ideal customer (coaching businesses).
-[ ] Add pricing page with panels to help onboard
-[ ] Create onboarding process to allow coaches a pathway to signup.
-[ ] Figure out stripe/clerk licensing i.e. an org has a certain amount of licenses (paid using stripe), organisations can add their students which uses up a license.
-[ ] Figure out better onboarding for students when invited.
+- [x] Build better landing page to focus on new ideal customer (coaching businesses).
+- [x] Add pricing page with panels to help onboard.
+- [x] Create onboarding process to allow coaches a pathway to signup.
+- [ ] Figure out stripe/clerk licensing i.e. an org has a certain amount of licenses (paid using stripe), organisations can add their students which uses up a license.
+- [ ] Figure out better onboarding for students when invited.
 
 
 
 
 # UpCoach
-Building something to make review work outside of your coaching sessions so that drilling by myself becomes more efficient. 
 14/06/2025 Pivoting to a more traditional B2B model by onboarding coaching staff and allow them to manage their students.
 
 ## Tech Stack
