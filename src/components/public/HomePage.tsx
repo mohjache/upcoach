@@ -9,32 +9,35 @@ export default function HomePage() {
     <div className="bg-background min-h-screen">
       {/* Hero Section */}
       <div className="flex h-[calc(100vh-4rem)] flex-col items-center justify-center overflow-hidden">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto w-full px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <h1 className="text-primary text-4xl font-bold tracking-tight sm:text-6xl">
+            <h1 className="text-primary text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl lg:text-6xl">
               Transform Your Coaching Business with Data-Driven Insights
             </h1>
-            <p className="text-foreground mt-6 text-lg leading-8">
+            <p className="text-foreground mt-4 text-base leading-7 sm:mt-6 sm:text-lg sm:leading-8">
               Unlock the power of analytics to understand your students better
               and stay ahead of the competition. Make informed decisions that
               drive growth and success.
             </p>
-            <div className="mt-10 flex items-center justify-center gap-x-6">
-              <div className="flex gap-4">
-                <Button
-                  size="lg"
-                  className="bg-primary text-primary-foreground"
-                  asChild
-                >
-                  <Link href="/onboarding">
-                    Start Free Trial
-                    <ArrowRight className="ml-2 h-5 w-5" />
-                  </Link>
-                </Button>
-                <Button size="lg" variant="outline" asChild>
-                  <Link href="/dashboard">Sign in to existing account</Link>
-                </Button>
-              </div>
+            <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:mt-10 sm:flex-row sm:gap-6">
+              <Button
+                size="lg"
+                variant="outline"
+                className="w-full sm:w-auto"
+                asChild
+              >
+                <Link href="/dashboard">Sign in to existing account</Link>
+              </Button>
+              <Button
+                size="lg"
+                className="bg-primary text-primary-foreground w-full sm:w-auto"
+                asChild
+              >
+                <Link href="/onboarding">
+                  Start Free Trial
+                  <ArrowRight className="ml-2 h-5 w-5" />
+                </Link>
+              </Button>
             </div>
           </div>
         </div>
