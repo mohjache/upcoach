@@ -55,12 +55,69 @@ export default function Page() {
   };
 
   return (
-    <main className="container mx-auto pt-24 pb-8">
-      <h1 className="text-primary mb-8 text-center text-3xl font-bold">
-        Create Review
-      </h1>
+    <div className="px-8 pt-8 pb-32">
+      <h1 className="pb-8 text-4xl font-bold">Create Review</h1>
 
-      <div className="mx-auto max-w-2xl">
+      <div className="w-full md:w-128">
+        <Card>
+          <CardHeader>
+            <CardTitle>Upload Your Video</CardTitle>
+            <CardDescription>
+              Lorem ipsum dolor sit amet consectetur adipisicing elit.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Form {...form}>
+              <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                className="space-y-4"
+              >
+                <FormField
+                  control={form.control}
+                  name="youtubeLink"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Youtube Link</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="url"
+                          placeholder="https://www.youtube.com/watch?v=..."
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="notes"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Notes</FormLabel>
+                      <FormControl>
+                        <Textarea
+                          placeholder="Lorem Ipsum.."
+                          className="min-h-[100px]"
+                          {...field}
+                        />
+                      </FormControl>
+
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <Button type="submit" className="w-full cursor-pointer">
+                  Create Review
+                </Button>
+              </form>
+            </Form>
+          </CardContent>
+        </Card>
+      </div>
+      {/* <div className="mx-auto max-w-2xl">
         <Link href="/dashboard">← Back to Dashboard</Link>
       </div>
 
@@ -71,53 +128,8 @@ export default function Page() {
             Upload a video from Youtube of your gameplay for analysis.
           </CardDescription>
         </CardHeader>
-        <CardContent>
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-              <FormField
-                control={form.control}
-                name="youtubeLink"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Youtube Link</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="url"
-                        placeholder="https://www.youtube.com/watch?v=..."
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="notes"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Notes</FormLabel>
-                    <FormControl>
-                      <Textarea
-                        placeholder="Lorem Ipsum.."
-                        className="min-h-[100px]"
-                        {...field}
-                      />
-                    </FormControl>
-
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <Button type="submit" className="w-full cursor-pointer">
-                Create Review
-              </Button>
-            </form>
-          </Form>
-        </CardContent>
-      </Card>
-    </main>
+        
+      </Card> */}
+    </div>
   );
 }

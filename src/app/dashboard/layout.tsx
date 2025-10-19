@@ -1,5 +1,5 @@
 import { ClerkProvider } from "@clerk/nextjs";
-import { TopNav } from "~/components/Navigation/TopNav";
+import NavBar from "~/components/Public/Navbar";
 import { ConvexClientProvider } from "~/Providers/ConvexProvider";
 
 export default function RootLayout({
@@ -9,7 +9,10 @@ export default function RootLayout({
     <ClerkProvider
       afterSignOutUrl={process.env.NEXT_PUBLIC_REDIRECT_AFTER_SIGNOUT_URL}
     >
-      <ConvexClientProvider>{children}</ConvexClientProvider>
+      <ConvexClientProvider>
+        <NavBar />
+        {children}
+      </ConvexClientProvider>
     </ClerkProvider>
   );
 }

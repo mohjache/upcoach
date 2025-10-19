@@ -5,7 +5,7 @@ import { Button } from "../ui/button";
 const CreateReviewButton = () => {
   const [isLoading, setIsLoading] = useState(false);
   return (
-    <Button asChild>
+    <Button asChild size="lg" className="w-full">
       <Link
         href="/dashboard/review/create"
         className="flex items-center gap-2"
