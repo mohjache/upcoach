@@ -2,6 +2,7 @@
 - [x] Build better landing page to focus on new ideal customer (coaching businesses).
 - [x] Add pricing page with panels to help onboard.
 - [x] Create onboarding process to allow coaches a pathway to signup.
+- [ ] On org create/update if the stripe customer id is not present then go and create a customer using the orgid from clerk.
 - [ ] Figure out stripe/clerk licensing i.e. an org has a certain amount of licenses (paid using stripe), organisations can add their students which uses up a license.
 - [ ] Figure out better onboarding for students when invited.
 

@@ -1,13 +1,41 @@
-"use client";
-
-import HeroNavbar from "~/components/public/HeroNavbar";
-import HomePage from "~/components/public/HomePage";
+import { TrendingUp } from "lucide-react";
+import Link from "next/link";
+import { Button } from "~/components/ui/button";
 
 export default function Page() {
   return (
-    <>
-      <HeroNavbar />
-      <HomePage />
-    </>
+    <div className="px-4">
+      <nav className="border-accent border-b py-2">
+        <div className="flex flex-row">
+          <Link href="/">
+            <div className="flex flex-row">
+              <div className="rounded-lg p-2">
+                <TrendingUp className="text-primary h-6 w-6" />
+              </div>
+              <span className="text-primary text-2xl font-bold">UpCoach</span>
+            </div>
+          </Link>
+        </div>
+      </nav>
+      <div className="flex h-[calc(100vh-4rem)] flex-col items-center justify-center">
+        <div className="w-full">
+          <div className="text-center">
+            <h1 className="text-center text-4xl font-extrabold">
+              Transform Your Coaching Business with Data-Driven Insights
+            </h1>
+            <p className="text-foreground text-lg">
+              Unlock the power of analytics to understand your students better
+              and stay ahead of the competition. Make informed decisions that
+              drive growth and success.
+            </p>
+
+            <div className="py-2"></div>
+            <Button size="lg" asChild>
+              <a href="/dashboard">Sign in</a>
+            </Button>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }

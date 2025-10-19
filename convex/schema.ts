@@ -80,6 +80,7 @@ export default defineSchema({
     adminDeleteEnabled: v.optional(v.boolean()),
     membersCount: v.optional(v.number()),
     pendingInvitationsCount: v.optional(v.number()),
+    stripeCustomerId: v.optional(v.string()),
   }).index("by_clerk_id", ["clerkId"]),
 
   organizationMemberships: defineTable({
@@ -107,6 +108,12 @@ export default defineSchema({
   })
     .index("by_event_type", ["eventType"])
     .index("by_clerk_event_id", ["clerkEventId"]),
+  stripecustomers: defineTable({
+    stripeCustomerId: v.string(),
+    email: v.optional(v.string()),
+    name: v.optional(v.string()),
+    metadata: v.optional(v.record(v.string(), v.string())),
+  }).index("by_stripe_customer_id", ["stripeCustomerId"]),
 });
 
 // Add a new table for sharing reviews with non-registered users
