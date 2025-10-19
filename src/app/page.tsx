@@ -23,13 +23,14 @@ export default function Page() {
             <h1 className="text-center text-4xl font-extrabold">
               Transform Your Coaching Business with Data-Driven Insights
             </h1>
+            <div className="py-2"></div>
             <p className="text-foreground text-lg">
               Unlock the power of analytics to understand your students better
               and stay ahead of the competition. Make informed decisions that
               drive growth and success.
             </p>
 
-            <div className="py-2"></div>
+            <div className="py-4"></div>
             <Button size="lg" asChild>
               <a href="/dashboard">Sign in</a>
             </Button>
