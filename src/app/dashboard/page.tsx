@@ -25,20 +25,33 @@ const Page = () => {
       <div className="py-4"></div>
       <h1 className="px-8 text-4xl font-bold">Welcome to UpCoach</h1>
       <div className="py-2"></div>
-      <AuthLoading>
-        <div className="flex  flex-row gap-x-2 px-8">
-          <Skeleton className="h-96 w-256" />
-          <Skeleton className="h-96 w-256" />
-          <Skeleton className="h-96 w-256" />
+
+      <div className="grid grid-cols-1 gap-4 px-8 lg:grid-cols-2 xl:grid-cols-3">
+        <div className="h-96 w-full flex-none bg-amber-600" />
+        <div className="h-96 w-full flex-none bg-amber-600" />
+        <div className="h-96 w-full flex-none bg-amber-600" />
+        <div className="h-96 w-full flex-none bg-cyan-700" />
+        <div className="h-96 w-full flex-none bg-cyan-700" />
+        <div className="h-96 w-full flex-none bg-cyan-700" />
+        <div className="h-96 w-full flex-none bg-emerald-600" />
+      </div>
+      {/* <AuthLoading>
+        <div className="flex flex-col px-8 sm:gap-y-2 md:flex-row md:gap-x-2">
+          <Skeleton className="h-96 w-full" />
+          <Skeleton className="h-96 w-full md:w-1/3" />
+          <Skeleton className="h-96 w-full md:w-1/3" />
+          <Skeleton className="h-96 w-full md:w-1/3" />
         </div>
       </AuthLoading>
       <Authenticated>
-        <div className="flex flex-row gap-x-2 px-8">
-          <div className="bg-primary h-96 w-256"></div>
-          <div className="bg-primary h-96 w-256"></div>
-          <div className="bg-primary h-96 w-256"></div>
+        <div className="flex flex-col px-8 sm:gap-y-2 md:flex-row md:gap-x-2">
+          <Skeleton className="h-96 w-full" />
+          <Skeleton className="h-96 w-full md:w-1/3" />
+          <Skeleton className="h-96 w-full md:w-1/3" />
+          <Skeleton className="h-96 w-full md:w-1/3" />
         </div>
-      </Authenticated>
+      </Authenticated> */}
+      <div className="py-8"></div>
     </>
   );
 };
