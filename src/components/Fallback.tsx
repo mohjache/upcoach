@@ -3,10 +3,8 @@ import { Skeleton } from "./ui/skeleton";
 
 export const FallbackComponent = () => {
   return (
-    <div className="space-y-4">
-      <Skeleton className="h-8 w-full" />
-      <Skeleton className="h-8 w-full" />
-      <Skeleton className="h-8 w-full" />
+    <div className="flex w-full flex-col space-y-2 px-8 md:w-128">
+      <Skeleton className="h-16" />
     </div>
   );
 };
