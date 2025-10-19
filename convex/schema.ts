@@ -38,6 +38,23 @@ export default defineSchema({
     .index("by_status", ["status"])
     .index("by_createdUser", ["userId"])
     .index("by_reviewer", ["reviewedBy"]),
+  videos: defineTable({
+    title: v.string(),
+    description: v.optional(v.string()),
+    muxAssetId: v.string(),
+    muxPlaybackId: v.string(),
+    uploaderId: v.id("clerkUsers"),
+    status: v.union(
+      v.literal("uploading"),
+      v.literal("processing"),
+      v.literal("ready"),
+      v.literal("error"),
+    ),
+    duration: v.optional(v.number()),
+    aspectRatio: v.optional(v.string()),
+  })
+    .index("by_uploader", ["uploaderId"])
+    .index("by_status", ["status"]),
   shareRequests: defineTable({
     sharedBy: v.string(), // userId of the person sharing
     email: v.string(), // email of the person to share with

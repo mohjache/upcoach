@@ -18,6 +18,8 @@ import type * as http from "../http.js";
 import type * as memberships from "../memberships.js";
 import type * as organizations from "../organizations.js";
 import type * as shareRequest from "../shareRequest.js";
+import type * as uploadedvideomutations from "../uploadedvideomutations.js";
+import type * as uploadedvideos from "../uploadedvideos.js";
 import type * as userReview from "../userReview.js";
 import type * as users from "../users.js";
 
@@ -35,6 +37,8 @@ declare const fullApi: ApiFromModules<{
   memberships: typeof memberships;
   organizations: typeof organizations;
   shareRequest: typeof shareRequest;
+  uploadedvideomutations: typeof uploadedvideomutations;
+  uploadedvideos: typeof uploadedvideos;
   userReview: typeof userReview;
   users: typeof users;
 }>;
