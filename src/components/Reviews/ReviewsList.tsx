@@ -25,9 +25,10 @@ export function ReviewsList() {
 
   return (
     <>
-      <div className="flex h-screen flex-col items-center">
+      <div className="flex flex-col items-center">
         <h1 className="text-4xl font-bold">Welcome to UpCoach</h1>
       </div>
+
       {/* <div className="space-y-4">
         {reviews?.length === 0 ? (
           <>

@@ -9,10 +9,7 @@ export default function RootLayout({
     <ClerkProvider
       afterSignOutUrl={process.env.NEXT_PUBLIC_REDIRECT_AFTER_SIGNOUT_URL}
     >
-      <ConvexClientProvider>
-        <TopNav></TopNav>
-        {children}
-      </ConvexClientProvider>
+      <ConvexClientProvider>{children}</ConvexClientProvider>
     </ClerkProvider>
   );
 }

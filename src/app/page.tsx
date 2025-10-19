@@ -4,12 +4,12 @@ import { Button } from "~/components/ui/button";
 
 export default function Page() {
   return (
-    <div className="px-4">
+    <div className="px-8">
       <nav className="border-accent border-b py-2">
         <div className="flex flex-row">
           <Link href="/">
             <div className="flex flex-row">
-              <div className="rounded-lg p-2">
+              <div className="p-2">
                 <TrendingUp className="text-primary h-6 w-6" />
               </div>
               <span className="text-primary text-2xl font-bold">UpCoach</span>
