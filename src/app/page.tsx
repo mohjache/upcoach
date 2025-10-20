@@ -15,11 +15,11 @@ export const Hero = () => {
     <div className="flex h-[calc(100vh-4rem)] flex-col items-center justify-center px-8">
       <div className="w-full">
         <div className="text-center">
-          <h1 className="p-2 text-4xl font-extrabold">
+          <h1 className="pb-2 text-4xl font-bold md:text-6xl">
             Transform Your Coaching Business with Data-Driven Insights
           </h1>
 
-          <p className="text-foreground p-4 text-lg">
+          <p className="text-foreground pb-8 text-lg">
             Unlock the power of analytics to understand your students better and
             stay ahead of the competition. Make informed decisions that drive
             growth and success.

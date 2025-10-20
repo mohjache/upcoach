@@ -7,7 +7,7 @@ const NavBar = () => {
       <div className="flex flex-row">
         <Link href="/">
           <div className="flex flex-row">
-            <div className="py-2 pr-2">
+            <div className="pt-2 pr-2">
               <TrendingUp className="text-primary h-6 w-6" />
             </div>
             <span className="text-primary text-2xl font-bold">UpCoach</span>
