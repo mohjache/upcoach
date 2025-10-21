@@ -36,6 +36,12 @@ export const createUploadUrl = action({
       cors_origin: "*",
     });
 
+    const uploadMetadata = await mux.video.uploads.retrieve(upload.id);
+
+    if (!uploadMetadata) {
+      throw new Error("Failed to create upload");
+    }
+
     const uploadedUser = await ctx.runMutation(
       internal.users.getUserByClerkIdInternal,
       {
@@ -53,8 +59,7 @@ export const createUploadUrl = action({
       {
         title: args.title,
         description: args.description,
-        muxAssetId: upload.asset_id ?? "",
-        muxPlaybackId: "", // Will be updated via webhook
+        muxUploadId: uploadMetadata.id,
         uploaderId: uploadedUser._id,
         status: "uploading" as const,
       },

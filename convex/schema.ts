@@ -41,8 +41,9 @@ export default defineSchema({
   videos: defineTable({
     title: v.string(),
     description: v.optional(v.string()),
-    muxAssetId: v.string(),
-    muxPlaybackId: v.string(),
+    muxAssetId: v.optional(v.string()),
+    muxPlaybackId: v.optional(v.string()),
+    muxUploadId: v.string(),
     uploaderId: v.id("clerkUsers"),
     status: v.union(
       v.literal("uploading"),
@@ -54,6 +55,7 @@ export default defineSchema({
     aspectRatio: v.optional(v.string()),
   })
     .index("by_uploader", ["uploaderId"])
+    .index("by_mux_upload_id", ["muxUploadId"])
     .index("by_status", ["status"]),
   shareRequests: defineTable({
     sharedBy: v.string(), // userId of the person sharing

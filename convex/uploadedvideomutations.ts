@@ -7,8 +7,7 @@ export const createVideo = internalMutation({
   args: {
     title: v.string(),
     description: v.optional(v.string()),
-    muxAssetId: v.string(),
-    muxPlaybackId: v.string(),
+    muxUploadId: v.string(),
     uploaderId: v.id("clerkUsers"),
     status: v.union(
       v.literal("uploading"),
@@ -21,25 +20,23 @@ export const createVideo = internalMutation({
     return await ctx.db.insert("videos", {
       title: args.title,
       description: args.description,
-      muxAssetId: args.muxAssetId,
-      muxPlaybackId: args.muxPlaybackId,
+      muxUploadId: args.muxUploadId,
       uploaderId: args.uploaderId,
       status: args.status,
     });
   },
 });
 
-
-
 export const updateVideoStatus = mutation({
   args: {
-    muxAssetId: v.string(),
+    muxUploadId: v.string(),
     status: v.union(
       v.literal("uploading"),
       v.literal("processing"),
       v.literal("ready"),
       v.literal("error"),
     ),
+    muxAssetId: v.optional(v.string()),
     muxPlaybackId: v.optional(v.string()),
     duration: v.optional(v.number()),
     aspectRatio: v.optional(v.string()),
@@ -47,7 +44,9 @@ export const updateVideoStatus = mutation({
   handler: async (ctx, args) => {
     const video = await ctx.db
       .query("videos")
-      .filter((q) => q.eq(q.field("muxAssetId"), args.muxAssetId))
+      .withIndex("by_mux_upload_id", (q) =>
+        q.eq("muxUploadId", args.muxUploadId),
+      )
       .unique();
 
     if (!video) {
@@ -56,6 +55,8 @@ export const updateVideoStatus = mutation({
 
     await ctx.db.patch(video._id, {
       status: args.status,
+      muxAssetId: args.muxAssetId,
+      muxUploadId: args.muxUploadId,
       muxPlaybackId: args.muxPlaybackId,
       duration: args.duration,
       aspectRatio: args.aspectRatio,

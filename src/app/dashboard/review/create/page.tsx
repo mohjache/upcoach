@@ -22,12 +22,20 @@ import {
 import { Input } from "~/components/ui/input";
 import { Textarea } from "~/components/ui/textarea";
 import { useForm } from "react-hook-form";
-import { useAction, useMutation } from "convex/react";
+import {
+  Authenticated,
+  AuthLoading,
+  useAction,
+  useMutation,
+} from "convex/react";
 import { api } from "~/../convex/_generated/api";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeftIcon } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { Skeleton } from "~/components/ui/skeleton";
+import { Progress } from "~/components/ui/progress";
+import MuxUploader from "@mux/mux-uploader-react";
 
 const formSchema = z.object({
   name: z.string().min(1).max(1000),
@@ -43,10 +51,9 @@ const formSchema = z.object({
 });
 
 export default function Page() {
-  const router = useRouter();
   const createReview = useMutation(api.userReview.createUserReview);
-  const [file, setFile] = useState<File | null>(null);
-  const [isUploading, setIsUploading] = useState(false);
+  const [uploadUrl, setUploadUrl] = useState<string | null>(null);
+
   const [uploadProgress, setUploadProgress] = useState(0);
 
   const createUploadUrl = useAction(api.uploadedvideos.createUploadUrl);
@@ -60,21 +67,53 @@ export default function Page() {
     },
   });
 
+  useEffect(() => {
+    const fetchUploadUrl = async () => {
+      const uploadUrl = await createUploadUrl({
+        description: "",
+        title: "",
+      });
+      setUploadUrl(uploadUrl.uploadUrl);
+    };
+
+    void fetchUploadUrl();
+  }, []);
+
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    // await createReview({
-    //   dto: {
-    //     notes: values.notes,
-    //     youtubeLink: values.youtubeLink,
-    //   },
-    // });
+    const xhr = new XMLHttpRequest();
 
-    console.log(values);
-    const uploadUrl = await createUploadUrl({
-      description: values.description,
-      title: values.name,
-    });
-    console.log(uploadUrl.uploadUrl);
+    try {
+      xhr.upload.addEventListener("progress", (event) => {
+        if (event.lengthComputable) {
+          const progress = (event.loaded / event.total) * 100;
+          setUploadProgress(progress);
+        }
+      });
 
+      xhr.addEventListener("load", () => {
+        if (xhr.status >= 200 && xhr.status < 300) {
+          form.reset();
+          setUploadProgress(0);
+        } else {
+          form.setError("uploadedFile", {
+            message: "Upload failed. Please try again.",
+          });
+        }
+      });
+
+      xhr.addEventListener("error", () => {
+        form.setError("uploadedFile", {
+          message: "Upload failed. Please try again.",
+        });
+      });
+
+      xhr.open("PUT", uploadUrl.uploadUrl);
+      xhr.send(values.uploadedFile);
+    } catch (error) {
+      form.setError("uploadedFile", {
+        message: "Upload failed. Please try again.",
+      });
+    }
     // router.push("/dashboard");
   };
 
@@ -90,7 +129,7 @@ export default function Page() {
         </Button>
       </div>
       <div className="w-full md:w-128">
-        <Card>
+        {/* <Card>
           <CardHeader>
             <CardTitle>Upload Your Video</CardTitle>
           </CardHeader>
@@ -135,18 +174,15 @@ export default function Page() {
                 <FormField
                   control={form.control}
                   name="uploadedFile"
-                  render={({ field: { value, onChange, ...fieldProps } }) => (
+                  render={({ field: { onChange, value, ...field } }) => (
                     <FormItem>
                       <FormLabel>Upload File</FormLabel>
                       <FormControl>
                         <Input
-                          {...fieldProps} // Spread other field props like onBlur
                           type="file"
-                          onChange={(event) => {
-                            if (event.target.files) {
-                              onChange(event.target.files[0]); // Pass the FileList to React Hook Form
-                            }
-                          }}
+                          placeholder="Upload a video"
+                          onChange={(e) => onChange(e.target.files?.[0])}
+                          {...field}
                         />
                       </FormControl>
                       <FormMessage />
@@ -154,27 +190,26 @@ export default function Page() {
                   )}
                 />
 
+                {uploadProgress > 0 && uploadProgress < 100 && (
+                  <Progress value={uploadProgress} />
+                )}
+
                 <Button type="submit" className="w-full cursor-pointer">
-                  Create Review
+                  {uploadProgress > 0 && uploadProgress < 100
+                    ? "Uploading..."
+                    : "Upload Video"}
                 </Button>
               </form>
-            </Form>
+            </Form> 
           </CardContent>
-        </Card>
-      </div>
-      {/* <div className="mx-auto max-w-2xl">
-        <Link href="/dashboard">← Back to Dashboard</Link>
-      </div>
+        </Card> */}
 
-      <Card className="mx-auto max-w-2xl">
-        <CardHeader>
-          <CardTitle>Link Your Video</CardTitle>
-          <CardDescription>
-            Upload a video from Youtube of your gameplay for analysis.
-          </CardDescription>
-        </CardHeader>
-        
-      </Card> */}
+        {uploadUrl ? (
+          <MuxUploader endpoint={uploadUrl}></MuxUploader>
+        ) : (
+          <Skeleton className="h-60 w-full flex-none"></Skeleton>
+        )}
+      </div>
     </div>
   );
 }

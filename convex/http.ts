@@ -278,11 +278,14 @@ const handleMuxWebhook = httpAction(async (ctx, request) => {
   const body = await request.text();
   const event = JSON.parse(body);
 
+  console.log("mux webhook", event);
+
   if (event.type === "video.asset.ready") {
     const asset = event.data;
     await ctx.runMutation(api.uploadedvideomutations.updateVideoStatus, {
-      muxAssetId: asset.id,
+      muxUploadId: asset.upload_id,
       status: "ready",
+      muxAssetId: asset.asset_id,
       muxPlaybackId: asset.playback_ids?.[0]?.id ?? "",
       duration: asset.duration,
       aspectRatio: asset.aspect_ratio,
@@ -290,7 +293,7 @@ const handleMuxWebhook = httpAction(async (ctx, request) => {
   } else if (event.type === "video.asset.errored") {
     const asset = event.data;
     await ctx.runMutation(api.uploadedvideomutations.updateVideoStatus, {
-      muxAssetId: asset.id,
+      muxUploadId: asset.upload_id,
       status: "error",
     });
   }
