@@ -2,7 +2,12 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { v } from "convex/values";
-import { mutation, query } from "./_generated/server";
+import {
+  internalMutation,
+  internalQuery,
+  mutation,
+  query,
+} from "./_generated/server";
 import { api } from "./_generated/api";
 import { type Id } from "./_generated/dataModel";
 import { type UpcoachUserIdentity } from "./userReview";
@@ -173,5 +178,17 @@ export const getUserOrganizations = query({
     }
 
     return organizations;
+  },
+});
+
+export const getUserByClerkIdInternal = internalMutation({
+  args: {
+    clerkId: v.string(),
+  },
+  handler: async (ctx, args) => {
+    return await ctx.db
+      .query("clerkUsers")
+      .withIndex("by_clerk_id", (q) => q.eq("clerkId", args.clerkId))
+      .unique();
   },
 });

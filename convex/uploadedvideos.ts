@@ -2,7 +2,7 @@
 import { v } from "convex/values";
 import { action } from "./_generated/server";
 
-import { internal } from "./_generated/api";
+import { api, internal } from "./_generated/api";
 
 import { type UpcoachUserIdentity } from "./userReview";
 import Mux from "@mux/mux-node";
@@ -23,7 +23,7 @@ export const createUploadUrl = action({
     args,
   ): Promise<{ uploadUrl: string; videoId: string }> => {
     const identity = (await ctx.auth.getUserIdentity()) as UpcoachUserIdentity;
-    if (identity === null) {
+    if (identity == undefined || identity == null) {
       throw new Error("Not authenticated");
     }
 
@@ -36,6 +36,17 @@ export const createUploadUrl = action({
       cors_origin: "*",
     });
 
+    const uploadedUser = await ctx.runMutation(
+      internal.users.getUserByClerkIdInternal,
+      {
+        clerkId: identity.userId,
+      },
+    );
+
+    if (uploadedUser == undefined || uploadedUser == null) {
+      throw new Error("User not found");
+    }
+
     // Store video record in database
     const videoId = (await ctx.runMutation(
       internal.uploadedvideomutations.createVideo,
@@ -44,7 +55,7 @@ export const createUploadUrl = action({
         description: args.description,
         muxAssetId: upload.asset_id ?? "",
         muxPlaybackId: "", // Will be updated via webhook
-        uploaderId: identity.tokenIdentifier as Id<"clerkUsers">,
+        uploaderId: uploadedUser._id,
         status: "uploading" as const,
       },
     )) as Id<"videos">;

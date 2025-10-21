@@ -15,7 +15,7 @@
 - The exceptions are for components:
     1. Hero
 - Ensure use of a sans-serif font
-- h1 titles should be in tailwind text-4xl font-extrabold
-- h2 text-3xl font-semibold
-- h3 text-2xl font-semibold 
-- h4 text-xl font-semibold
+- h1 titles should be in tailwind text-4xl bold
+- h2 text-3xl bold
+- h3 text-2xl bold
+- h4 text-xl bold

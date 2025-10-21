@@ -1,13 +1,21 @@
 ##  Todo list
-- [x] Build better landing page to focus on new ideal customer (coaching businesses).
-- [x] Add pricing page with panels to help onboard.
-- [x] Create onboarding process to allow coaches a pathway to signup.
+### Video Upload
+- [] Change create review to upload to Mux.
+- [] Do up simple video playback
+- [] Add comments thread stle for review
+- [] Add time stamps with comments 
+
+### Onboarding/B2B MVP
+- [] Build better landing page to focus on new ideal customer (coaching businesses).
+- [] Add pricing page with panels to help onboard.
+- [] Create onboarding process to allow coaches a pathway to signup.
 - [ ] On org create/update if the stripe customer id is not present then go and create a customer using the orgid from clerk.
 - [ ] Figure out stripe/clerk licensing i.e. an org has a certain amount of licenses (paid using stripe), organisations can add their students which uses up a license.
 - [ ] Figure out better onboarding for students when invited.
 
 # UpCoach
 14/06/2025 Pivoting to a more traditional B2B model by onboarding coaching staff and allow them to manage their students.
+01/09/2025 Parking app but switching to hosting videos instad of linking to youtube to allow for better UX control on feedback for videos
 
 ## Tech Stack
 - Nextjs deployed on Vercel .
@@ -15,6 +23,7 @@
 - Convex for state management, async tasks, db.
 - Clerk for Auth.
 - Shadcn for UI theming and components built on top of Tailwind
+- Mux for video hosting
 
 ## Getting Started
 You will need to setup your own convex and clerk instances locally and find the necessary variables used:
@@ -23,7 +32,6 @@ You will need to setup your own convex and clerk instances locally and find the 
 CONVEX_DEPLOYMENT=
 CONVEX_DEPLOY_KEY=
 CLERK_SECRET_KEY=
-CLERK_WEBHOOK_SECRET=
 NEXT_PUBLIC_CONVEX_URL=
 NEXT_PUBLIC_CLERK_FRONTEND_API_URL
 NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=
@@ -35,6 +43,11 @@ You will need to store these env variables inside of convex
 ```
 CLERK_FRONTEND_API_URL
 CLERK_WEBHOOK_SECRET
+
+MUX_TOKEN_ID
+MUX_TOKEN_SECRET
+MUX_WEBHOOK_SECRET
+
 ```
 
 Once setup you should be able to run ```pnpm run dev``` and start.

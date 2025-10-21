@@ -29,6 +29,8 @@ export const createVideo = internalMutation({
   },
 });
 
+
+
 export const updateVideoStatus = mutation({
   args: {
     muxAssetId: v.string(),

@@ -22,37 +22,60 @@ import {
 import { Input } from "~/components/ui/input";
 import { Textarea } from "~/components/ui/textarea";
 import { useForm } from "react-hook-form";
-import { useMutation } from "convex/react";
+import { useAction, useMutation } from "convex/react";
 import { api } from "~/../convex/_generated/api";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeftIcon } from "lucide-react";
+import { useState } from "react";
 
 const formSchema = z.object({
-  youtubeLink: z.string().url().min(10).max(250),
-  notes: z.string().min(1).max(1000),
+  name: z.string().min(1).max(1000),
+  description: z.string().min(1).max(1000),
+  uploadedFile: z
+    .instanceof(File)
+    .refine((file) => file?.size <= 1024 * 1024 * 100, {
+      message: "File must be less than 100MB",
+    })
+    .refine((file) => file?.type.startsWith("video/"), {
+      message: "File must be a video",
+    }),
 });
 
 export default function Page() {
   const router = useRouter();
   const createReview = useMutation(api.userReview.createUserReview);
+  const [file, setFile] = useState<File | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+
+  const createUploadUrl = useAction(api.uploadedvideos.createUploadUrl);
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      youtubeLink: "",
-      notes: "",
+      name: "",
+      description: "",
+      uploadedFile: undefined,
     },
   });
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    await createReview({
-      dto: {
-        notes: values.notes,
-        youtubeLink: values.youtubeLink,
-      },
-    });
+    // await createReview({
+    //   dto: {
+    //     notes: values.notes,
+    //     youtubeLink: values.youtubeLink,
+    //   },
+    // });
 
-    router.push("/dashboard");
+    console.log(values);
+    const uploadUrl = await createUploadUrl({
+      description: values.description,
+      title: values.name,
+    });
+    console.log(uploadUrl.uploadUrl);
+
+    // router.push("/dashboard");
   };
 
   return (
@@ -70,9 +93,6 @@ export default function Page() {
         <Card>
           <CardHeader>
             <CardTitle>Upload Your Video</CardTitle>
-            <CardDescription>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit.
-            </CardDescription>
           </CardHeader>
           <CardContent>
             <Form {...form}>
@@ -82,28 +102,24 @@ export default function Page() {
               >
                 <FormField
                   control={form.control}
-                  name="youtubeLink"
+                  name="name"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Youtube Link</FormLabel>
+                      <FormLabel>Name</FormLabel>
                       <FormControl>
-                        <Input
-                          type="url"
-                          placeholder="https://www.youtube.com/watch?v=..."
-                          {...field}
-                        />
+                        <Input placeholder="Name of the video" {...field} />
                       </FormControl>
+
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-
                 <FormField
                   control={form.control}
-                  name="notes"
+                  name="description"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Notes</FormLabel>
+                      <FormLabel>Description</FormLabel>
                       <FormControl>
                         <Textarea
                           placeholder="Lorem Ipsum.."
@@ -112,6 +128,27 @@ export default function Page() {
                         />
                       </FormControl>
 
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="uploadedFile"
+                  render={({ field: { value, onChange, ...fieldProps } }) => (
+                    <FormItem>
+                      <FormLabel>Upload File</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...fieldProps} // Spread other field props like onBlur
+                          type="file"
+                          onChange={(event) => {
+                            if (event.target.files) {
+                              onChange(event.target.files[0]); // Pass the FileList to React Hook Form
+                            }
+                          }}
+                        />
+                      </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}

@@ -274,6 +274,30 @@ const handleClerkWebhook = httpAction(async (ctx, request) => {
   }
 });
 
+const handleMuxWebhook = httpAction(async (ctx, request) => {
+  const body = await request.text();
+  const event = JSON.parse(body);
+
+  if (event.type === "video.asset.ready") {
+    const asset = event.data;
+    await ctx.runMutation(api.uploadedvideomutations.updateVideoStatus, {
+      muxAssetId: asset.id,
+      status: "ready",
+      muxPlaybackId: asset.playback_ids?.[0]?.id ?? "",
+      duration: asset.duration,
+      aspectRatio: asset.aspect_ratio,
+    });
+  } else if (event.type === "video.asset.errored") {
+    const asset = event.data;
+    await ctx.runMutation(api.uploadedvideomutations.updateVideoStatus, {
+      muxAssetId: asset.id,
+      status: "error",
+    });
+  }
+
+  return new Response("OK", { status: 200 });
+});
+
 // define the http router
 const http = httpRouter();
 
@@ -282,6 +306,12 @@ http.route({
   path: "/clerk-users-webhook",
   method: "POST",
   handler: handleClerkWebhook,
+});
+
+http.route({
+  path: "/mux-webhook",
+  method: "POST",
+  handler: handleMuxWebhook,
 });
 
 export default http;
