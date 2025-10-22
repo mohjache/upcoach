@@ -3,276 +3,23 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { httpRouter } from "convex/server";
 import { httpAction } from "./_generated/server";
-import { Webhook } from "svix";
-import { api, internal } from "./_generated/api";
-import type { Id } from "./_generated/dataModel";
+import { api } from "./_generated/api";
 
-interface ClerkWebhookUserEvent {
-  type: "user.created" | "user.updated" | "user.deleted";
-  data: {
-    id: string;
-    email_addresses?: Array<{ email_address: string }>;
-    first_name?: string;
-    last_name?: string;
-    image_url?: string;
-    username?: string;
-  };
-}
-
-interface ClerkWebhookOrganizationEvent {
-  type:
-    | "organization.created"
-    | "organization.updated"
-    | "organization.deleted";
-  data: {
-    id: string;
-    name: string;
-    slug: string;
-    image_url: string;
-  };
-}
-
-export interface ClerkWebhookOrganizationMembershipEvent {
-  type:
-    | "organizationMembership.created"
-    | "organizationMembership.updated"
-    | "organizationMembership.deleted";
-  data: {
-    id: string;
-    role: string;
-    created_at: number;
-    updated_at: number;
-    organization: {
-      id: string;
-      name: string;
-      slug: string;
-      image_url: string;
-      created_at: number;
-      updated_at: number;
-      has_image: boolean;
-      logo_url: string | null;
-      max_allowed_memberships: number;
-      members_count: number;
-      pending_invitations_count: number;
-      admin_delete_enabled: boolean;
-    };
-    public_user_data: {
-      user_id: string;
-      first_name: string;
-      last_name: string;
-      image_url: string;
-      has_image: boolean;
-      identifier: string;
-      profile_image_url: string;
-    };
-    permissions: string[];
-    role_name: string;
-  };
-}
-
-type ClerkWebhookEvent =
-  | ClerkWebhookUserEvent
-  | ClerkWebhookOrganizationEvent
-  | ClerkWebhookOrganizationMembershipEvent;
-
-const handleClerkWebhook = httpAction(async (ctx, request) => {
-  const webhookSecret = process.env.CLERK_WEBHOOK_SECRET;
-
-  if (!webhookSecret) {
-    console.error("CLERK_WEBHOOK_SECRET is not set");
-    return new Response("Webhook secret not configured", { status: 500 });
-  }
-
-  // Get headers
-  const svix_id = request.headers.get("svix-id");
-  const svix_timestamp = request.headers.get("svix-timestamp");
-  const svix_signature = request.headers.get("svix-signature");
-
-  if (!svix_id || !svix_timestamp || !svix_signature) {
-    return new Response("Missing svix headers", { status: 400 });
-  }
-
-  // Get body
-  const body = await request.text();
-
-  // Verify webhook
-  const wh = new Webhook(webhookSecret);
-  let evt: ClerkWebhookEvent;
-
-  try {
-    evt = wh.verify(body, {
-      "svix-id": svix_id,
-      "svix-timestamp": svix_timestamp,
-      "svix-signature": svix_signature,
-    }) as ClerkWebhookEvent;
-  } catch (err) {
-    console.error("Error verifying webhook:", err);
-    return new Response("Invalid signature", { status: 400 });
-  }
-
-  const processedEvent = await ctx.runQuery(api.clerkEvents.queryEvent, {
-    clerkEventId: evt.data.id,
-  });
-  if (processedEvent) {
-    return new Response("Event already processed", { status: 200 });
-  }
-
-  await ctx.runMutation(internal.clerkEvents.handleMembershipCreated, {
-    clerkEvent: {
-      id: evt.data.id,
-      eventType: evt.type,
-      eventData: evt.data,
-      createdAt: Date.now(),
-      updatedAt: Date.now(),
-    },
-  });
-
-  //   // Handle the webhook
-  const eventType = evt.type;
-
-  try {
-    switch (eventType) {
-      case "user.created":
-        await ctx.runMutation(api.users.createUser, {
-          clerkId: evt.data.id,
-          email: evt.data.email_addresses?.[0]?.email_address ?? "",
-          firstName: evt.data.first_name ?? undefined,
-          lastName: evt.data.last_name ?? undefined,
-          imageUrl: evt.data.image_url ?? undefined,
-          username: evt.data.username ?? undefined,
-        });
-        break;
-
-      case "user.updated":
-        await ctx.runMutation(api.users.updateUser, {
-          clerkId: evt.data.id,
-          email: evt.data.email_addresses?.[0]?.email_address ?? "",
-          firstName: evt.data.first_name ?? undefined,
-          lastName: evt.data.last_name ?? undefined,
-          imageUrl: evt.data.image_url ?? undefined,
-          username: evt.data.username ?? undefined,
-        });
-        break;
-
-      case "user.deleted":
-        await ctx.runMutation(api.users.deleteUser, {
-          clerkId: evt.data.id,
-        });
-        break;
-
-      //organization
-      case "organization.created":
-        await ctx.runMutation(
-          internal.organizations.handleOrganizationCreated,
-          {
-            organization: evt.data,
-          },
-        );
-        break;
-      case "organization.updated":
-        await ctx.runMutation(
-          internal.organizations.handleOrganizationUpdated,
-          {
-            organization: {
-              id: evt.data.id as Id<"organizations">,
-              name: evt.data.name,
-              slug: evt.data.slug,
-              image_url: evt.data.image_url,
-            },
-          },
-        );
-        break;
-      case "organization.deleted":
-        await ctx.runMutation(
-          internal.organizations.handleOrganizationDeleted,
-          {
-            organizationId: evt.data.id as Id<"organizations">,
-          },
-        );
-        break;
-
-      // Organization membership events
-      case "organizationMembership.created":
-        console.log("organizationMembership.created", evt.data);
-        await ctx.runMutation(internal.memberships.handleMembershipCreated, {
-          membership: {
-            id: evt.data.id,
-            public_user_data: {
-              user_id: evt.data.public_user_data.user_id as Id<"clerkUsers">,
-            },
-            organization: {
-              id: evt.data.organization.id as Id<"organizations">,
-            },
-            role: evt.data.role,
-
-            created_at: evt.data.created_at,
-            updated_at: evt.data.updated_at,
-          },
-        });
-        break;
-      case "organizationMembership.updated":
-        console.log("organizationMembership.updated", evt.data);
-        await ctx.runMutation(internal.memberships.handleMembershipUpdated, {
-          membership: {
-            id: evt.data.id,
-            public_user_data: {
-              user_id: evt.data.public_user_data.user_id as Id<"clerkUsers">,
-            },
-            organization: {
-              id: evt.data.organization.id as Id<"organizations">,
-            },
-            role: evt.data.role,
-
-            created_at: evt.data.created_at,
-            updated_at: evt.data.updated_at,
-          },
-        });
-        break;
-      case "organizationMembership.deleted":
-        console.log("organizationMembership.deleted", evt.data);
-        await ctx.runMutation(internal.memberships.handleMembershipDeleted, {
-          membership: {
-            id: evt.data.id,
-            public_user_data: {
-              user_id: evt.data.public_user_data.user_id as Id<"clerkUsers">,
-            },
-            organization: {
-              id: evt.data.organization.id as Id<"organizations">,
-            },
-            role: evt.data.role,
-
-            created_at: evt.data.created_at,
-            updated_at: evt.data.updated_at,
-          },
-        });
-        break;
-
-      default:
-        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-        console.log(`Unhandled event type: ${eventType}`);
-    }
-
-    await ctx.runMutation(internal.clerkEvents.handleMembershipUpdated, {
-      clerkEvent: {
-        id: evt.data.id,
-        status: "processed",
-        updatedAt: Date.now(),
-      },
-    });
-
-    return new Response("Webhook processed successfully", { status: 200 });
-  } catch (error) {
-    console.error("Error processing webhook:", error);
-    await ctx.runMutation(internal.clerkEvents.handleMembershipUpdated, {
-      clerkEvent: {
-        id: evt.data.id,
-        status: "failed",
-        updatedAt: Date.now(),
-      },
-    });
-    return new Response("Error processing webhook", { status: 500 });
-  }
-});
+export type WorkOsUserData = {
+  id: string;
+  email: string;
+  first_name: string | undefined;
+  last_name: string | undefined;
+  profile_picture_url: string | undefined;
+  organisation_id: string | undefined;
+  created_at: string;
+  updated_at: string;
+  email_verified: boolean | undefined;
+  external_id: string | null;
+  last_sign_in_at: string | undefined;
+  locale: string | undefined;
+  metadata: object | undefined;
+};
 
 const handleMuxWebhook = httpAction(async (ctx, request) => {
   const body = await request.text();
@@ -301,20 +48,126 @@ const handleMuxWebhook = httpAction(async (ctx, request) => {
   return new Response("OK", { status: 200 });
 });
 
-// define the http router
-const http = httpRouter();
+const handleWorkOsWebhook = httpAction(async (ctx, request) => {
+  try {
+    const body = await request.text();
+    const event = JSON.parse(body);
 
-// define the webhook route
-http.route({
-  path: "/clerk-users-webhook",
-  method: "POST",
-  handler: handleClerkWebhook,
+    //add type on event.data that maps to the schema
+
+    // Verify webhook signature here if needed
+    // const signature = request.headers.get("workos-signature");
+
+    switch (event.event) {
+      // for user events cast event.data to WorkOsUserData and pass to the mutation
+
+      case "user.created":
+        // only pass
+        const userDataCreated = parseWorkOsUserData(
+          event.data as WorkOsUserData,
+        );
+        await ctx.runMutation(api.users.handleUserCreated, {
+          user: userDataCreated,
+        });
+        break;
+
+      case "user.updated":
+        const userDataUpdated = parseWorkOsUserData(
+          event.data as WorkOsUserData,
+        );
+        await ctx.runMutation(api.users.handleUserUpdated, {
+          user: userDataUpdated,
+        });
+        break;
+
+      case "user.deleted":
+        await ctx.runMutation(api.users.handleUserDeleted, {
+          userId: event.data.id,
+        });
+        break;
+      case "organization.created":
+        await ctx.runMutation(api.organisations.handleorganisationCreated, {
+          organisation: event.data,
+        });
+        break;
+
+      case "organization.updated":
+        await ctx.runMutation(api.organisations.handleorganisationUpdated, {
+          organisation: event.data,
+        });
+        break;
+
+      case "organization.deleted":
+        await ctx.runMutation(api.organisations.handleorganisationDeleted, {
+          organisationId: event.data.id,
+        });
+        break;
+
+      case "organization_membership.created":
+        await ctx.runMutation(
+          api.organisationMemberships.handleMembershipCreated,
+          {
+            membership: event.data,
+          },
+        );
+        break;
+
+      case "organization_membership.updated":
+        await ctx.runMutation(
+          api.organisationMemberships.handleMembershipUpdated,
+          {
+            membership: event.data,
+          },
+        );
+        break;
+
+      case "organization_membership.deleted":
+        await ctx.runMutation(
+          api.organisationMemberships.handleMembershipDeleted,
+          {
+            membershipId: event.data.id,
+          },
+        );
+        break;
+    }
+
+    return new Response("OK", { status: 200 });
+  } catch (error) {
+    console.error("Webhook error:", error);
+    return new Response("Error processing webhook", { status: 500 });
+  }
 });
+
+const parseWorkOsUserData = (data: WorkOsUserData) => {
+  return {
+    id: data.id,
+    email: data.email,
+    first_name: data.first_name,
+    last_name: data.last_name,
+    profile_picture_url: data.profile_picture_url,
+    organisation_id: data.organisation_id,
+    created_at: data.created_at,
+    updated_at: data.updated_at,
+    email_verified: data.email_verified,
+    external_id: data.external_id,
+    last_sign_in_at: data.last_sign_in_at,
+    locale: data.locale,
+    metadata: data.metadata,
+  };
+};
+
+const http = httpRouter();
 
 http.route({
   path: "/mux-webhook",
   method: "POST",
   handler: handleMuxWebhook,
+});
+
+http.route({
+  path: "/workos-webhook",
+  method: "POST",
+  handler: handleWorkOsWebhook,
 });
 
 export default http;

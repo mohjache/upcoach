@@ -4,7 +4,6 @@ import { action } from "./_generated/server";
 
 import { api, internal } from "./_generated/api";
 
-import { type UpcoachUserIdentity } from "./userReview";
 import Mux from "@mux/mux-node";
 import { Id } from "./_generated/dataModel";
 
@@ -22,7 +21,7 @@ export const createUploadUrl = action({
     ctx,
     args,
   ): Promise<{ uploadUrl: string; videoId: string }> => {
-    const identity = (await ctx.auth.getUserIdentity()) as UpcoachUserIdentity;
+    const identity = await ctx.auth.getUserIdentity();
     if (identity == undefined || identity == null) {
       throw new Error("Not authenticated");
     }
@@ -42,32 +41,37 @@ export const createUploadUrl = action({
       throw new Error("Failed to create upload");
     }
 
-    const uploadedUser = await ctx.runMutation(
-      internal.users.getUserByClerkIdInternal,
-      {
-        clerkId: identity.userId,
-      },
-    );
-
-    if (uploadedUser == undefined || uploadedUser == null) {
-      throw new Error("User not found");
-    }
-
-    // Store video record in database
-    const videoId = (await ctx.runMutation(
-      internal.uploadedvideomutations.createVideo,
-      {
-        title: args.title,
-        description: args.description,
-        muxUploadId: uploadMetadata.id,
-        uploaderId: uploadedUser._id,
-        status: "uploading" as const,
-      },
-    )) as Id<"videos">;
-
     return {
-      uploadUrl: upload.url,
-      videoId,
+      uploadUrl: upload.url ?? "",
+      videoId: uploadMetadata.id ?? "",
     };
+
+    // const uploadedUser = await ctx.runMutation(
+    //   internal.users.getUserByClerkIdInternal,
+    //   {
+    //     clerkId: identity.userId,
+    //   },
+    // );
+
+    // if (uploadedUser == undefined || uploadedUser == null) {
+    //   throw new Error("User not found");
+    // }
+
+    // // Store video record in database
+    // const videoId = (await ctx.runMutation(
+    //   internal.uploadedvideomutations.createVideo,
+    //   {
+    //     title: args.title,
+    //     description: args.description,
+    //     muxUploadId: uploadMetadata.id,
+    //     uploaderId: uploadedUser._id,
+    //     status: "uploading" as const,
+    //   },
+    // )) as Id<"videos">;
+
+    // return {
+    //   uploadUrl: upload.url,
+    //   videoId,
+    // };
   },
 });

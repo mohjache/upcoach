@@ -13,11 +13,9 @@ import type {
   FilterApi,
   FunctionReference,
 } from "convex/server";
-import type * as clerkEvents from "../clerkEvents.js";
 import type * as http from "../http.js";
-import type * as memberships from "../memberships.js";
-import type * as organizations from "../organizations.js";
-import type * as shareRequest from "../shareRequest.js";
+import type * as organisationMemberships from "../organisationMemberships.js";
+import type * as organisations from "../organisations.js";
 import type * as uploadedvideomutations from "../uploadedvideomutations.js";
 import type * as uploadedvideos from "../uploadedvideos.js";
 import type * as userReview from "../userReview.js";
@@ -32,11 +30,9 @@ import type * as users from "../users.js";
  * ```
  */
 declare const fullApi: ApiFromModules<{
-  clerkEvents: typeof clerkEvents;
   http: typeof http;
-  memberships: typeof memberships;
-  organizations: typeof organizations;
-  shareRequest: typeof shareRequest;
+  organisationMemberships: typeof organisationMemberships;
+  organisations: typeof organisations;
   uploadedvideomutations: typeof uploadedvideomutations;
   uploadedvideos: typeof uploadedvideos;
   userReview: typeof userReview;

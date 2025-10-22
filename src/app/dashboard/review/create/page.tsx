@@ -4,37 +4,13 @@ import { Button } from "~/components/ui/button";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { Form } from "~/components/ui/form";
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-  CardContent,
-} from "~/components/ui/card";
-import {
-  FormField,
-  FormItem,
-  FormLabel,
-  FormControl,
-  FormMessage,
-} from "~/components/ui/form";
-import { Input } from "~/components/ui/input";
-import { Textarea } from "~/components/ui/textarea";
 import { useForm } from "react-hook-form";
-import {
-  Authenticated,
-  AuthLoading,
-  useAction,
-  useMutation,
-} from "convex/react";
+import { useAction, useMutation } from "convex/react";
 import { api } from "~/../convex/_generated/api";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeftIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Skeleton } from "~/components/ui/skeleton";
-import { Progress } from "~/components/ui/progress";
 import MuxUploader from "@mux/mux-uploader-react";
 
 const formSchema = z.object({
@@ -51,10 +27,7 @@ const formSchema = z.object({
 });
 
 export default function Page() {
-  const createReview = useMutation(api.userReview.createUserReview);
   const [uploadUrl, setUploadUrl] = useState<string | null>(null);
-
-  const [uploadProgress, setUploadProgress] = useState(0);
 
   const createUploadUrl = useAction(api.uploadedvideos.createUploadUrl);
 
@@ -119,95 +92,24 @@ export default function Page() {
 
   return (
     <div className="flex h-[calc(100vh-10rem)] w-full flex-col items-center justify-center px-8">
-      <h1 className="pb-8 text-4xl font-bold">Create Review</h1>
+      <h1 className="text-primary pb-8 text-4xl font-bold">Create Review</h1>
 
       <div className="w-full pb-2 md:w-128">
         <Button asChild variant="outline">
-          <Link href="/dashboard">
+          <Link href="/dashboard" className="text-primary">
             <ArrowLeftIcon className="h-4 w-4" /> Back to Dashboard
           </Link>
         </Button>
       </div>
       <div className="w-full md:w-128">
-        {/* <Card>
-          <CardHeader>
-            <CardTitle>Upload Your Video</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <Form {...form}>
-              <form
-                onSubmit={form.handleSubmit(onSubmit)}
-                className="space-y-4"
-              >
-                <FormField
-                  control={form.control}
-                  name="name"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Name</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Name of the video" {...field} />
-                      </FormControl>
-
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="description"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Description</FormLabel>
-                      <FormControl>
-                        <Textarea
-                          placeholder="Lorem Ipsum.."
-                          className="min-h-[100px]"
-                          {...field}
-                        />
-                      </FormControl>
-
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="uploadedFile"
-                  render={({ field: { onChange, value, ...field } }) => (
-                    <FormItem>
-                      <FormLabel>Upload File</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="file"
-                          placeholder="Upload a video"
-                          onChange={(e) => onChange(e.target.files?.[0])}
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                {uploadProgress > 0 && uploadProgress < 100 && (
-                  <Progress value={uploadProgress} />
-                )}
-
-                <Button type="submit" className="w-full cursor-pointer">
-                  {uploadProgress > 0 && uploadProgress < 100
-                    ? "Uploading..."
-                    : "Upload Video"}
-                </Button>
-              </form>
-            </Form> 
-          </CardContent>
-        </Card> */}
-
         {uploadUrl ? (
-          <MuxUploader endpoint={uploadUrl}></MuxUploader>
+          <MuxUploader endpoint={uploadUrl} className="text-primary">
+            <Button size="lg" type="button" slot="file-select">
+              Upload Video
+            </Button>
+          </MuxUploader>
         ) : (
-          <Skeleton className="h-60 w-full flex-none"></Skeleton>
+          <Skeleton className="text-primar h-60 w-full flex-none"></Skeleton>
         )}
       </div>
     </div>

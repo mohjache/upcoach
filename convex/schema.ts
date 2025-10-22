@@ -6,36 +6,8 @@ export default defineSchema({
     previewImage: v.optional(v.string()),
     reviewedBy: v.optional(v.string()),
     userId: v.string(),
-    status: v.union(
-      v.literal("uploaded"),
-      v.literal("assigned"),
-      v.literal("reviewed"),
-    ),
-    rawVideoMetadata: v.optional(
-      v.object({
-        title: v.string(),
-        author_name: v.string(),
-        author_url: v.string(),
-        type: v.string(),
-        height: v.number(),
-        thumbnail_url: v.string(),
-        html: v.string(),
-        provider_name: v.string(),
-        provider_url: v.string(),
-        width: v.number(),
-        version: v.string(),
-        thumbnail_height: v.number(),
-        thumbnail_width: v.number(),
-        srcUrl: v.string(),
-      }),
-    ),
-    notes: v.string(),
-    reviewerNotes: v.optional(v.string()),
-    reviewDate: v.optional(v.string()),
-    hasSynced: v.boolean(),
-    youtubeLink: v.string(),
+    videoId: v.id("videos"),
   })
-    .index("by_status", ["status"])
     .index("by_createdUser", ["userId"])
     .index("by_reviewer", ["reviewedBy"]),
   videos: defineTable({
@@ -44,7 +16,7 @@ export default defineSchema({
     muxAssetId: v.optional(v.string()),
     muxPlaybackId: v.optional(v.string()),
     muxUploadId: v.string(),
-    uploaderId: v.id("clerkUsers"),
+    uploaderId: v.string(),
     status: v.union(
       v.literal("uploading"),
       v.literal("processing"),
@@ -57,82 +29,43 @@ export default defineSchema({
     .index("by_uploader", ["uploaderId"])
     .index("by_mux_upload_id", ["muxUploadId"])
     .index("by_status", ["status"]),
-  shareRequests: defineTable({
-    sharedBy: v.string(), // userId of the person sharing
-    email: v.string(), // email of the person to share with
-    status: v.union(
-      v.literal("pending"), // invitation sent but not accepted
-      v.literal("accepted"), // invitation accepted
-      v.literal("declined"), // invitation declined
-    ),
-    lastSent: v.optional(v.number()), // timestamp when the share invitation was last sent
-    expiresAt: v.number(), // timestamp when the share invitation expires
+
+  organisations: defineTable({
+    workosId: v.string(),
+    name: v.string(),
+    slug: v.optional(v.string()),
+    domains: v.optional(v.array(v.string())),
+    metadata: v.optional(v.object({})),
+    createdAt: v.string(),
+    updatedAt: v.string(),
+  }).index("by_workos_id", ["workosId"]),
+
+  organisationMembers: defineTable({
+    organisationId: v.id("organisations"),
+    userId: v.id("users"),
+    role: v.string(), // "admin", "member", etc.
+    joinedAt: v.string(),
   })
-    .index("by_sharedBy", ["sharedBy"])
-    .index("by_email", ["email"])
-    .index("by_status", ["status"]),
-  clerkUsers: defineTable({
-    clerkId: v.string(),
+    .index("by_organisation", ["organisationId"])
+    .index("by_user", ["userId"])
+    .index("by_org_and_user", ["organisationId", "userId"]),
+
+  // Extended user table to work with WorkOS
+  users: defineTable({
     email: v.string(),
     firstName: v.optional(v.string()),
     lastName: v.optional(v.string()),
-    imageUrl: v.optional(v.string()),
-    username: v.optional(v.string()),
-    searchIndex: v.optional(v.string()),
-    createdAt: v.number(),
-    updatedAt: v.number(),
+    workosId: v.string(),
+    organisationId: v.optional(v.string()), // WorkOS organization ID
+    profilePictureUrl: v.optional(v.string()),
+    createdAt: v.string(),
+    updatedAt: v.string(),
+    email_verified: v.optional(v.boolean()),
+    external_id: v.union(v.string(), v.null()),
+    last_sign_in_at: v.optional(v.string()),
+    locale: v.optional(v.string()),
+    metadata: v.optional(v.object({})),
   })
-    .index("by_clerk_id", ["clerkId"])
-    .index("by_email", ["email"])
-    .searchIndex("by_search_index", {
-      searchField: "searchIndex",
-    }),
-  organizations: defineTable({
-    clerkId: v.string(),
-    name: v.string(),
-    slug: v.optional(v.string()),
-    imageUrl: v.optional(v.string()),
-    createdBy: v.optional(v.string()),
-    publicMetadata: v.optional(v.any()),
-    privateMetadata: v.optional(v.any()),
-    maxAllowedMemberships: v.optional(v.number()),
-    adminDeleteEnabled: v.optional(v.boolean()),
-    membersCount: v.optional(v.number()),
-    pendingInvitationsCount: v.optional(v.number()),
-    stripeCustomerId: v.optional(v.string()),
-  }).index("by_clerk_id", ["clerkId"]),
-
-  organizationMemberships: defineTable({
-    clerkUserId: v.id("clerkUsers"),
-    organizationId: v.id("organizations"),
-    role: v.string(),
-    createdAt: v.optional(v.number()),
-    updatedAt: v.optional(v.number()),
-  })
-    .index("by_user", ["clerkUserId"])
-    .index("by_organization", ["organizationId"])
-    .index("by_user_and_org", ["clerkUserId", "organizationId"]),
-
-  clerkEvents: defineTable({
-    clerkEventId: v.string(),
-    eventType: v.string(),
-    eventData: v.any(),
-    createdAt: v.optional(v.number()),
-    status: v.union(
-      v.literal("pending"),
-      v.literal("processed"),
-      v.literal("failed"),
-    ),
-    updatedAt: v.optional(v.number()),
-  })
-    .index("by_event_type", ["eventType"])
-    .index("by_clerk_event_id", ["clerkEventId"]),
-  stripecustomers: defineTable({
-    stripeCustomerId: v.string(),
-    email: v.optional(v.string()),
-    name: v.optional(v.string()),
-    metadata: v.optional(v.record(v.string(), v.string())),
-  }).index("by_stripe_customer_id", ["stripeCustomerId"]),
+    .index("by_workos_id", ["workosId"])
+    .index("by_email", ["email"]),
 });
-
-// Add a new table for sharing reviews with non-registered users

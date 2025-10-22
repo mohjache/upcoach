@@ -12,9 +12,9 @@ export default function Page() {
 
   const { slug } = params;
 
-  const review = useQuery(api.userReview.getUserReviewById, {
-    id: slug as string,
-  });
+  // const review = useQuery(api.userReview.getUserReviewById, {
+  //   id: slug as string,
+  // });
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -25,14 +25,14 @@ export default function Page() {
       <h1 className="text-primary mb-8 text-center text-3xl font-bold">
         Update Review
       </h1>
-      <AuthLoading>
+      {/* <AuthLoading>
         <FallbackComponent></FallbackComponent>
       </AuthLoading>
       <Authenticated>
         <Suspense fallback={<FallbackComponent></FallbackComponent>}>
           {review && <UpdateReviewForm review={review} />}
         </Suspense>
-      </Authenticated>
+      </Authenticated> */}
     </main>
   );
 }

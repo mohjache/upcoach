@@ -10,185 +10,118 @@ import {
 } from "./_generated/server";
 import { api } from "./_generated/api";
 import { type Id } from "./_generated/dataModel";
-import { type UpcoachUserIdentity } from "./userReview";
 
-export const createUser = mutation({
+// User webhook handlers
+export const handleUserCreated = mutation({
   args: {
-    clerkId: v.string(),
-    email: v.string(),
-    firstName: v.optional(v.string()),
-    lastName: v.optional(v.string()),
-    imageUrl: v.optional(v.string()),
-    username: v.optional(v.string()),
+    user: v.object({
+      id: v.string(),
+      email: v.string(),
+      first_name: v.optional(v.string()),
+      last_name: v.optional(v.string()),
+      profile_picture_url: v.optional(v.string()),
+      organisation_id: v.optional(v.string()),
+      created_at: v.string(),
+      updated_at: v.string(),
+      email_verified: v.optional(v.boolean()),
+      external_id: v.union(v.string(), v.null()),
+      last_sign_in_at: v.optional(v.string()),
+      locale: v.optional(v.string()),
+      metadata: v.optional(v.object({})),
+    }),
   },
-  handler: async (ctx, args): Promise<Id<"clerkUsers"> | undefined> => {
+  handler: async (ctx, args) => {
+    const { user } = args;
+
     // Check if user already exists
     const existingUser = await ctx.db
-      .query("clerkUsers")
-      .withIndex("by_clerk_id", (q) => q.eq("clerkId", args.clerkId))
-      .unique();
+      .query("users")
+      .withIndex("by_workos_id", (q) => q.eq("workosId", user.id))
+      .first();
+
+    if (!existingUser) {
+      await ctx.db.insert("users", {
+        workosId: user.id,
+        email: user.email,
+        firstName: user.first_name,
+        lastName: user.last_name,
+        profilePictureUrl: user.profile_picture_url,
+        organisationId: user.organisation_id,
+        createdAt: user.created_at,
+        updatedAt: user.updated_at,
+        email_verified: user.email_verified,
+        external_id: user.external_id,
+      });
+    }
+  },
+});
+
+export const handleUserUpdated = mutation({
+  args: {
+    user: v.object({
+      id: v.string(),
+      email: v.string(),
+      first_name: v.optional(v.string()),
+      last_name: v.optional(v.string()),
+      profile_picture_url: v.optional(v.string()),
+      organisation_id: v.optional(v.string()),
+      created_at: v.string(),
+      updated_at: v.string(),
+      email_verified: v.optional(v.boolean()),
+      external_id: v.union(v.string(), v.null()),
+      last_sign_in_at: v.optional(v.string()),
+      locale: v.optional(v.string()),
+      metadata: v.optional(v.object({})),
+    }),
+  },
+  handler: async (ctx, args) => {
+    const { user } = args;
+
+    const existingUser = await ctx.db
+      .query("users")
+      .withIndex("by_workos_id", (q) => q.eq("workosId", user.id))
+      .first();
 
     if (existingUser) {
-      console.log(`User with Clerk ID ${args.clerkId} already exists`);
-      return existingUser._id;
+      await ctx.db.patch(existingUser._id, {
+        email: user.email,
+        firstName: user.first_name,
+        lastName: user.last_name,
+        profilePictureUrl: user.profile_picture_url,
+        organisationId: user.organisation_id,
+        updatedAt: user.updated_at,
+        email_verified: user.email_verified,
+        external_id: user.external_id,
+      });
+    } else {
+      await ctx.db.insert("users", {
+        workosId: user.id,
+        email: user.email,
+        firstName: user.first_name,
+        lastName: user.last_name,
+        profilePictureUrl: user.profile_picture_url,
+        organisationId: user.organisation_id,
+        createdAt: user.created_at,
+        updatedAt: user.updated_at,
+        email_verified: user.email_verified,
+        external_id: user.external_id,
+      });
     }
-
-    const now = Date.now();
-    const userId = await ctx.db.insert("clerkUsers", {
-      clerkId: args.clerkId,
-      email: args.email,
-      firstName: args.firstName,
-      lastName: args.lastName,
-      imageUrl: args.imageUrl,
-      username: args.username,
-      searchIndex:
-        `${args?.firstName} ${args?.lastName} ${args?.email}`.toLowerCase(),
-      createdAt: now,
-      updatedAt: now,
-    });
-
-    console.log(`Created user with Clerk ID ${args.clerkId}`);
-    return userId;
   },
 });
 
-export const updateUser = mutation({
+export const handleUserDeleted = mutation({
   args: {
-    clerkId: v.string(),
-    email: v.string(),
-    firstName: v.optional(v.string()),
-    lastName: v.optional(v.string()),
-    imageUrl: v.optional(v.string()),
-    username: v.optional(v.string()),
-  },
-  handler: async (ctx, args): Promise<Id<"clerkUsers"> | undefined> => {
-    const user = await ctx.db
-      .query("clerkUsers")
-      .withIndex("by_clerk_id", (q) => q.eq("clerkId", args.clerkId))
-      .unique();
-
-    if (!user) {
-      console.log(
-        `User with Clerk ID ${args.clerkId} not found, creating new user`,
-      );
-
-      const userId = await ctx.runMutation(api.users.createUser, args);
-
-      if (!userId) {
-        return undefined;
-      }
-
-      return userId;
-    }
-
-    await ctx.db.patch(user._id, {
-      email: args.email,
-      firstName: args.firstName,
-      lastName: args.lastName,
-      imageUrl: args.imageUrl,
-      username: args.username,
-      searchIndex:
-        `${args?.firstName} ${args?.lastName} ${args?.email}`.toLowerCase(),
-      updatedAt: Date.now(),
-    });
-
-    console.log(`Updated user with Clerk ID ${args.clerkId}`);
-    return user._id;
-  },
-});
-
-export const deleteUser = mutation({
-  args: {
-    clerkId: v.string(),
+    userId: v.string(),
   },
   handler: async (ctx, args) => {
-    const user = await ctx.db
-      .query("clerkUsers")
-      .withIndex("by_clerk_id", (q) => q.eq("clerkId", args.clerkId))
-      .unique();
+    const existingUser = await ctx.db
+      .query("users")
+      .withIndex("by_workos_id", (q) => q.eq("workosId", args.userId))
+      .first();
 
-    if (!user) {
-      console.log(`User with Clerk ID ${args.clerkId} not found`);
-      return;
+    if (existingUser) {
+      await ctx.db.delete(existingUser._id);
     }
-
-    await ctx.db.delete(user._id);
-    console.log(`Deleted user with Clerk ID ${args.clerkId}`);
-  },
-});
-
-export const getUserByClerkId = query({
-  args: {
-    clerkId: v.string(),
-  },
-  handler: async (ctx, args) => {
-    return await ctx.db
-      .query("clerkUsers")
-      .withIndex("by_clerk_id", (q) => q.eq("clerkId", args.clerkId))
-      .unique();
-  },
-});
-
-export const searchUsers = query({
-  args: {
-    query: v.string(),
-  },
-  handler: async (ctx, args) => {
-    const identity = (await ctx.auth.getUserIdentity()) as UpcoachUserIdentity;
-    if (identity === null) {
-      throw new Error("Not authenticated");
-    }
-
-    if (!args.query) {
-      return [];
-    }
-
-    console.log("identity.userId", identity.subject);
-
-    const result = await ctx.db
-      .query("clerkUsers")
-      .withSearchIndex("by_search_index", (q) =>
-        q.search("searchIndex", args.query),
-      )
-      .filter((q) => q.neq(q.field("clerkId"), identity.subject))
-      .take(5);
-
-    console.log("found users", result);
-    return result;
-  },
-});
-
-export const getUserOrganizations = query({
-  args: { userId: v.id("clerkUsers") },
-  handler: async (ctx, args) => {
-    const memberships = await ctx.db
-      .query("organizationMemberships")
-      .withIndex("by_user", (q) => q.eq("clerkUserId", args.userId))
-      .collect();
-
-    const organizations = [];
-    for (const membership of memberships) {
-      const org = await ctx.db.get(membership.organizationId);
-      if (org) {
-        organizations.push({
-          ...org,
-          role: membership.role,
-        });
-      }
-    }
-
-    return organizations;
-  },
-});
-
-export const getUserByClerkIdInternal = internalMutation({
-  args: {
-    clerkId: v.string(),
-  },
-  handler: async (ctx, args) => {
-    return await ctx.db
-      .query("clerkUsers")
-      .withIndex("by_clerk_id", (q) => q.eq("clerkId", args.clerkId))
-      .unique();
   },
 });

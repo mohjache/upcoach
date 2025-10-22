@@ -4,10 +4,9 @@ import { Authenticated, AuthLoading, useQuery } from "convex/react";
 import { CloudUploadIcon } from "lucide-react";
 import CreateReviewButton from "~/components/Buttons/CreateReviewButton";
 import { Skeleton } from "~/components/ui/skeleton";
-import { api } from "~/../convex/_generated/api";
 
 const Page = () => {
-  const reviews = useQuery(api.userReview.getUserReviews);
+  //const reviews = useQuery(api.userReview.getUserReviews);
 
   return (
     <>

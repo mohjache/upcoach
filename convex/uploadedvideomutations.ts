@@ -1,6 +1,5 @@
 import { v } from "convex/values";
 import { mutation, query, internalMutation } from "./_generated/server";
-import { type UpcoachUserIdentity } from "./userReview";
 import { type Id } from "./_generated/dataModel";
 
 export const createVideo = internalMutation({
@@ -8,7 +7,7 @@ export const createVideo = internalMutation({
     title: v.string(),
     description: v.optional(v.string()),
     muxUploadId: v.string(),
-    uploaderId: v.id("clerkUsers"),
+    uploaderId: v.id("users"),
     status: v.union(
       v.literal("uploading"),
       v.literal("processing"),
@@ -67,7 +66,7 @@ export const updateVideoStatus = mutation({
 export const listVideos = query({
   args: {},
   handler: async (ctx) => {
-    const identity = (await ctx.auth.getUserIdentity()) as UpcoachUserIdentity;
+    const identity = await ctx.auth.getUserIdentity();
     if (identity === null) {
       throw new Error("Not authenticated");
     }
@@ -75,7 +74,7 @@ export const listVideos = query({
     const videos = await ctx.db
       .query("videos")
       .withIndex("by_uploader", (q) =>
-        q.eq("uploaderId", identity.tokenIdentifier as Id<"clerkUsers">),
+        q.eq("uploaderId", identity.tokenIdentifier as Id<"users">),
       )
       .order("desc")
       .collect();
@@ -87,7 +86,7 @@ export const listVideos = query({
 export const getVideo = query({
   args: { videoId: v.id("videos") },
   handler: async (ctx, args) => {
-    const identity = (await ctx.auth.getUserIdentity()) as UpcoachUserIdentity;
+    const identity = await ctx.auth.getUserIdentity();
     if (identity === null) {
       throw new Error("Not authenticated");
     }
@@ -98,7 +97,7 @@ export const getVideo = query({
     }
 
     // Only allow access to own videos for now
-    if (video.uploaderId !== (identity.tokenIdentifier as Id<"clerkUsers">)) {
+    if (video.uploaderId !== (identity.tokenIdentifier as Id<"users">)) {
       throw new Error("Not authorized");
     }
 
@@ -109,7 +108,7 @@ export const getVideo = query({
 export const deleteVideo = mutation({
   args: { videoId: v.id("videos") },
   handler: async (ctx, args) => {
-    const identity = (await ctx.auth.getUserIdentity()) as UpcoachUserIdentity;
+    const identity = await ctx.auth.getUserIdentity();
     if (identity === null) {
       throw new Error("Not authenticated");
     }
@@ -119,7 +118,7 @@ export const deleteVideo = mutation({
       throw new Error("Video not found");
     }
 
-    if (video.uploaderId !== (identity.tokenIdentifier as Id<"clerkUsers">)) {
+    if (video.uploaderId !== (identity.tokenIdentifier as Id<"users">)) {
       throw new Error("Not authorized");
     }
 
