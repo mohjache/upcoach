@@ -30,42 +30,42 @@ export default defineSchema({
     .index("by_mux_upload_id", ["muxUploadId"])
     .index("by_status", ["status"]),
 
-  organisations: defineTable({
-    workosId: v.string(),
-    name: v.string(),
-    slug: v.optional(v.string()),
-    domains: v.optional(v.array(v.string())),
-    metadata: v.optional(v.object({})),
-    createdAt: v.string(),
-    updatedAt: v.string(),
-  }).index("by_workos_id", ["workosId"]),
+  // organisations: defineTable({
+  //   workosId: v.string(),
+  //   name: v.string(),
+  //   slug: v.optional(v.string()),
+  //   domains: v.optional(v.array(v.string())),
+  //   metadata: v.optional(v.object({})),
+  //   createdAt: v.string(),
+  //   updatedAt: v.string(),
+  // }).index("by_workos_id", ["workosId"]),
 
-  organisationMembers: defineTable({
-    organisationId: v.id("organisations"),
-    userId: v.id("users"),
-    role: v.string(), // "admin", "member", etc.
-    joinedAt: v.string(),
-  })
-    .index("by_organisation", ["organisationId"])
-    .index("by_user", ["userId"])
-    .index("by_org_and_user", ["organisationId", "userId"]),
+  // organisationMembers: defineTable({
+  //   organisationId: v.id("organisations"),
+  //   userId: v.id("users"),
+  //   role: v.string(), // "admin", "member", etc.
+  //   joinedAt: v.string(),
+  // })
+  //   .index("by_organisation", ["organisationId"])
+  //   .index("by_user", ["userId"])
+  //   .index("by_org_and_user", ["organisationId", "userId"]),
 
-  // Extended user table to work with WorkOS
-  users: defineTable({
-    email: v.string(),
-    firstName: v.optional(v.string()),
-    lastName: v.optional(v.string()),
-    workosId: v.string(),
-    organisationId: v.optional(v.string()), // WorkOS organization ID
-    profilePictureUrl: v.optional(v.string()),
-    createdAt: v.string(),
-    updatedAt: v.string(),
-    email_verified: v.optional(v.boolean()),
-    external_id: v.union(v.string(), v.null()),
-    last_sign_in_at: v.optional(v.string()),
-    locale: v.optional(v.string()),
-    metadata: v.optional(v.object({})),
-  })
-    .index("by_workos_id", ["workosId"])
-    .index("by_email", ["email"]),
+  // // Extended user table to work with WorkOS
+  // users: defineTable({
+  //   email: v.string(),
+  //   firstName: v.optional(v.string()),
+  //   lastName: v.optional(v.string()),
+  //   workosId: v.string(),
+  //   organisationId: v.optional(v.string()), // WorkOS organization ID
+  //   profilePictureUrl: v.optional(v.string()),
+  //   createdAt: v.string(),
+  //   updatedAt: v.string(),
+  //   email_verified: v.optional(v.boolean()),
+  //   external_id: v.union(v.string(), v.null()),
+  //   last_sign_in_at: v.optional(v.string()),
+  //   locale: v.optional(v.string()),
+  //   metadata: v.optional(v.object({})),
+  // })
+  //   .index("by_workos_id", ["workosId"])
+  //   .index("by_email", ["email"]),
 });

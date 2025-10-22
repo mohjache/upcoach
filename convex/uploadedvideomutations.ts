@@ -74,7 +74,7 @@ export const listVideos = query({
     const videos = await ctx.db
       .query("videos")
       .withIndex("by_uploader", (q) =>
-        q.eq("uploaderId", identity.tokenIdentifier as Id<"users">),
+        q.eq("uploaderId", identity.tokenIdentifier),
       )
       .order("desc")
       .collect();
@@ -97,7 +97,7 @@ export const getVideo = query({
     }
 
     // Only allow access to own videos for now
-    if (video.uploaderId !== (identity.tokenIdentifier as Id<"users">)) {
+    if (video.uploaderId !== identity.tokenIdentifier) {
       throw new Error("Not authorized");
     }
 
@@ -118,7 +118,7 @@ export const deleteVideo = mutation({
       throw new Error("Video not found");
     }
 
-    if (video.uploaderId !== (identity.tokenIdentifier as Id<"users">)) {
+    if (video.uploaderId !== identity.tokenIdentifier) {
       throw new Error("Not authorized");
     }
 
