@@ -7,7 +7,7 @@ export const createVideo = internalMutation({
     title: v.string(),
     description: v.optional(v.string()),
     muxUploadId: v.string(),
-    uploaderId: v.id("users"),
+    uploaderId: v.string(),
     status: v.union(
       v.literal("uploading"),
       v.literal("processing"),

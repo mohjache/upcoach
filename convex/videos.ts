@@ -1,6 +1,6 @@
 "use node";
 import { v } from "convex/values";
-import { action } from "./_generated/server";
+import { action, internalMutation, mutation, query } from "./_generated/server";
 
 import { api, internal } from "./_generated/api";
 
@@ -41,10 +41,10 @@ export const createUploadUrl = action({
       throw new Error("Failed to create upload");
     }
 
-    return {
-      uploadUrl: upload.url ?? "",
-      videoId: uploadMetadata.id ?? "",
-    };
+    // return {
+    //   uploadUrl: upload.url ?? "",
+    //   videoId: uploadMetadata.id ?? "",
+    // };
 
     // const uploadedUser = await ctx.runMutation(
     //   internal.users.getUserByClerkIdInternal,
@@ -58,20 +58,20 @@ export const createUploadUrl = action({
     // }
 
     // // Store video record in database
-    // const videoId = (await ctx.runMutation(
-    //   internal.uploadedvideomutations.createVideo,
-    //   {
-    //     title: args.title,
-    //     description: args.description,
-    //     muxUploadId: uploadMetadata.id,
-    //     uploaderId: uploadedUser._id,
-    //     status: "uploading" as const,
-    //   },
-    // )) as Id<"videos">;
+    const videoId = (await ctx.runMutation(
+      internal.videomutations.createVideo,
+      {
+        title: args.title,
+        description: args.description,
+        muxUploadId: uploadMetadata.id,
+        uploaderId: identity.subject,
+        status: "uploading" as const,
+      },
+    )) as Id<"videos">;
 
-    // return {
-    //   uploadUrl: upload.url,
-    //   videoId,
-    // };
+    return {
+      uploadUrl: upload.url,
+      videoId,
+    };
   },
 });

@@ -29,16 +29,7 @@ const formSchema = z.object({
 export default function Page() {
   const [uploadUrl, setUploadUrl] = useState<string | null>(null);
 
-  const createUploadUrl = useAction(api.uploadedvideos.createUploadUrl);
-
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      name: "",
-      description: "",
-      uploadedFile: undefined,
-    },
-  });
+  const createUploadUrl = useAction(api.videos.createUploadUrl);
 
   useEffect(() => {
     const fetchUploadUrl = async () => {
@@ -48,47 +39,8 @@ export default function Page() {
       });
       setUploadUrl(uploadUrl.uploadUrl);
     };
-
     void fetchUploadUrl();
-  }, []);
-
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    const xhr = new XMLHttpRequest();
-
-    try {
-      xhr.upload.addEventListener("progress", (event) => {
-        if (event.lengthComputable) {
-          const progress = (event.loaded / event.total) * 100;
-          setUploadProgress(progress);
-        }
-      });
-
-      xhr.addEventListener("load", () => {
-        if (xhr.status >= 200 && xhr.status < 300) {
-          form.reset();
-          setUploadProgress(0);
-        } else {
-          form.setError("uploadedFile", {
-            message: "Upload failed. Please try again.",
-          });
-        }
-      });
-
-      xhr.addEventListener("error", () => {
-        form.setError("uploadedFile", {
-          message: "Upload failed. Please try again.",
-        });
-      });
-
-      xhr.open("PUT", uploadUrl.uploadUrl);
-      xhr.send(values.uploadedFile);
-    } catch (error) {
-      form.setError("uploadedFile", {
-        message: "Upload failed. Please try again.",
-      });
-    }
-    // router.push("/dashboard");
-  };
+  }, [createUploadUrl]);
 
   return (
     <div className="flex h-[calc(100vh-10rem)] w-full flex-col items-center justify-center px-8">

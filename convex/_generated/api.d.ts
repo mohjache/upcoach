@@ -14,9 +14,9 @@ import type {
   FunctionReference,
 } from "convex/server";
 import type * as http from "../http.js";
-import type * as uploadedvideomutations from "../uploadedvideomutations.js";
-import type * as uploadedvideos from "../uploadedvideos.js";
 import type * as userReview from "../userReview.js";
+import type * as videomutations from "../videomutations.js";
+import type * as videos from "../videos.js";
 
 /**
  * A utility for referencing Convex functions in your app's API.
@@ -28,9 +28,9 @@ import type * as userReview from "../userReview.js";
  */
 declare const fullApi: ApiFromModules<{
   http: typeof http;
-  uploadedvideomutations: typeof uploadedvideomutations;
-  uploadedvideos: typeof uploadedvideos;
   userReview: typeof userReview;
+  videomutations: typeof videomutations;
+  videos: typeof videos;
 }>;
 export declare const api: FilterApi<
   typeof fullApi,
