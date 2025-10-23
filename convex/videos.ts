@@ -41,22 +41,6 @@ export const createUploadUrl = action({
       throw new Error("Failed to create upload");
     }
 
-    // return {
-    //   uploadUrl: upload.url ?? "",
-    //   videoId: uploadMetadata.id ?? "",
-    // };
-
-    // const uploadedUser = await ctx.runMutation(
-    //   internal.users.getUserByClerkIdInternal,
-    //   {
-    //     clerkId: identity.userId,
-    //   },
-    // );
-
-    // if (uploadedUser == undefined || uploadedUser == null) {
-    //   throw new Error("User not found");
-    // }
-
     // // Store video record in database
     const videoId = (await ctx.runMutation(
       internal.videomutations.createVideo,

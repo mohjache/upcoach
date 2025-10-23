@@ -7,6 +7,7 @@ export default defineSchema({
     reviewedBy: v.optional(v.string()),
     userId: v.string(),
     videoId: v.id("videos"),
+    notes: v.optional(v.string()),
   })
     .index("by_createdUser", ["userId"])
     .index("by_reviewer", ["reviewedBy"]),

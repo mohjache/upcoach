@@ -96,8 +96,8 @@ export const getVideo = query({
       throw new Error("Video not found");
     }
 
-    // Only allow access to own videos for now
-    if (video.uploaderId !== identity.tokenIdentifier) {
+      // Only allow access to own videos for now
+    if (video.uploaderId !== identity.subject) {
       throw new Error("Not authorized");
     }
 
