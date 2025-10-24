@@ -2,13 +2,14 @@
 
 import { Button } from "~/components/ui/button";
 
-import { useAction } from "convex/react";
+import { Authenticated, AuthLoading, useAction } from "convex/react";
 import { api } from "~/../convex/_generated/api";
 import Link from "next/link";
 import { ArrowLeftIcon } from "lucide-react";
 import MuxUploader from "@mux/mux-uploader-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { Skeleton } from "~/components/ui/skeleton";
 
 // const formSchema = z.object({
 //   name: z.string().min(1).max(1000),
@@ -29,7 +30,21 @@ export default function Page() {
   return (
     <div className="flex h-[calc(100vh-10rem)] w-full flex-col items-center justify-center px-8">
       <h1 className="text-primary pb-8 text-4xl font-bold">Create Review</h1>
-      <FileUpload />
+      <div className="w-full pb-2 md:w-128">
+        <Button asChild variant="outline">
+          <Link href="/dashboard" className="text-primary">
+            <ArrowLeftIcon className="h-4 w-4" /> Back to Dashboard
+          </Link>
+        </Button>
+      </div>
+      <AuthLoading>
+        <div className="w-full md:w-128">
+          <Skeleton className="h-54 w-full flex-none" />
+        </div>
+      </AuthLoading>
+      <Authenticated>
+        <FileUpload />
+      </Authenticated>
     </div>
   );
 }
@@ -43,13 +58,6 @@ const FileUpload = () => {
   const router = useRouter();
   return (
     <>
-      <div className="w-full pb-2 md:w-128">
-        <Button asChild variant="outline">
-          <Link href="/dashboard" className="text-primary">
-            <ArrowLeftIcon className="h-4 w-4" /> Back to Dashboard
-          </Link>
-        </Button>
-      </div>
       <div className="w-full md:w-128">
         <MuxUploader
           // endpoint={uploadUrl}
