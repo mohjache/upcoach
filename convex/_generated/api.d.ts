@@ -15,7 +15,7 @@ import type {
 } from "convex/server";
 import type * as http from "../http.js";
 import type * as userReview from "../userReview.js";
-import type * as videomutations from "../videomutations.js";
+import type * as videoActions from "../videoActions.js";
 import type * as videos from "../videos.js";
 
 /**
@@ -29,7 +29,7 @@ import type * as videos from "../videos.js";
 declare const fullApi: ApiFromModules<{
   http: typeof http;
   userReview: typeof userReview;
-  videomutations: typeof videomutations;
+  videoActions: typeof videoActions;
   videos: typeof videos;
 }>;
 export declare const api: FilterApi<

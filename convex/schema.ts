@@ -3,14 +3,28 @@ import { v } from "convex/values";
 
 export default defineSchema({
   userReviews: defineTable({
-    previewImage: v.optional(v.string()),
-    reviewedBy: v.optional(v.string()),
     userId: v.string(),
     videoId: v.id("videos"),
-    notes: v.optional(v.string()),
+    organisationId: v.string(),
+    comments: v.optional(
+      v.array(
+        v.object({
+          userId: v.string(),
+          userRole: v.union(
+            v.literal("org:coach"),
+            v.literal("org:student"),
+            v.literal("org:admin"),
+          ),
+          comment: v.string(),
+          createdAt: v.string(),
+        }),
+      ),
+    ),
   })
-    .index("by_createdUser", ["userId"])
-    .index("by_reviewer", ["reviewedBy"]),
+    .index("by_organisation", ["organisationId"])
+    .index("by_user", ["userId"])
+    .index("by_video", ["videoId"]),
+
   videos: defineTable({
     title: v.string(),
     description: v.optional(v.string()),

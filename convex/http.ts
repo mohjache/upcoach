@@ -29,7 +29,7 @@ const handleMuxWebhook = httpAction(async (ctx, request) => {
 
   if (event.type === "video.asset.ready") {
     const asset = event.data;
-    await ctx.runMutation(api.videomutations.updateVideoStatus, {
+    await ctx.runMutation(api.videos.updateVideoStatus, {
       muxUploadId: asset.upload_id,
       status: "ready",
       muxAssetId: asset.asset_id,
@@ -39,7 +39,7 @@ const handleMuxWebhook = httpAction(async (ctx, request) => {
     });
   } else if (event.type === "video.asset.errored") {
     const asset = event.data;
-    await ctx.runMutation(api.videomutations.updateVideoStatus, {
+    await ctx.runMutation(api.videos.updateVideoStatus, {
       muxUploadId: asset.upload_id,
       status: "error",
     });
