@@ -74,10 +74,10 @@ export const listVideos = query({
     const videos = await ctx.db
       .query("videos")
       .withIndex("by_uploader", (q) =>
-        q.eq("uploaderId", identity.tokenIdentifier),
+        q.eq("uploaderId", identity.subject),
       )
       .order("desc")
-      .collect();
+      .take(5);
 
     return videos;
   },

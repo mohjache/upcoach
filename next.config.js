@@ -10,10 +10,7 @@ const config = {
     reactCompiler: true,
   },
   images: {
-    remotePatterns: [
-      new URL("https://3gyi2yzoja.ufs.sh/**"),
-      new URL("https://i.ytimg.com/vi/**"),
-    ],
+    remotePatterns: [new URL("https://image.mux.com/**")],
   },
   typescript: {
     ignoreBuildErrors: true,

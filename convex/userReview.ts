@@ -27,8 +27,6 @@ export const createUserReview = mutation({
       throw new Error("Not authenticated");
     }
 
-    console.log(identity);
-
     const reviewId = await ctx.db.insert("userReviews", {
       userId: identity.subject,
       videoId: args.dto.videoId,
@@ -82,7 +80,6 @@ export const addCommentToUserReview = mutation({
       throw new Error("Not authenticated");
     }
 
-    console.log(identity);
     const review = await ctx.db.get(args.reviewId);
     if (
       !review ||
@@ -103,5 +100,34 @@ export const addCommentToUserReview = mutation({
     await ctx.db.patch(args.reviewId, {
       comments: [newComment, ...(review.comments ?? [])],
     });
+  },
+});
+
+export const listUserReviewsByUserId = query({
+  handler: async (ctx, args) => {
+    const identity = (await ctx.auth.getUserIdentity()) as ClerkIdentity;
+    if (identity === null) {
+      throw new Error("Not authenticated");
+    }
+
+    const reviews = await ctx.db
+      .query("userReviews")
+      .withIndex("by_user", (q) => q.eq("userId", identity.subject))
+      .take(5);
+
+    const videos = await ctx.db
+      .query("videos")
+      .withIndex("by_uploader", (q) => q.eq("uploaderId", identity.subject))
+      .collect();
+
+    const reviewsWithVideos = reviews.map((review) => {
+      const video = videos.find((video) => video._id === review.videoId);
+      return {
+        ...review,
+        video,
+      };
+    });
+
+    return reviewsWithVideos;
   },
 });

@@ -60,7 +60,6 @@ export default function Page() {
 
   const handleSkip = (skipTo: number) => {
     if (playerRef.current) {
-      // Programmatically skip to the 10-minute mark on a button click
       (playerRef.current as MuxPlayerProps).currentTime = skipTo;
     }
   };
@@ -71,11 +70,12 @@ export default function Page() {
       comment: values.comment,
       startTime: values.startTime ?? undefined,
     });
+    form.reset();
   };
 
   return (
     <div className="px-8 pt-8">
-      <h1 className="text-primary pb-8 text-4xl font-bold">Update Review</h1>
+      <h1 className="text-primary pb-8 text-4xl font-bold">Edit Review</h1>
       <div className="w-full pb-2 md:w-128">
         <Button variant="outline" asChild>
           <Link href="/dashboard" className="text-primary">
@@ -152,8 +152,8 @@ export default function Page() {
 
                         {!!form.watch("startTime") && (
                           <div className="text-muted-foreground text-sm">
-                            Clip at:{" "}
-                            {Number(form.watch("startTime")).toFixed(0)}s
+                            {" "}
+                            {FormatToTime(Number(form.watch("startTime")))}
                           </div>
                         )}
                       </div>
@@ -174,40 +174,31 @@ export default function Page() {
                         createdAt: string;
                         startTime?: number | undefined;
                       }) => (
-                        <div
-                          key={comment.createdAt}
-                          className="bg-muted/50 flex items-start gap-4 rounded-lg p-4"
-                        >
-                          <div className="flex w-full flex-row gap-2">
-                            <div className="flex items-center gap-2">
-                              {comment.userRole === "org:student" ? (
-                                <span className="bg-primary text-primary-foreground rounded-full px-2 text-sm font-bold">
-                                  Student:
-                                </span>
-                              ) : (
-                                <span className="bg-secondary text-secondary-foreground rounded-full px-2 text-sm font-bold">
-                                  Coach:
-                                </span>
-                              )}
-                            </div>
+                        <div key={comment.createdAt}>
+                          {comment.userRole === "org:student" ? (
+                            <span className="bg-primary text-primary-foreground rounded-full px-2 text-sm font-bold">
+                              Student
+                            </span>
+                          ) : (
+                            <span className="bg-secondary text-secondary-foreground rounded-full px-2 text-sm font-bold">
+                              Coach
+                            </span>
+                          )}
+                          <p className="bg-muted/50 rounded-lg p-2 break-words whitespace-pre-line">
                             {comment.startTime && (
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                className="text-foreground px-2 text-sm"
+                              <span
+                                className="cursor-pointer text-sm font-bold text-blue-700 underline"
                                 onClick={() => {
                                   if (typeof comment.startTime === "number") {
                                     handleSkip(comment.startTime);
                                   }
                                 }}
                               >
-                                Skip to: {Number(comment.startTime).toFixed(0)}s
-                              </Button>
+                                {FormatToTime(Number(comment.startTime))}{" "}
+                              </span>
                             )}
-                            <div className="text-foreground pt-1 text-sm">
-                              {comment.comment}
-                            </div>
-                          </div>
+                            {comment.comment}
+                          </p>
                         </div>
                       ),
                     )}
@@ -225,3 +216,9 @@ export default function Page() {
     </div>
   );
 }
+
+export const FormatToTime = (seconds: number) => {
+  const minutes = Math.floor(seconds / 60);
+  const remainingSeconds = seconds % 60;
+  return `${minutes}:${remainingSeconds.toString().padStart(2, "0")}`;
+};
