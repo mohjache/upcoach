@@ -17,6 +17,7 @@ export default defineSchema({
           ),
           comment: v.string(),
           createdAt: v.string(),
+          startTime: v.optional(v.number()),
         }),
       ),
     ),

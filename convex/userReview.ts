@@ -74,6 +74,7 @@ export const addCommentToUserReview = mutation({
   args: {
     reviewId: v.id("userReviews"),
     comment: v.string(),
+    startTime: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
     const identity = (await ctx.auth.getUserIdentity()) as ClerkIdentity;
@@ -96,6 +97,7 @@ export const addCommentToUserReview = mutation({
       userRole: identity.organisation_role,
       comment: args.comment,
       createdAt: new Date().toISOString(),
+      startTime: args.startTime,
     };
 
     await ctx.db.patch(args.reviewId, {

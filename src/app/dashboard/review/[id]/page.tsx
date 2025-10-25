@@ -18,7 +18,7 @@ import { Button } from "~/components/ui/button";
 import { Card, CardTitle, CardContent, CardFooter } from "~/components/ui/card";
 import { Skeleton } from "~/components/ui/skeleton";
 import { Textarea } from "~/components/ui/textarea";
-import MuxPlayer from "@mux/mux-player-react";
+import MuxPlayer, { type MuxPlayerProps } from "@mux/mux-player-react";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -31,33 +31,45 @@ import {
   FormMessage,
 } from "~/components/ui/form";
 import { Input } from "~/components/ui/input";
+import { useEffect, useRef, useState } from "react";
 
 const formSchema = z.object({
-  comment: z.string().max(1000),
+  comment: z.string().min(1).max(1000),
+  startTime: z.number().nullable(),
 });
 
 export default function Page() {
   const params = useParams();
   const reviewId = params.id as Id<"userReviews">;
+  const [currentTime, setCurrentTime] = useState<number | null>(null);
+
+  const playerRef = useRef(null);
 
   const data = useQuery(api.userReview.getUserReviewDetails, {
     reviewId,
   });
-
   const addComment = useMutation(api.userReview.addCommentToUserReview);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       comment: "",
+      startTime: null,
     },
   });
 
+  const handleSkip = (skipTo: number) => {
+    if (playerRef.current) {
+      // Programmatically skip to the 10-minute mark on a button click
+      (playerRef.current as MuxPlayerProps).currentTime = skipTo;
+    }
+  };
+
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    console.log(values);
     await addComment({
       reviewId,
       comment: values.comment,
+      startTime: values.startTime ?? undefined,
     });
   };
 
@@ -80,11 +92,19 @@ export default function Page() {
       </AuthLoading>
       <Authenticated>
         {data && (
-          <div className="grid h-full grid-cols-1 gap-4 pb-8 xl:grid-cols-3">
+          <div className="grid h-full grid-cols-1 gap-4 pb-16 lg:gap-8 lg:pb-64 xl:grid-cols-3">
             <MuxPlayer
+              ref={playerRef}
               playbackId={data.video.muxPlaybackId}
               style={{ aspectRatio: 16 / 9 }}
               className="xl:col-span-2"
+              onTimeUpdate={(event) => {
+                if ((event.target as MuxPlayerProps)?.currentTime) {
+                  setCurrentTime(
+                    (event.target as MuxPlayerProps)?.currentTime ?? null,
+                  );
+                }
+              }}
             />
 
             <Card className="">
@@ -93,7 +113,7 @@ export default function Page() {
                 <Form {...form}>
                   <form
                     onSubmit={form.handleSubmit(onSubmit)}
-                    className="space-y-2"
+                    className="space-y-2 pb-8"
                   >
                     <FormField
                       control={form.control}
@@ -112,38 +132,79 @@ export default function Page() {
                       )}
                     />
 
-                    <Button type="submit" className="">
-                      Add Comment
-                    </Button>
+                    <div className="flex flex-row justify-between">
+                      <div className="flex flex-row items-center gap-4">
+                        <Button
+                          type="button"
+                          variant="secondary"
+                          disabled={!currentTime}
+                          onClick={() => {
+                            if (typeof currentTime === "number") {
+                              form.setValue(
+                                "startTime",
+                                Math.floor(currentTime),
+                              );
+                            }
+                          }}
+                        >
+                          Add clip
+                        </Button>
+
+                        {!!form.watch("startTime") && (
+                          <div className="text-muted-foreground text-sm">
+                            Clip at:{" "}
+                            {Number(form.watch("startTime")).toFixed(0)}s
+                          </div>
+                        )}
+                      </div>
+                      <Button type="submit" className="">
+                        Add Comment
+                      </Button>
+                    </div>
                   </form>
                 </Form>
                 {/* Comments List */}
                 {data.review.comments && data.review.comments.length > 0 ? (
-                  <div className="mt-6 flex flex-col gap-4">
+                  <div className="flex flex-col gap-4 pt-4">
                     {data.review.comments.map(
                       (comment: {
                         userId: string;
                         userRole: string;
                         comment: string;
                         createdAt: string;
+                        startTime?: number | undefined;
                       }) => (
                         <div
                           key={comment.createdAt}
                           className="bg-muted/50 flex items-start gap-4 rounded-lg p-4"
                         >
-                          <div className="flex w-full flex-col gap-2">
+                          <div className="flex w-full flex-row gap-2">
                             <div className="flex items-center gap-2">
                               {comment.userRole === "org:student" ? (
-                                <span className="rounded-full bg-blue-500 px-2 py-0.5 text-xs font-bold text-white">
-                                  Student
+                                <span className="bg-primary text-primary-foreground rounded-full px-2 text-sm font-bold">
+                                  Student:
                                 </span>
                               ) : (
-                                <span className="rounded-full bg-green-500 px-2 py-0.5 text-xs font-bold text-white">
-                                  Coach
+                                <span className="bg-secondary text-secondary-foreground rounded-full px-2 text-sm font-bold">
+                                  Coach:
                                 </span>
                               )}
                             </div>
-                            <div className="text-foreground text-sm">
+                            {comment.startTime && (
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                className="text-foreground px-2 text-sm"
+                                onClick={() => {
+                                  if (typeof comment.startTime === "number") {
+                                    handleSkip(comment.startTime);
+                                  }
+                                }}
+                              >
+                                Skip to: {Number(comment.startTime).toFixed(0)}s
+                              </Button>
+                            )}
+                            <div className="text-foreground pt-1 text-sm">
                               {comment.comment}
                             </div>
                           </div>
