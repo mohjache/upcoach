@@ -1,4 +1,5 @@
 import { ClerkProvider } from "@clerk/nextjs";
+import AuthenticatedNavBar from "~/components/Public/AuthenticatedNavbar";
 import NavBar from "~/components/Public/Navbar";
 import ConvexClientProvider from "~/Providers/ConvexProvider";
 
@@ -8,7 +9,7 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <ConvexClientProvider>
-        <NavBar />
+        <AuthenticatedNavBar />
         {children}
       </ConvexClientProvider>
     </ClerkProvider>
