@@ -9,7 +9,7 @@ import {
   useMutation,
   useQuery,
 } from "convex/react";
-import { ArrowLeftIcon } from "lucide-react";
+import { ArrowLeftIcon, XIcon } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 
@@ -32,6 +32,7 @@ import {
 } from "~/components/ui/form";
 import { Input } from "~/components/ui/input";
 import { useEffect, useRef, useState } from "react";
+import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 
 const formSchema = z.object({
   comment: z.string().min(1).max(1000),
@@ -133,7 +134,7 @@ export default function Page() {
                     />
 
                     <div className="flex flex-row justify-between">
-                      <div className="flex flex-row items-center gap-4">
+                      <div className="flex flex-row items-center">
                         <Button
                           type="button"
                           variant="secondary"
@@ -147,14 +148,23 @@ export default function Page() {
                             }
                           }}
                         >
-                          Add clip
+                          Clip
                         </Button>
 
                         {!!form.watch("startTime") && (
-                          <div className="text-muted-foreground text-sm">
-                            {" "}
-                            {FormatToTime(Number(form.watch("startTime")))}
-                          </div>
+                          <>
+                            <div className="text-muted-foreground text-sm xl:pl-2">
+                              {" "}
+                              {FormatToTime(Number(form.watch("startTime")))}
+                            </div>
+                            <Button
+                              variant={"ghost"}
+                              size={"icon"}
+                              onClick={() => form.setValue("startTime", null)}
+                            >
+                              <XIcon className="h-2 w-2" />
+                            </Button>
+                          </>
                         )}
                       </div>
                       <Button type="submit" className="">
@@ -169,21 +179,27 @@ export default function Page() {
                     {data.review.comments.map(
                       (comment: {
                         userId: string;
-                        userRole: string;
+
                         comment: string;
                         createdAt: string;
                         startTime?: number | undefined;
+                        userProfilePictureUrl?: string | undefined;
+                        userFullName?: string | undefined;
                       }) => (
                         <div key={comment.createdAt}>
-                          {comment.userRole === "org:student" ? (
-                            <span className="bg-primary text-primary-foreground rounded-full px-2 text-sm font-bold">
-                              Student
-                            </span>
-                          ) : (
-                            <span className="bg-secondary text-secondary-foreground rounded-full px-2 text-sm font-bold">
-                              Coach
-                            </span>
-                          )}
+                          <div className="flex flex-row items-center">
+                            <Avatar>
+                              <AvatarImage
+                                src={comment.userProfilePictureUrl}
+                              />
+                              <AvatarFallback>
+                                {comment.userFullName?.charAt(0) ?? "U"}
+                              </AvatarFallback>
+                            </Avatar>
+                            <p className="pl-2 text-sm font-bold">
+                              {comment.userFullName}
+                            </p>
+                          </div>
                           <p className="bg-muted/50 rounded-lg p-2 break-words whitespace-pre-line">
                             {comment.startTime && (
                               <span

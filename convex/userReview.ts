@@ -12,7 +12,8 @@ import { v } from "convex/values";
 
 export type ClerkIdentity = UserIdentity & {
   organisation_id: string;
-  organisation_role: "org:coach" | "org:student" | "org:admin";
+  pictureUrl: string;
+  name: string;
 };
 
 export const createUserReview = mutation({
@@ -91,7 +92,8 @@ export const addCommentToUserReview = mutation({
 
     const newComment = {
       userId: identity.subject,
-      userRole: identity.organisation_role,
+      userProfilePictureUrl: identity.pictureUrl as string | undefined,
+      userFullName: identity.name ?? (undefined as string | undefined),
       comment: args.comment,
       createdAt: new Date().toISOString(),
       startTime: args.startTime,

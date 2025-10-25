@@ -21,11 +21,10 @@ const Page = () => {
 
   return (
     <>
-      <h1 className="text-primary p-8 text-4xl font-bold">Welcome</h1>
       <AuthLoading>
         <div className="grid grid-cols-1 gap-4 px-8 pb-32 lg:grid-cols-2 xl:grid-cols-3">
           <Skeleton className="h-96 w-full flex-none" />
-          <Skeleton className="h-96 w-full flex-none" />  
+          <Skeleton className="h-96 w-full flex-none" />
           <Skeleton className="h-96 w-full flex-none" />
           <Skeleton className="h-96 w-full flex-none" />
           <Skeleton className="h-96 w-full flex-none" />
@@ -37,6 +36,7 @@ const Page = () => {
           <CreateReviewHero />
         ) : (
           <>
+            <h1 className="text-primary p-8 text-4xl font-bold">Welcome</h1>
             <div className="w-full px-8 pb-2 md:w-128">
               <Button asChild>
                 <Link href="/dashboard/review/create" className="text-primary">

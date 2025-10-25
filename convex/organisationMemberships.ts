@@ -113,6 +113,6 @@
 //   handler: async (ctx, args) => {
 //     // Note: We don't have direct access to membership details in delete events
 //     // You might need to store WorkOS membership IDs in your schema if you need this
-//     console.log("Membership deleted:", args.membershipId);
+//
 //   },
 // });

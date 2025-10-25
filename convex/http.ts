@@ -25,8 +25,6 @@ const handleMuxWebhook = httpAction(async (ctx, request) => {
   const body = await request.text();
   const event = JSON.parse(body);
 
-  console.log("mux webhook", event);
-
   if (event.type === "video.asset.ready") {
     const asset = event.data;
     await ctx.runMutation(api.videos.updateVideoStatus, {

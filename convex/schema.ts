@@ -10,11 +10,8 @@ export default defineSchema({
       v.array(
         v.object({
           userId: v.string(),
-          userRole: v.union(
-            v.literal("org:coach"),
-            v.literal("org:student"),
-            v.literal("org:admin"),
-          ),
+          userProfilePictureUrl: v.optional(v.string()),
+          userFullName: v.optional(v.string()),
           comment: v.string(),
           createdAt: v.string(),
           startTime: v.optional(v.number()),
