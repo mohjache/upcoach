@@ -1,9 +1,10 @@
 "use client";
 
 import { UserButton, UserProfile } from "@clerk/nextjs";
-import { Authenticated } from "convex/react";
+import { Authenticated, AuthLoading } from "convex/react";
 import { TrendingUp } from "lucide-react";
 import Link from "next/link";
+import { Skeleton } from "../ui/skeleton";
 
 const AuthenticatedNavBar = () => {
   return (
@@ -17,9 +18,14 @@ const AuthenticatedNavBar = () => {
             <span className="text-primary text-2xl font-bold">UpCoach</span>
           </div>
         </Link>
-        <Authenticated>
-          <UserButton />
-        </Authenticated>
+        <>
+          <AuthLoading>
+            <Skeleton className="h-8 w-8 rounded-full" />
+          </AuthLoading>
+          <Authenticated>
+            <UserButton />
+          </Authenticated>
+        </>
       </div>
     </nav>
   );
