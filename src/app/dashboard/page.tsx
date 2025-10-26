@@ -1,7 +1,7 @@
 "use client";
 
 import { Authenticated, AuthLoading, useQuery } from "convex/react";
-import { Car, CloudUploadIcon } from "lucide-react";
+import { Car, CloudUploadIcon, MessageCircleIcon } from "lucide-react";
 import Link from "next/link";
 import CreateReviewButton from "~/components/Buttons/CreateReviewButton";
 import { Skeleton } from "~/components/ui/skeleton";
@@ -18,11 +18,41 @@ import { Button } from "~/components/ui/button";
 import { useSession, useUser } from "@clerk/nextjs";
 import { permission } from "process";
 import { use, useEffect } from "react";
+import { Avatar, AvatarImage, AvatarFallback } from "@radix-ui/react-avatar";
+import type { Id } from "@/convex/_generated/dataModel";
 
-export type UpCoachUser = UserResource & {
-  organisation_id: string;
-  pictureUrl: string;
-  name: string;
+export type UserReview = {
+  video:
+    | {
+        _id: Id<"videos">;
+        _creationTime: number;
+        description?: string | undefined;
+        muxAssetId?: string | undefined;
+        muxPlaybackId?: string | undefined;
+        duration?: number | undefined;
+        aspectRatio?: string | undefined;
+        title: string;
+        muxUploadId: string;
+        uploaderId: string;
+        status: "uploading" | "processing" | "ready" | "error";
+      }
+    | null
+    | undefined;
+  _id: Id<"userReviews">;
+  _creationTime: number;
+  comments?:
+    | {
+        userProfilePictureUrl?: string | undefined;
+        userFullName?: string | undefined;
+        startTime?: number | undefined;
+        userId: string;
+        comment: string;
+        createdAt: string;
+      }[]
+    | undefined;
+  userId: string;
+  videoId: Id<"videos">;
+  organisationId: string;
 };
 
 const Page = () => {
@@ -94,33 +124,7 @@ const StudentListView = () => {
 
           <div className="grid grid-cols-1 gap-4 px-8 pb-32 lg:grid-cols-2 xl:grid-cols-3">
             {reviews?.map((review) => (
-              <Card key={review._id}>
-                <CardHeader>
-                  <CardTitle className="">
-                    {new Date(review._creationTime).toLocaleDateString()}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  {review.video?.muxPlaybackId && (
-                    <Image
-                      blurDataURL="placeholder_image.svg"
-                      placeholder="blur"
-                      src={`https://image.mux.com/${review.video.muxPlaybackId}/thumbnail.webp`}
-                      alt={`Thumbnail for review`}
-                      width={256}
-                      height={144}
-                      className="rounded-lg object-cover"
-                    />
-                  )}
-                </CardContent>
-                <CardFooter>
-                  <Button asChild>
-                    <Link href={`/dashboard/review/${review._id}`}>
-                      {"Edit Review"}
-                    </Link>
-                  </Button>
-                </CardFooter>
-              </Card>
+              <ReviewCard review={review as UserReview} key={review._id} />
             ))}
           </div>
         </>
@@ -139,40 +143,76 @@ const CoachAdminListView = () => {
         </h1>
       ) : (
         <>
-          <div className="grid grid-cols-1 gap-4 px-8 pb-32 lg:grid-cols-2 xl:grid-cols-3">
+          <div className="flex flex-col gap-4 px-8 md:flex-row">
             {reviews?.map((review) => (
-              <Card key={review._id}>
-                <CardHeader>
-                  <CardTitle className="">
-                    {new Date(review._creationTime).toLocaleDateString()}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  {review.video?.muxPlaybackId && (
-                    <Image
-                      blurDataURL="placeholder_image.svg"
-                      placeholder="blur"
-                      src={`https://image.mux.com/${review.video.muxPlaybackId}/thumbnail.webp`}
-                      alt={`Thumbnail for review`}
-                      width={256}
-                      height={144}
-                      className="rounded-lg object-cover"
-                    />
-                  )}
-                </CardContent>
-                <CardFooter>
-                  <Button asChild>
-                    <Link href={`/dashboard/review/${review._id}`}>
-                      {"Edit Review"}
-                    </Link>
-                  </Button>
-                </CardFooter>
-              </Card>
+              <ReviewCard review={review as UserReview} key={review._id} />
             ))}
           </div>
         </>
       )}
     </>
+  );
+};
+
+const ReviewCard = ({ review }: { review: UserReview }) => {
+  return (
+    <Card key={review._id}>
+      <CardContent>
+        {review.video?.muxPlaybackId && (
+          <Image
+            blurDataURL="placeholder_image.svg"
+            placeholder="blur"
+            src={`https://image.mux.com/${review.video.muxPlaybackId}/thumbnail.webp`}
+            alt={`Thumbnail for review`}
+            width={512}
+            height={288}
+            className="rounded-lg object-cover"
+          />
+        )}
+        {/* Comments Section */}
+        {review.comments && review.comments.length > 0 && (
+          <div className="flex flex-row items-center justify-between pt-4">
+            <>
+              {(() => {
+                const lastComment = review.comments[0];
+                return (
+                  lastComment && (
+                    <div className="flex items-center gap-2">
+                      <Avatar>
+                        <AvatarImage
+                          className="h-4 w-4 rounded-full"
+                          src={lastComment.userProfilePictureUrl}
+                        />
+                        <AvatarFallback className="h-4 w-4 rounded-full">
+                          {lastComment.userFullName?.charAt(0) ?? "U"}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className="flex flex-col">
+                        <span className="text-sm leading-tight font-semibold">
+                          {lastComment.userFullName ?? "Anonymous"}
+                        </span>
+                        <span className="text-muted-foreground text-xs">
+                          {lastComment.comment}
+                        </span>
+                      </div>
+                    </div>
+                  )
+                );
+              })()}
+            </>
+            <div className="flex flex-row items-center">
+              <MessageCircleIcon className="h-4 w-4" />
+              <span className="text-primary">{review.comments.length}</span>
+            </div>
+          </div>
+        )}
+      </CardContent>
+      <CardFooter>
+        <Button asChild>
+          <Link href={`/dashboard/review/${review._id}`}>{"Edit Review"}</Link>
+        </Button>
+      </CardFooter>
+    </Card>
   );
 };
 
