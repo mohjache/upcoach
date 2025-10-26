@@ -151,6 +151,10 @@ export const listUserReviewsForCoach = query({
       )
       .take(5);
 
+    if (reviews === undefined || reviews.length === 0) {
+      return [];
+    }
+
     const videos = await getAll(
       ctx.db,
       reviews.map((review) => review.videoId),
