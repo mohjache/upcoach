@@ -27,7 +27,15 @@ const AuthenticatedNavBar = () => {
           </AuthLoading>
           <Authenticated>
             <div className="flex flex-row gap-2">
-              <OrganizationSwitcher hidePersonal={true} />
+              <OrganizationSwitcher
+                hidePersonal={true}
+                appearance={{
+                  elements: {
+                    organizationSwitcherTrigger__organization:
+                      "max-w-24 md:max-w-48 overflow-hidden",
+                  },
+                }}
+              />
               <UserButton />
             </div>
           </Authenticated>
