@@ -53,10 +53,6 @@ export default Page;
 const UserListView = () => {
   const { session } = useSession();
 
-  useEffect(() => {
-    console.log(session?.checkAuthorization({ role: "org:coach" }));
-  }, [session]);
-
   if (!session) {
     return (
       <>

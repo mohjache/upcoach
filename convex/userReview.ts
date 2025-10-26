@@ -1,14 +1,8 @@
-import { paginationOptsValidator, type UserIdentity } from "convex/server";
-import {
-  query,
-  mutation,
-  action,
-  internalAction,
-  internalMutation,
-} from "./_generated/server";
+import { type UserIdentity } from "convex/server";
+import { query, mutation } from "./_generated/server";
 // Import the api reference
-import { api, internal } from "./_generated/api";
 import { v } from "convex/values";
+import { getAll } from "convex-helpers/server/relationships";
 
 export type ClerkIdentity = UserIdentity & {
   organisation_id: string;
@@ -52,8 +46,8 @@ export const getUserReviewDetails = query({
     const review = await ctx.db.get(args.reviewId);
     if (
       !review ||
-      review.userId !== identity.subject ||
-      review.organisationId !== identity.organisation_id
+      (review.userId !== identity.subject &&
+        review.organisationId !== identity.organisation_id)
     ) {
       throw new Error("Not authorized");
     }
@@ -85,8 +79,8 @@ export const addCommentToUserReview = mutation({
     const review = await ctx.db.get(args.reviewId);
     if (
       !review ||
-      review.userId !== identity.subject ||
-      review.organisationId !== identity.organisation_id
+      (review.userId !== identity.subject &&
+        review.organisationId !== identity.organisation_id)
     ) {
       throw new Error("Not authorized");
     }
@@ -151,18 +145,23 @@ export const listUserReviewsForCoach = query({
 
     const reviews = await ctx.db
       .query("userReviews")
+
       .withIndex("by_organisation", (q) =>
         q.eq("organisationId", identity.organisation_id),
       )
       .take(5);
 
-    const videos = await ctx.db
-      .query("videos")
-      .withIndex("by_uploader", (q) => q.eq("uploaderId", identity.subject))
-      .collect();
+    const videos = await getAll(
+      ctx.db,
+      reviews.map((review) => review.videoId),
+    );
+
+    if (videos === undefined || videos.length === 0) {
+      throw new Error("No videos found");
+    }
 
     const reviewsWithVideos = reviews.map((review) => {
-      const video = videos.find((video) => video._id === review.videoId);
+      const video = videos.find((video) => video?._id === review.videoId);
       return {
         ...review,
         video,
