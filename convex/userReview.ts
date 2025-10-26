@@ -12,6 +12,7 @@ import { v } from "convex/values";
 
 export type ClerkIdentity = UserIdentity & {
   organisation_id: string;
+  organisation_role: string;
   pictureUrl: string;
   name: string;
 };
@@ -115,6 +116,44 @@ export const listUserReviewsByUserId = query({
     const reviews = await ctx.db
       .query("userReviews")
       .withIndex("by_user", (q) => q.eq("userId", identity.subject))
+      .take(5);
+
+    const videos = await ctx.db
+      .query("videos")
+      .withIndex("by_uploader", (q) => q.eq("uploaderId", identity.subject))
+      .collect();
+
+    const reviewsWithVideos = reviews.map((review) => {
+      const video = videos.find((video) => video._id === review.videoId);
+      return {
+        ...review,
+        video,
+      };
+    });
+
+    return reviewsWithVideos;
+  },
+});
+
+export const listUserReviewsForCoach = query({
+  handler: async (ctx, args) => {
+    const identity = (await ctx.auth.getUserIdentity()) as ClerkIdentity;
+    if (identity === null) {
+      throw new Error("Not authenticated");
+    }
+
+    if (
+      identity.organisation_role !== "org:admin" &&
+      identity.organisation_role !== "org:coach"
+    ) {
+      throw new Error("Not authorized");
+    }
+
+    const reviews = await ctx.db
+      .query("userReviews")
+      .withIndex("by_organisation", (q) =>
+        q.eq("organisationId", identity.organisation_id),
+      )
       .take(5);
 
     const videos = await ctx.db
