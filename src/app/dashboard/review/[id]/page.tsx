@@ -15,7 +15,7 @@ import { useParams } from "next/navigation";
 
 import { api } from "~/../convex/_generated/api";
 import { Button } from "~/components/ui/button";
-import { Card, CardTitle, CardContent, CardFooter } from "~/components/ui/card";
+import { Card, CardTitle, CardContent } from "~/components/ui/card";
 import { Skeleton } from "~/components/ui/skeleton";
 import { Textarea } from "~/components/ui/textarea";
 import MuxPlayer, { type MuxPlayerProps } from "@mux/mux-player-react";
@@ -26,12 +26,10 @@ import {
   Form,
   FormField,
   FormItem,
-  FormLabel,
   FormControl,
   FormMessage,
 } from "~/components/ui/form";
-import { Input } from "~/components/ui/input";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 
 const formSchema = z.object({
@@ -76,10 +74,10 @@ export default function Page() {
 
   return (
     <div className="px-8 pt-8">
-      <h1 className="text-primary pb-8 text-4xl font-bold">Edit Review</h1>
+      <h1 className="text-foreground pb-8 text-4xl font-bold">Edit Review</h1>
       <div className="w-full pb-2 md:w-128">
-        <Button variant="outline" asChild>
-          <Link href="/dashboard" className="text-primary">
+        <Button variant="secondary" asChild>
+          <Link href="/dashboard">
             <ArrowLeftIcon className="h-4 w-4" />
             Back to Dashboard
           </Link>

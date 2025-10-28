@@ -3,7 +3,6 @@
 import { Authenticated, AuthLoading, useQuery } from "convex/react";
 import { Car, CloudUploadIcon, MessageCircleIcon } from "lucide-react";
 import Link from "next/link";
-import CreateReviewButton from "~/components/Buttons/CreateReviewButton";
 import { Skeleton } from "~/components/ui/skeleton";
 import { api } from "~/../convex/_generated/api";
 import {
@@ -69,10 +68,9 @@ const Page = () => {
         </div>
       </AuthLoading>
       <Authenticated>
-        <>
-          <h1 className="text-primary p-8 text-4xl font-bold">Welcome</h1>
+        <div className="pt-8">
           <UserListView />
-        </>
+        </div>
       </Authenticated>
     </>
   );
@@ -86,7 +84,7 @@ const UserListView = () => {
   if (!session) {
     return (
       <>
-        <div className="grid grid-cols-1 gap-4 px-8 pb-32 lg:grid-cols-2 xl:grid-cols-3">
+        <div className="grid grid-cols-1 gap-4 px-8 pb-32 md:grid-cols-2 xl:grid-cols-3">
           <Skeleton className="h-96 w-full flex-none" />
           <Skeleton className="h-96 w-full flex-none" />
           <Skeleton className="h-96 w-full flex-none" />
@@ -122,7 +120,7 @@ const StudentListView = () => {
             </Button>
           </div>
 
-          <div className="grid grid-cols-1 gap-4 px-8 pb-32 lg:grid-cols-2 xl:grid-cols-3">
+          <div className="flex flex-col gap-4 px-8 md:flex-row">
             {reviews?.map((review) => (
               <ReviewCard review={review as UserReview} key={review._id} />
             ))}
@@ -138,7 +136,7 @@ const CoachAdminListView = () => {
   return (
     <>
       {reviews?.length === 0 ? (
-        <h1 className="text-primary p-8 text-4xl font-bold">
+        <h1 className="text-foreground p-8 text-4xl font-bold">
           No reviews found from your students
         </h1>
       ) : (
@@ -159,15 +157,17 @@ const ReviewCard = ({ review }: { review: UserReview }) => {
     <Card key={review._id}>
       <CardContent>
         {review.video?.muxPlaybackId && (
-          <Image
-            blurDataURL="placeholder_image.svg"
-            placeholder="blur"
-            src={`https://image.mux.com/${review.video.muxPlaybackId}/thumbnail.webp`}
-            alt={`Thumbnail for review`}
-            width={512}
-            height={288}
-            className="rounded-lg object-cover"
-          />
+          <div className="flex justify-center">
+            <Image
+              blurDataURL="placeholder_image.svg"
+              placeholder="blur"
+              src={`https://image.mux.com/${review.video.muxPlaybackId}/thumbnail.webp`}
+              alt={`Thumbnail for review`}
+              width={512}
+              height={288}
+              className="rounded-lg"
+            />
+          </div>
         )}
         {/* Comments Section */}
         {review.comments && review.comments.length > 0 && (
@@ -220,12 +220,14 @@ const CreateReviewHero = () => {
   return (
     <div className="flex h-[calc(100vh-10rem)] w-full flex-col items-center justify-center px-8">
       <div className="pb-2">
-        <CloudUploadIcon className="text-primary h-24 w-24" />
+        <CloudUploadIcon className="text-foreground h-24 w-24" />
       </div>
-      <h1 className="pb-4 text-2xl">
+      <h2 className="text-foreground pb-4 text-3xl font-bold">
         Upload a video of your gameplay to be reviewed by your coach.
-      </h1>
-      <CreateReviewButton />
+      </h2>
+      <Button size="lg" asChild>
+        <Link href="/dashboard/review/create">Create Review</Link>
+      </Button>
     </div>
   );
 };

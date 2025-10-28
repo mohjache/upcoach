@@ -15,7 +15,7 @@ export const Hero = () => {
     <div className="flex h-[calc(100vh-4rem)] flex-col items-center justify-center px-8">
       <div className="w-full">
         <div className="text-center">
-          <h1 className="pb-2 text-4xl font-bold md:text-6xl">
+          <h1 className="text-foreground pb-2 text-4xl font-bold md:text-6xl">
             Transform Your Coaching Business with Data-Driven Insights
           </h1>
 

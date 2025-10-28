@@ -1,7 +1,7 @@
 # Style Guidelines
 
 # React/Next
-- Use Link sparingly and only if you need to prefetch or go bach to home route. Prefetching might bite you and it is on by default.
+- Use Link sparingly and only if you need to prefetch or go bach to home route.
 
 ## Layout
 - Spacing between sub headers and text should be equal to 8px or 0.5rem (tailwind padding this is p-2)
@@ -15,7 +15,8 @@
 - The exceptions are for components:
     1. Hero
 - Ensure use of a sans-serif font
-- h1 titles should be in tailwind text-4xl bold
-- h2 text-3xl bold
-- h3 text-2xl bold
-- h4 text-xl bold
+- h1 titles should be in tailwind text-4xl bold text-foreground
+- h2 text-3xl bold text-foreground
+- h3 text-2xl bold text-foreground
+- h4 text-xl bold text-foreground
+

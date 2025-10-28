@@ -8,17 +8,14 @@ const NavBar = () => {
         <Link href="/">
           <div className="flex flex-row">
             <div className="pt-2 pr-2">
-              <TrendingUp className="text-primary h-6 w-6" />
+              <TrendingUp className="text-foreground h-6 w-6" />
             </div>
-            <span className="text-primary text-2xl font-bold">UpCoach</span>
+            <span className="text-foreground text-2xl font-bold">UpCoach</span>
           </div>
         </Link>
       </div>
     </nav>
   );
 };
-
-
-
 
 export default NavBar;
