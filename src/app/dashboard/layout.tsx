@@ -1,6 +1,6 @@
 import { ClerkProvider } from "@clerk/nextjs";
-import AuthenticatedNavBar from "~/components/Public/AuthenticatedNavbar";
-import NavBar from "~/components/Public/Navbar";
+import AuthenticatedNavBar from "~/components/navigation/AuthenticatedNavbar";
+import NavBar from "~/components/navigation/Navbar";
 import ConvexClientProvider from "~/Providers/ConvexProvider";
 
 export default function RootLayout({

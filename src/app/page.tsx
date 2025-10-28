@@ -1,4 +1,4 @@
-import NavBar from "~/components/Public/Navbar";
+import NavBar from "~/components/navigation/Navbar";
 import { Button } from "~/components/ui/button";
 
 export default function Page() {

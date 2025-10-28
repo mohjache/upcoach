@@ -201,8 +201,10 @@ const ReviewCard = ({ review }: { review: UserReview }) => {
               })()}
             </>
             <div className="flex flex-row items-center">
-              <MessageCircleIcon className="h-4 w-4" />
-              <span className="text-primary">{review.comments.length}</span>
+              <MessageCircleIcon className="text-muted-foreground h-4 w-4" />
+              <span className="text-muted-foreground text-sm">
+                {review.comments.length}
+              </span>
             </div>
           </div>
         )}
