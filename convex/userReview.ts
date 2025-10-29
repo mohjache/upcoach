@@ -110,6 +110,7 @@ export const listUserReviewsByUserId = query({
     const reviews = await ctx.db
       .query("userReviews")
       .withIndex("by_user", (q) => q.eq("userId", identity.subject))
+      .order("desc")
       .take(5);
 
     const videos = await ctx.db
@@ -149,6 +150,7 @@ export const listUserReviewsForCoach = query({
       .withIndex("by_organisation", (q) =>
         q.eq("organisationId", identity.organisation_id),
       )
+      .order("desc")
       .take(5);
 
     if (reviews === undefined || reviews.length === 0) {
