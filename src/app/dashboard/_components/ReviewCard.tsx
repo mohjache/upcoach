@@ -25,7 +25,7 @@ export const ReviewCard = ({ review }: { review: UserReview }) => {
           </div>
         )}
         {/* Comments Section */}
-        {review.comments && review.comments.length > 0 && (
+        {review.comments && review.comments.length > 0 ? (
           <div className="flex flex-row items-center justify-between pt-4">
             <>
               {(() => {
@@ -59,6 +59,17 @@ export const ReviewCard = ({ review }: { review: UserReview }) => {
               <MessageCircleIcon className="text-muted-foreground h-4 w-4" />
               <span className="text-muted-foreground text-sm">
                 {review.comments.length}
+              </span>
+            </div>
+          </div>
+        ) : (
+          <div className="flex flex-row items-center justify-between pt-4">
+            <div className="flex flex-col">
+              <span className="text-sm leading-tight font-semibold">
+                No comments yet
+              </span>
+              <span className="text-muted-foreground text-xs overflow-ellipsis whitespace-nowrap">
+                Click on Edit Review to add a comment
               </span>
             </div>
           </div>

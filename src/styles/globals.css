@@ -166,10 +166,6 @@
   --shadow-2xl: var(--shadow-2xl);
 }
 
-body {
-  background-color: var(--background);
-}
-
 @layer base {
   * {
     @apply border-border outline-ring/50;

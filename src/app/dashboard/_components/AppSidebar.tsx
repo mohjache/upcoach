@@ -37,7 +37,8 @@ const AppSidebar = () => {
               hidePersonal={true}
               appearance={{
                 elements: {
-                  organizationSwitcherTrigger__organization: `${open ? "overflow-hidden w-full" : "w-6 h-6 overflow-hidden "}`,
+                  organizationSwitcherTrigger__organization: `${open ? " w-full" : "w-6 h-6  "}  overflow-hidden`,
+                  organizationPreviewTextContainer: "text-foreground",
                 },
               }}
             />

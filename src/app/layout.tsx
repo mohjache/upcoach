@@ -3,7 +3,6 @@ import "~/styles/globals.css";
 import { type Metadata } from "next";
 import { Geist } from "next/font/google";
 import { ThemeProvider } from "next-themes";
-import Footer from "~/components/Navigation/Footer";
 
 export const metadata: Metadata = {
   title: "UpCoach",

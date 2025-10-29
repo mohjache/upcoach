@@ -1,10 +1,5 @@
 import { ClerkProvider } from "@clerk/nextjs";
 import {
-  Sidebar,
-  SidebarContent,
-  SidebarFooter,
-  SidebarGroup,
-  SidebarHeader,
   SidebarInset,
   SidebarProvider,
   SidebarTrigger,
