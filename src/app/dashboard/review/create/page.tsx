@@ -17,19 +17,6 @@ import { useState } from "react";
 import { Skeleton } from "~/components/ui/skeleton";
 import type { Id } from "@/convex/_generated/dataModel";
 
-// const formSchema = z.object({
-//   name: z.string().min(1).max(1000),
-//   description: z.string().min(1).max(1000),
-//   uploadedFile: z
-//     .instanceof(File)
-//     .refine((file) => file?.size <= 1024 * 1024 * 100, {
-//       message: "File must be less than 100MB",
-//     })
-//     .refine((file) => file?.type.startsWith("video/"), {
-//       message: "File must be a video",
-//     }),
-// });
-
 export const dynamic = "force-dynamic";
 
 export default function Page() {
@@ -69,7 +56,7 @@ const FileUpload = () => {
       <div className="w-full md:w-128">
         <MuxUploader
           // endpoint={uploadUrl}
-          className="text-primary"
+          className="text-foreground"
           endpoint={async () => {
             const uploadUrlResult = await createUploadUrl({
               description: "",

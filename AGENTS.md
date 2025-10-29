@@ -1,7 +1,7 @@
 # Style Guidelines
 
 # React/Next
-- Use Link sparingly and only if you need to prefetch or go bach to home route.
+- If a link component cannot be resolved look to see if it has a href and import from next rather than from lucide/react
 
 ## Layout
 - Spacing between sub headers and text should be equal to 8px or 0.5rem (tailwind padding this is p-2)
@@ -19,4 +19,6 @@
 - h2 text-3xl bold text-foreground
 - h3 text-2xl bold text-foreground
 - h4 text-xl bold text-foreground
+
+
 

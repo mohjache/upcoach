@@ -1,24 +1,18 @@
 "use client";
 
 import { Authenticated, AuthLoading, useQuery } from "convex/react";
-import { Car, CloudUploadIcon, MessageCircleIcon } from "lucide-react";
+import { MessageCircleIcon } from "lucide-react";
 import Link from "next/link";
-import { Skeleton } from "~/components/ui/skeleton";
 import { api } from "~/../convex/_generated/api";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "~/components/ui/card";
+import { Card, CardContent, CardFooter } from "~/components/ui/card";
 import Image from "next/image";
 import { Button } from "~/components/ui/button";
-import { useSession, useUser } from "@clerk/nextjs";
-import { permission } from "process";
-import { use, useEffect } from "react";
+import { useSession } from "@clerk/nextjs";
+
 import { Avatar, AvatarImage, AvatarFallback } from "@radix-ui/react-avatar";
 import type { Id } from "@/convex/_generated/dataModel";
+import CreateReviewHero from "./_components/EmptyCreateReview";
+import LoadingReviewList from "./_components/LoadingReviewList";
 
 export type UserReview = {
   video:
@@ -58,19 +52,10 @@ const Page = () => {
   return (
     <>
       <AuthLoading>
-        <div className="grid grid-cols-1 gap-4 px-8 pb-32 lg:grid-cols-2 xl:grid-cols-3">
-          <Skeleton className="h-96 w-full flex-none" />
-          <Skeleton className="h-96 w-full flex-none" />
-          <Skeleton className="h-96 w-full flex-none" />
-          <Skeleton className="h-96 w-full flex-none" />
-          <Skeleton className="h-96 w-full flex-none" />
-          <Skeleton className="h-96 w-full flex-none" />
-        </div>
+        <LoadingReviewList />
       </AuthLoading>
       <Authenticated>
-        <div className="pt-8">
-          <UserListView />
-        </div>
+        <UserListView />
       </Authenticated>
     </>
   );
@@ -82,18 +67,7 @@ const UserListView = () => {
   const { session } = useSession();
 
   if (!session) {
-    return (
-      <>
-        <div className="grid grid-cols-1 gap-4 px-8 pb-32 md:grid-cols-2 xl:grid-cols-3">
-          <Skeleton className="h-96 w-full flex-none" />
-          <Skeleton className="h-96 w-full flex-none" />
-          <Skeleton className="h-96 w-full flex-none" />
-          <Skeleton className="h-96 w-full flex-none" />
-          <Skeleton className="h-96 w-full flex-none" />
-          <Skeleton className="h-96 w-full flex-none" />
-        </div>
-      </>
-    );
+    return <LoadingReviewList />;
   } else if (
     session.checkAuthorization({ role: "org:admin" }) ||
     session.checkAuthorization({ role: "org:coach" })
@@ -108,10 +82,12 @@ const StudentListView = () => {
   const reviews = useQuery(api.userReview.listUserReviewsByUserId, {});
   return (
     <>
-      {reviews?.length === 0 ? (
+      {!reviews ? (
+        <LoadingReviewList />
+      ) : reviews?.length === 0 ? (
         <CreateReviewHero />
       ) : (
-        <>
+        <div className="pt-8">
           <div className="w-full px-8 pb-2 md:w-128">
             <Button asChild>
               <Link href="/dashboard/review/create" className="text-primary">
@@ -125,7 +101,7 @@ const StudentListView = () => {
               <ReviewCard review={review as UserReview} key={review._id} />
             ))}
           </div>
-        </>
+        </div>
       )}
     </>
   );
@@ -215,22 +191,6 @@ const ReviewCard = ({ review }: { review: UserReview }) => {
         </Button>
       </CardFooter>
     </Card>
-  );
-};
-
-const CreateReviewHero = () => {
-  return (
-    <div className="flex h-[calc(100vh-10rem)] w-full flex-col items-center justify-center px-8">
-      <div className="pb-2">
-        <CloudUploadIcon className="text-foreground h-24 w-24" />
-      </div>
-      <h2 className="text-foreground pb-4 text-3xl font-bold">
-        Upload a video of your gameplay to be reviewed by your coach.
-      </h2>
-      <Button size="lg" asChild>
-        <Link href="/dashboard/review/create">Create Review</Link>
-      </Button>
-    </div>
   );
 };
 
