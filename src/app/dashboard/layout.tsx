@@ -1,6 +1,16 @@
 import { ClerkProvider } from "@clerk/nextjs";
-import AuthenticatedNavBar from "~/components/navigation/AuthenticatedNavbar";
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarHeader,
+  SidebarInset,
+  SidebarProvider,
+  SidebarTrigger,
+} from "~/components/ui/sidebar";
 import ConvexClientProvider from "~/Providers/ConvexProvider";
+import AppSidebar from "./_components/AppSidebar";
 
 export default function RootLayout({
   children,
@@ -12,8 +22,20 @@ export default function RootLayout({
       }}
     >
       <ConvexClientProvider>
-        <AuthenticatedNavBar />
-        {children}
+        <SidebarProvider
+          style={
+            {
+              "--sidebar-width": "calc(var(--spacing) * 72)",
+              "--header-height": "calc(var(--spacing) * 12)",
+            } as React.CSSProperties
+          }
+        >
+          <AppSidebar />
+          <SidebarInset>
+            <SidebarTrigger />
+            {children}
+          </SidebarInset>
+        </SidebarProvider>
       </ConvexClientProvider>
     </ClerkProvider>
   );
