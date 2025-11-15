@@ -35,8 +35,11 @@ const AppSidebar = () => {
           <Authenticated>
             <OrganizationSwitcher
               hidePersonal={true}
+              createOrganizationUrl={""}
               appearance={{
                 elements: {
+                  organizationSwitcherPopoverActionButton__createOrganization:
+                    "!hidden",
                   organizationSwitcherTrigger__organization: `${open ? " w-full" : "w-6 h-6  "}  overflow-hidden`,
                   organizationPreviewTextContainer: "text-foreground",
                 },
