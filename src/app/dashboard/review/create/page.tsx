@@ -1,21 +1,12 @@
 "use client";
 
 import { Button } from "~/components/ui/button";
-
-import {
-  Authenticated,
-  AuthLoading,
-  useAction,
-  useMutation,
-} from "convex/react";
-import { api } from "~/../convex/_generated/api";
 import Link from "next/link";
 import { ArrowLeftIcon } from "lucide-react";
 import MuxUploader from "@mux/mux-uploader-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Skeleton } from "~/components/ui/skeleton";
-import type { Id } from "@/convex/_generated/dataModel";
 
 export const dynamic = "force-dynamic";
 
@@ -23,7 +14,7 @@ export default function Page() {
   return (
     <div className="flex h-[calc(100vh-10rem)] w-full flex-col items-center justify-center px-8">
       <h1 className="text-foreground pb-8 text-4xl font-bold">Create Review</h1>
-      <div className="w-full pb-2 md:w-128">
+      {/* <div className="w-full pb-2 md:w-128">
         <Button asChild variant="secondary">
           <Link href="/dashboard">
             <ArrowLeftIcon className="h-4 w-4" /> Back to Dashboard
@@ -37,7 +28,7 @@ export default function Page() {
       </AuthLoading>
       <Authenticated>
         <FileUpload />
-      </Authenticated>
+      </Authenticated> */}
     </div>
   );
 }
@@ -47,8 +38,6 @@ const FileUpload = () => {
     uploadUrl: string;
     videoId: string;
   } | null>(null);
-  const createUploadUrl = useAction(api.videoActions.createUploadUrl);
-  const createUserReview = useMutation(api.userReview.createUserReview);
 
   const router = useRouter();
   return (
@@ -58,24 +47,12 @@ const FileUpload = () => {
           // endpoint={uploadUrl}
           className="text-foreground"
           endpoint={async () => {
-            const uploadUrlResult = await createUploadUrl({
-              description: "",
-              title: "",
-            });
-
-            setUploadMetadata(uploadUrlResult);
-            return uploadUrlResult.uploadUrl;
+            return "";
           }}
           onSuccess={async (event) => {
             // Go to the review page for the newly uploaded video
             if (uploadMetadata) {
-              const id = await createUserReview({
-                dto: {
-                  videoId: uploadMetadata.videoId as unknown as Id<"videos">,
-                },
-              });
-
-              router.push(`/dashboard/review/${id}`);
+              router.push(`/dashboard/review/${1}`);
             }
           }}
         >

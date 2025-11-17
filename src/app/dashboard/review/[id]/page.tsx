@@ -2,18 +2,11 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 "use client";
-import type { Id } from "@/convex/_generated/dataModel";
-import {
-  Authenticated,
-  AuthLoading,
-  useMutation,
-  useQuery,
-} from "convex/react";
+
 import { ArrowLeftIcon, XIcon } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 
-import { api } from "~/../convex/_generated/api";
 import { Button } from "~/components/ui/button";
 import { Card, CardTitle, CardContent } from "~/components/ui/card";
 import { Skeleton } from "~/components/ui/skeleton";
@@ -39,15 +32,10 @@ const formSchema = z.object({
 
 export default function Page() {
   const params = useParams();
-  const reviewId = params.id as Id<"userReviews">;
+
   const [currentTime, setCurrentTime] = useState<number | null>(null);
 
   const playerRef = useRef(null);
-
-  const data = useQuery(api.userReview.getUserReviewDetails, {
-    reviewId,
-  });
-  const addComment = useMutation(api.userReview.addCommentToUserReview);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -64,18 +52,13 @@ export default function Page() {
   };
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    await addComment({
-      reviewId,
-      comment: values.comment,
-      startTime: values.startTime ?? undefined,
-    });
     form.reset();
   };
 
   return (
     <div className="px-8 pt-8">
       <h1 className="text-foreground pb-8 text-4xl font-bold">Edit Review</h1>
-      <div className="w-full pb-2 md:w-128">
+      {/* <div className="w-full pb-2 md:w-128">
         <Button variant="secondary" asChild>
           <Link href="/dashboard">
             <ArrowLeftIcon className="h-4 w-4" />
@@ -171,7 +154,7 @@ export default function Page() {
                     </div>
                   </form>
                 </Form>
-                {/* Comments List */}
+
                 {data.review.comments && data.review.comments.length > 0 ? (
                   <div className="flex flex-col gap-4 pt-4">
                     {data.review.comments.map(
@@ -226,7 +209,7 @@ export default function Page() {
             </Card>
           </div>
         )}
-      </Authenticated>
+      </Authenticated> */}
     </div>
   );
 }

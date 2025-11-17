@@ -16,22 +16,20 @@ export default function RootLayout({
         cssLayerName: "clerk",
       }}
     >
-      <ConvexClientProvider>
-        <SidebarProvider
-          style={
-            {
-              "--sidebar-width": "calc(var(--spacing) * 72)",
-              "--header-height": "calc(var(--spacing) * 12)",
-            } as React.CSSProperties
-          }
-        >
-          <AppSidebar />
-          <SidebarInset>
-            <SidebarTrigger />
-            {children}
-          </SidebarInset>
-        </SidebarProvider>
-      </ConvexClientProvider>
+      <SidebarProvider
+        style={
+          {
+            "--sidebar-width": "calc(var(--spacing) * 72)",
+            "--header-height": "calc(var(--spacing) * 12)",
+          } as React.CSSProperties
+        }
+      >
+        <AppSidebar />
+        <SidebarInset>
+          <SidebarTrigger />
+          {children}
+        </SidebarInset>
+      </SidebarProvider>
     </ClerkProvider>
   );
 }
