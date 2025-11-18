@@ -2,15 +2,19 @@ import { Avatar, AvatarImage, AvatarFallback } from "@radix-ui/react-avatar";
 import { MessageCircleIcon } from "lucide-react";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardFooter } from "~/components/ui/card";
-import type { UserReview } from "../page";
 import Link from "next/link";
 import Image from "next/image";
+import type { DrizzleUserReviewWithVideoSelect } from "~/server/db/types";
 
-export const ReviewCard = ({ review }: { review: UserReview }) => {
+export const ReviewCard = ({
+  review,
+}: {
+  review: DrizzleUserReviewWithVideoSelect;
+}) => {
   return (
-    <Card key={review._id}>
+    <Card key={review.id}>
       <CardContent>
-        {review.video?.muxPlaybackId && (
+        {review.video.muxPlaybackId && (
           <div className="relative aspect-video w-full">
             <Image
               blurDataURL="placeholder_image.svg"
@@ -19,7 +23,6 @@ export const ReviewCard = ({ review }: { review: UserReview }) => {
               alt={`Thumbnail for review`}
               fill
               className="rounded-lg object-cover"
-              sizes="100vw"
               style={{ objectFit: "cover" }}
             />
           </div>
@@ -77,7 +80,7 @@ export const ReviewCard = ({ review }: { review: UserReview }) => {
       </CardContent>
       <CardFooter>
         <Button asChild>
-          <Link href={`/dashboard/review/${review._id}`}>{"Edit Review"}</Link>
+          <Link href={`/dashboard/review/${review.id}`}>{"Edit Review"}</Link>
         </Button>
       </CardFooter>
     </Card>

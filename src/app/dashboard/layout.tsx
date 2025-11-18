@@ -4,7 +4,6 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "~/components/ui/sidebar";
-import ConvexClientProvider from "~/Providers/ConvexProvider";
 import AppSidebar from "./_components/AppSidebar";
 
 export default function RootLayout({

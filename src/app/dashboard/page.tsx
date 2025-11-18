@@ -1,55 +1,37 @@
 import { db } from "~/server/db";
 
 import { auth } from "@clerk/nextjs/server";
-import { posts } from "~/server/db/schema";
+
 import { Suspense } from "react";
-import { SamplePosts } from "./_components/SamplePosts";
 
-// export type UserReview = {
-//   video:
-//     | {
-//         _id: string;
-//         _creationTime: number;
-//         description?: string | undefined;
-//         muxAssetId?: string | undefined;
-//         muxPlaybackId?: string | undefined;
-//         duration?: number | undefined;
-//         aspectRatio?: string | undefined;
-//         title: string;
-//         muxUploadId: string;
-//         uploaderId: string;
-//         status: "uploading" | "processing" | "ready" | "error";
-//       }
-//     | null
-//     | undefined;
-//   _id: string;
-//   _creationTime: number;
-//   comments?:
-//     | {
-//         userProfilePictureUrl?: string | undefined;
-//         userFullName?: string | undefined;
-//         startTime?: number | undefined;
-//         userId: string;
-//         comment: string;
-//         createdAt: string;
-//       }[]
-//     | undefined;
-//   userId: string;
-//   videoId: string;
-//   organisationId: string;
-// };
+import { eq } from "drizzle-orm";
+import { userReviews } from "~/server/db/schema";
+import { StudentListView } from "./_components/StudentListView";
+import type {
+  DrizzleUserReviewSelect,
+  DrizzleUserReviewWithVideoSelect,
+} from "~/server/db/types";
+import LoadingReviewList from "./_components/LoadingReviewList";
 
-export default async function Page() {
-  const { isAuthenticated, redirectToSignIn } = await auth();
-  if (!isAuthenticated) {
-    redirectToSignIn();
-  }
+const dynamic = "force-dynamic";
 
-  const fetchedPosts = await db.select().from(posts);
+async function UserReviewList() {
+  const { userId } = await auth();
 
+  const fetchedPosts = (await db.query.userReviews.findMany({
+    with: {
+      video: true,
+    },
+    where: eq(userReviews.userId, userId as string),
+  })) as DrizzleUserReviewWithVideoSelect[];
+
+  return <StudentListView reviews={fetchedPosts} />;
+}
+
+export default function Page() {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <SamplePosts data={fetchedPosts} />
+    <Suspense fallback={<LoadingReviewList />}>
+      <UserReviewList />
     </Suspense>
   );
 }

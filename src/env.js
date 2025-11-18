@@ -11,6 +11,8 @@ export const env = createEnv({
       .enum(["development", "test", "production"])
       .default("development"),
     DATABASE_URL: z.string(),
+    MUX_TOKEN_ID: z.string(),
+    MUX_TOKEN_SECRET: z.string(),
   },
 
   /**
@@ -31,6 +33,8 @@ export const env = createEnv({
   runtimeEnv: {
     NODE_ENV: process.env.NODE_ENV,
     DATABASE_URL: process.env.DATABASE_URL,
+    MUX_TOKEN_ID: process.env.MUX_TOKEN_ID,
+    MUX_TOKEN_SECRET: process.env.MUX_TOKEN_SECRET,
     NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY:
       process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY,
 
