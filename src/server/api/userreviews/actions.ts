@@ -2,6 +2,7 @@
 
 import { auth, currentUser } from "@clerk/nextjs/server";
 import { eq } from "drizzle-orm";
+import { refresh } from "next/cache";
 import { db } from "~/server/db";
 import { userReviews } from "~/server/db/schema";
 import type { DrizzleComment } from "~/server/db/schema";
@@ -64,6 +65,8 @@ export async function addCommentToUserReview(
       comments: [newComment, ...(review.comments ?? [])],
     })
     .where(eq(userReviews.id, userReviewId));
+
+  refresh();
 }
 
 //   const identity = (await ctx.auth.getUserIdentity()) as ClerkIdentity;

@@ -55,7 +55,7 @@ const ReviewPage = ({ data }: { data: DrizzleUserReviewWithVideoSelect }) => {
     await addCommentToUserReview(
       data.id,
       values.comment,
-      currentTime ?? undefined,
+      values.startTime ?? undefined,
     );
     form.reset();
   };
