@@ -8,7 +8,7 @@ import { Avatar, AvatarImage, AvatarFallback } from "@radix-ui/react-avatar";
 import { ArrowLeftIcon, XIcon } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { useState, useRef } from "react";
+import { useState, useRef, Suspense } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Button } from "~/components/ui/button";
@@ -22,6 +22,8 @@ import {
 } from "~/components/ui/form";
 import { Textarea } from "~/components/ui/textarea";
 import { cn, FormatToTime } from "~/lib/utils";
+import { addCommentToUserReview } from "~/server/api/userreviews/actions";
+import type { DrizzleComment } from "~/server/db/schema";
 import type { DrizzleUserReviewWithVideoSelect } from "~/server/db/types";
 
 const formSchema = z.object({
@@ -49,6 +51,11 @@ const ReviewPage = ({ data }: { data: DrizzleUserReviewWithVideoSelect }) => {
   };
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    await addCommentToUserReview(
+      data.id,
+      values.comment,
+      currentTime ?? undefined,
+    );
     form.reset();
   };
 
@@ -146,46 +153,39 @@ const ReviewPage = ({ data }: { data: DrizzleUserReviewWithVideoSelect }) => {
 
               {data.comments && data.comments.length > 0 ? (
                 <div className="flex flex-col gap-4 pt-4">
-                  {data.comments.map(
-                    (comment: {
-                      userId: string;
-
-                      comment: string;
-                      createdAt: string;
-                      startTime?: number | undefined;
-                      userProfilePictureUrl?: string | undefined;
-                      userFullName?: string | undefined;
-                    }) => (
-                      <div key={comment.createdAt}>
-                        <div className="flex flex-row items-center">
-                          <Avatar>
-                            <AvatarImage src={comment.userProfilePictureUrl} />
-                            <AvatarFallback>
-                              {comment.userFullName?.charAt(0) ?? "U"}
-                            </AvatarFallback>
-                          </Avatar>
-                          <p className="pl-2 text-sm font-bold">
-                            {comment.userFullName}
-                          </p>
-                        </div>
-                        <p className="bg-muted/50 rounded-lg p-2 break-words whitespace-pre-line">
-                          {comment.startTime && (
-                            <span
-                              className="cursor-pointer text-sm font-bold text-blue-700 underline"
-                              onClick={() => {
-                                if (typeof comment.startTime === "number") {
-                                  handleSkip(comment.startTime);
-                                }
-                              }}
-                            >
-                              {FormatToTime(Number(comment.startTime))}{" "}
-                            </span>
-                          )}
-                          {comment.comment}
+                  {data.comments.map((comment: DrizzleComment) => (
+                    <div key={comment.createdAt}>
+                      <div className="flex flex-row items-center">
+                        <Avatar>
+                          <AvatarImage
+                            className="h-4 w-4 rounded-full"
+                            src={comment.userProfilePictureUrl}
+                          />
+                          <AvatarFallback className="h-4 w-4 rounded-full">
+                            {comment.userFullName?.charAt(0) ?? "U"}
+                          </AvatarFallback>
+                        </Avatar>
+                        <p className="pl-2 text-sm font-bold">
+                          {comment.userFullName}
                         </p>
                       </div>
-                    ),
-                  )}
+                      <p className="bg-muted/50 rounded-lg p-2 break-words whitespace-pre-line">
+                        {comment.startTime && (
+                          <span
+                            className="cursor-pointer text-sm font-bold text-blue-700 underline"
+                            onClick={() => {
+                              if (typeof comment.startTime === "number") {
+                                handleSkip(comment.startTime);
+                              }
+                            }}
+                          >
+                            {FormatToTime(Number(comment.startTime))}{" "}
+                          </span>
+                        )}
+                        {comment.comment}
+                      </p>
+                    </div>
+                  ))}
                 </div>
               ) : (
                 <div className="text-muted-foreground mt-6 text-sm">

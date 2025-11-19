@@ -7,6 +7,8 @@ import { env } from "~/env";
 import { db } from "~/server/db";
 import { videos } from "~/server/db/schema";
 
+import { createBlurUp } from "@mux/blurup";
+
 export type CreateVideoDto = {
   title: string;
   description?: string;
@@ -69,6 +71,11 @@ export async function finalizeVideo(videoId: number) {
     throw new Error("Failed to retrieve asset metadata");
   }
 
+  const { blurDataURL, aspectRatio } = await createBlurUp(
+    assetMetadata.playback_ids?.[0]?.id as string,
+    {},
+  );
+
   await db
     .update(videos)
     .set({
@@ -76,6 +83,7 @@ export async function finalizeVideo(videoId: number) {
       muxAssetId: assetMetadata.id,
       muxPlaybackId: assetMetadata.playback_ids?.[0]?.id,
       aspectRatio: assetMetadata.aspect_ratio,
+      blurDataUrl: blurDataURL,
     })
     .where(eq(videos.id, videoId));
 

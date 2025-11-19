@@ -11,7 +11,7 @@ export const videoStatusEnum = pgEnum("video_status", [
 ]);
 
 // Comment type for JSONB
-export type Comment = {
+export type DrizzleComment = {
   userId: string;
   userProfilePictureUrl?: string;
   userFullName?: string;
@@ -31,6 +31,7 @@ export const videos = createTable(
     muxPlaybackId: d.text(),
     muxUploadId: d.text().notNull(),
     uploaderId: d.text().notNull(),
+    blurDataUrl: d.text(),
     status: videoStatusEnum("status").notNull(),
     duration: d.integer(),
     aspectRatio: d.text(),
@@ -53,7 +54,7 @@ export const userReviews = createTable(
       .notNull()
       .references(() => videos.id),
     organisationId: d.text().notNull(),
-    comments: d.jsonb().$type<Comment[]>(),
+    comments: d.jsonb().$type<DrizzleComment[]>(),
   }),
   (t) => [
     index("by_organisation").on(t.organisationId),
