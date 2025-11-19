@@ -71,10 +71,10 @@ export async function finalizeVideo(videoId: number) {
     throw new Error("Failed to retrieve asset metadata");
   }
 
-  const { blurDataURL, aspectRatio } = await createBlurUp(
-    assetMetadata.playback_ids?.[0]?.id as string,
-    {},
-  );
+  //   const { blurDataURL, aspectRatio } = await createBlurUp(
+  //     assetMetadata.playback_ids?.[0]?.id as string,
+  //     {},
+  //   );
 
   await db
     .update(videos)
@@ -83,7 +83,6 @@ export async function finalizeVideo(videoId: number) {
       muxAssetId: assetMetadata.id,
       muxPlaybackId: assetMetadata.playback_ids?.[0]?.id,
       aspectRatio: assetMetadata.aspect_ratio,
-      blurDataUrl: blurDataURL,
     })
     .where(eq(videos.id, videoId));
 

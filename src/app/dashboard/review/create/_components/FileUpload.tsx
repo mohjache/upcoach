@@ -32,11 +32,11 @@ const FileUpload = () => {
           onSuccess={async (event) => {
             // Go to the review page for the newly uploaded video
             if (uploadMetadata?.videoId) {
+              await finalizeVideo(uploadMetadata.videoId);
               const userReview = await creatUserReviewForVideoId(
                 uploadMetadata.videoId,
               );
 
-              await finalizeVideo(uploadMetadata.videoId);
               if (userReview) {
                 router.push(`/dashboard/review/${userReview.id}`);
               }

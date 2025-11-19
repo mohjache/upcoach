@@ -1,6 +1,6 @@
 "use client";
 
-import { SignedIn } from "@clerk/nextjs";
+import { ClerkLoading, SignedIn } from "@clerk/nextjs";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { MuxPlayerProps } from "@mux/mux-player-react";
 import MuxPlayer from "@mux/mux-player-react";
@@ -25,6 +25,7 @@ import { cn, FormatToTime } from "~/lib/utils";
 import { addCommentToUserReview } from "~/server/api/userreviews/actions";
 import type { DrizzleComment } from "~/server/db/schema";
 import type { DrizzleUserReviewWithVideoSelect } from "~/server/db/types";
+import ReviewLoading from "./ReviewLoading";
 
 const formSchema = z.object({
   comment: z.string().min(1).max(1000),
@@ -60,143 +61,151 @@ const ReviewPage = ({ data }: { data: DrizzleUserReviewWithVideoSelect }) => {
   };
 
   return (
-    <SignedIn>
-      {data.video.muxPlaybackId && (
-        <div className="grid h-full grid-cols-1 gap-4 pb-16 lg:gap-8 lg:pb-64 xl:grid-cols-3">
-          <MuxPlayer
-            ref={playerRef}
-            playbackId={data.video.muxPlaybackId}
-            style={{
-              aspectRatio: data.video.aspectRatio
-                ? parseInt(data.video.aspectRatio)
-                : 16 / 9,
-            }}
-            className="xl:col-span-2"
-            onTimeUpdate={(event) => {
-              if ((event.target as MuxPlayerProps)?.currentTime) {
-                setCurrentTime(
-                  (event.target as MuxPlayerProps)?.currentTime ?? null,
-                );
-              }
-            }}
-          />
+    <>
+      <ClerkLoading>
+        <ReviewLoading />
+      </ClerkLoading>
+      <SignedIn>
+        {data.video.muxPlaybackId && (
+          <div className="grid h-full grid-cols-1 gap-4 pb-16 lg:gap-8 lg:pb-64 xl:grid-cols-3">
+            <MuxPlayer
+              ref={playerRef}
+              playbackId={data.video.muxPlaybackId}
+              style={{
+                aspectRatio: data.video.aspectRatio
+                  ? parseInt(data.video.aspectRatio)
+                  : 16 / 9,
+              }}
+              className="xl:col-span-2"
+              onTimeUpdate={(event) => {
+                if ((event.target as MuxPlayerProps)?.currentTime) {
+                  setCurrentTime(
+                    (event.target as MuxPlayerProps)?.currentTime ?? null,
+                  );
+                }
+              }}
+            />
 
-          <Card
-            className={cn(
-              "xl:col-span-1",
-              data.video.aspectRatio
-                ? `aspect-[${data.video.aspectRatio}]`
-                : "aspect-video",
-            )}
-          >
-            <CardTitle className="px-6">Comments</CardTitle>
-            <CardContent>
-              <Form {...form}>
-                <form
-                  onSubmit={form.handleSubmit(onSubmit)}
-                  className="space-y-2 pb-8"
-                >
-                  <FormField
-                    control={form.control}
-                    name="comment"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormControl>
-                          <Textarea
-                            placeholder="Add your comments here"
-                            {...field}
-                          />
-                        </FormControl>
+            <Card
+              className={cn(
+                "xl:col-span-1",
+                data.video.aspectRatio
+                  ? `aspect-[${data.video.aspectRatio}]`
+                  : "aspect-video",
+              )}
+            >
+              <CardTitle className="px-6">Comments</CardTitle>
+              <CardContent>
+                <Form {...form}>
+                  <form
+                    onSubmit={form.handleSubmit(onSubmit)}
+                    className="space-y-2 pb-8"
+                  >
+                    <FormField
+                      control={form.control}
+                      name="comment"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormControl>
+                            <Textarea
+                              placeholder="Add your comments here"
+                              {...field}
+                            />
+                          </FormControl>
 
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <div className="flex flex-row justify-between">
-                    <div className="flex flex-row items-center">
-                      <Button
-                        type="button"
-                        variant="secondary"
-                        disabled={!currentTime}
-                        onClick={() => {
-                          if (typeof currentTime === "number") {
-                            form.setValue("startTime", Math.floor(currentTime));
-                          }
-                        }}
-                      >
-                        Clip
-                      </Button>
-
-                      {!!form.watch("startTime") && (
-                        <>
-                          <div className="text-muted-foreground text-sm xl:pl-2">
-                            {" "}
-                            {FormatToTime(Number(form.watch("startTime")))}
-                          </div>
-                          <Button
-                            variant={"ghost"}
-                            size={"icon"}
-                            onClick={() => form.setValue("startTime", null)}
-                          >
-                            <XIcon className="h-2 w-2" />
-                          </Button>
-                        </>
+                          <FormMessage />
+                        </FormItem>
                       )}
-                    </div>
-                    <Button type="submit" className="">
-                      Add Comment
-                    </Button>
-                  </div>
-                </form>
-              </Form>
+                    />
 
-              {data.comments && data.comments.length > 0 ? (
-                <div className="flex flex-col gap-4 pt-4">
-                  {data.comments.map((comment: DrizzleComment) => (
-                    <div key={comment.createdAt}>
+                    <div className="flex flex-row justify-between">
                       <div className="flex flex-row items-center">
-                        <Avatar>
-                          <AvatarImage
-                            className="h-4 w-4 rounded-full"
-                            src={comment.userProfilePictureUrl}
-                          />
-                          <AvatarFallback className="h-4 w-4 rounded-full">
-                            {comment.userFullName?.charAt(0) ?? "U"}
-                          </AvatarFallback>
-                        </Avatar>
-                        <p className="pl-2 text-sm font-bold">
-                          {comment.userFullName}
+                        <Button
+                          type="button"
+                          variant="secondary"
+                          disabled={!currentTime}
+                          onClick={() => {
+                            if (typeof currentTime === "number") {
+                              form.setValue(
+                                "startTime",
+                                Math.floor(currentTime),
+                              );
+                            }
+                          }}
+                        >
+                          Clip
+                        </Button>
+
+                        {!!form.watch("startTime") && (
+                          <>
+                            <div className="text-muted-foreground text-sm xl:pl-2">
+                              {" "}
+                              {FormatToTime(Number(form.watch("startTime")))}
+                            </div>
+                            <Button
+                              variant={"ghost"}
+                              size={"icon"}
+                              onClick={() => form.setValue("startTime", null)}
+                            >
+                              <XIcon className="h-2 w-2" />
+                            </Button>
+                          </>
+                        )}
+                      </div>
+                      <Button type="submit" className="">
+                        Add Comment
+                      </Button>
+                    </div>
+                  </form>
+                </Form>
+
+                {data.comments && data.comments.length > 0 ? (
+                  <div className="flex flex-col gap-4 pt-4">
+                    {data.comments.map((comment: DrizzleComment) => (
+                      <div key={comment.createdAt}>
+                        <div className="flex flex-row items-center">
+                          <Avatar>
+                            <AvatarImage
+                              className="h-4 w-4 rounded-full"
+                              src={comment.userProfilePictureUrl}
+                            />
+                            <AvatarFallback className="h-4 w-4 rounded-full">
+                              {comment.userFullName?.charAt(0) ?? "U"}
+                            </AvatarFallback>
+                          </Avatar>
+                          <p className="pl-2 text-sm font-bold">
+                            {comment.userFullName}
+                          </p>
+                        </div>
+                        <p className="bg-muted/50 rounded-lg p-2 break-words whitespace-pre-line">
+                          {comment.startTime && (
+                            <span
+                              className="cursor-pointer text-sm font-bold text-blue-700 underline"
+                              onClick={() => {
+                                if (typeof comment.startTime === "number") {
+                                  handleSkip(comment.startTime);
+                                }
+                              }}
+                            >
+                              {FormatToTime(Number(comment.startTime))}{" "}
+                            </span>
+                          )}
+                          {comment.comment}
                         </p>
                       </div>
-                      <p className="bg-muted/50 rounded-lg p-2 break-words whitespace-pre-line">
-                        {comment.startTime && (
-                          <span
-                            className="cursor-pointer text-sm font-bold text-blue-700 underline"
-                            onClick={() => {
-                              if (typeof comment.startTime === "number") {
-                                handleSkip(comment.startTime);
-                              }
-                            }}
-                          >
-                            {FormatToTime(Number(comment.startTime))}{" "}
-                          </span>
-                        )}
-                        {comment.comment}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="text-muted-foreground mt-6 text-sm">
-                  No comments yet.
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        </div>
-      )}
-    </SignedIn>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-muted-foreground mt-6 text-sm">
+                    No comments yet.
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </div>
+        )}
+      </SignedIn>
+    </>
   );
 };
 
