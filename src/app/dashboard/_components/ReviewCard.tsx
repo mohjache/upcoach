@@ -29,13 +29,13 @@ export const ReviewCard = ({
         )}
         {/* Comments Section */}
         {review.comments && review.comments.length > 0 ? (
-          <div className="flex flex-row items-center justify-between pt-4">
+          <div className="flex flex-row items-center justify-between gap-2 pt-4">
             <>
               {(() => {
                 const lastComment = review.comments[0];
                 return (
                   lastComment && (
-                    <div className="flex items-center gap-2">
+                    <div className="flex min-w-0 flex-1 items-center gap-2">
                       <Avatar>
                         <AvatarImage
                           className="h-4 w-4 rounded-full"
@@ -45,11 +45,11 @@ export const ReviewCard = ({
                           {lastComment.userFullName?.charAt(0) ?? "U"}
                         </AvatarFallback>
                       </Avatar>
-                      <div className="flex flex-col">
+                      <div className="flex min-w-0 flex-1 flex-col">
                         <span className="text-sm leading-tight font-semibold">
                           {lastComment.userFullName ?? "Anonymous"}
                         </span>
-                        <span className="text-muted-foreground text-xs">
+                        <span className="text-muted-foreground text-xs break-words">
                           {lastComment.comment}
                         </span>
                       </div>
@@ -67,11 +67,11 @@ export const ReviewCard = ({
           </div>
         ) : (
           <div className="flex flex-row items-center justify-between pt-4">
-            <div className="flex flex-col">
+            <div className="flex min-w-0 flex-1 flex-col">
               <span className="text-sm leading-tight font-semibold">
                 No comments yet
               </span>
-              <span className="text-muted-foreground text-xs overflow-ellipsis whitespace-nowrap">
+              <span className="text-muted-foreground text-xs break-words">
                 Click on Edit Review to add a comment
               </span>
             </div>

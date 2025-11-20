@@ -2,7 +2,7 @@
 
 import MuxUploader from "@mux/mux-uploader-react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "~/components/ui/button";
 import { creatUserReviewForVideoId } from "~/server/api/userreviews/actions";
 import { createUploadUrl, finalizeVideo } from "~/server/api/videos/actions";
@@ -12,13 +12,21 @@ const FileUpload = () => {
     uploadUrl: string;
     videoId: number;
   } | null>(null);
+  const [uploadKey, setUploadKey] = useState(0);
 
   const router = useRouter();
+
+  // Reset state when component mounts (handles navigation back to this page)
+  useEffect(() => {
+    setUploadMetadata(null);
+    setUploadKey((prev) => prev + 1);
+  }, []);
+
   return (
     <>
       <div className="w-full md:w-128">
         <MuxUploader
-          // endpoint={uploadUrl}
+          key={uploadKey}
           className="text-foreground"
           endpoint={async () => {
             const uploadUrlResult = await createUploadUrl({
