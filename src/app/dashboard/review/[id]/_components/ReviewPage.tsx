@@ -5,9 +5,14 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import type { MuxPlayerProps } from "@mux/mux-player-react";
 import MuxPlayer from "@mux/mux-player-react";
 import { Avatar, AvatarImage, AvatarFallback } from "@radix-ui/react-avatar";
-import { ArrowLeftIcon, XIcon } from "lucide-react";
-import Link from "next/link";
-import { useParams } from "next/navigation";
+import {
+  ArrowLeftIcon,
+  Loader2,
+  Scissors,
+  SquareScissorsIcon,
+  XIcon,
+} from "lucide-react";
+
 import { useState, useRef, Suspense } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -26,22 +31,30 @@ import { addCommentToUserReview } from "~/server/api/userreviews/actions";
 import type { DrizzleComment } from "~/server/db/schema";
 import type { DrizzleUserReviewWithVideoSelect } from "~/server/db/types";
 import ReviewLoading from "./ReviewLoading";
+import { useSubmit } from "~/hooks/useSubmit";
 
 const formSchema = z.object({
   comment: z.string().min(1).max(1000),
-  startTime: z.number().nullable(),
 });
 
 const ReviewPage = ({ data }: { data: DrizzleUserReviewWithVideoSelect }) => {
   const [currentTime, setCurrentTime] = useState<number | null>(null);
-
   const playerRef = useRef(null);
+
+  const { submit, isSaving } = useSubmit(addCommentToUserReview, {
+    onSuccess: () => {
+      setCurrentTime(null);
+      form.reset();
+    },
+    onError: (error: Error) => {
+      console.error("Failed to add comment:", error);
+    },
+  });
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       comment: "",
-      startTime: null,
     },
   });
 
@@ -52,12 +65,7 @@ const ReviewPage = ({ data }: { data: DrizzleUserReviewWithVideoSelect }) => {
   };
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    await addCommentToUserReview(
-      data.id,
-      values.comment,
-      values.startTime ?? undefined,
-    );
-    form.reset();
+    await submit(data.id, values.comment, currentTime ?? undefined);
   };
 
   return (
@@ -77,13 +85,6 @@ const ReviewPage = ({ data }: { data: DrizzleUserReviewWithVideoSelect }) => {
                   : 16 / 9,
               }}
               className="xl:col-span-2"
-              onTimeUpdate={(event) => {
-                if ((event.target as MuxPlayerProps)?.currentTime) {
-                  setCurrentTime(
-                    (event.target as MuxPlayerProps)?.currentTime ?? null,
-                  );
-                }
-              }}
             />
 
             <Card
@@ -123,37 +124,49 @@ const ReviewPage = ({ data }: { data: DrizzleUserReviewWithVideoSelect }) => {
                         <Button
                           type="button"
                           variant="secondary"
-                          disabled={!currentTime}
                           onClick={() => {
-                            if (typeof currentTime === "number") {
-                              form.setValue(
-                                "startTime",
-                                Math.floor(currentTime),
-                              );
+                            if (playerRef.current) {
+                              const player =
+                                playerRef.current as MuxPlayerProps;
+                              const time = player.currentTime;
+
+                              if (time && !isNaN(time)) {
+                                console.log("time", time);
+                                setCurrentTime(Math.floor(time));
+                              }
                             }
                           }}
                         >
+                          <Scissors className="h-2 w-2" />
                           Clip
                         </Button>
 
-                        {!!form.watch("startTime") && (
+                        {currentTime && (
                           <>
                             <div className="text-muted-foreground text-sm xl:pl-2">
                               {" "}
-                              {FormatToTime(Number(form.watch("startTime")))}
+                              {FormatToTime(Number(currentTime))}
                             </div>
                             <Button
                               variant={"ghost"}
                               size={"icon"}
-                              onClick={() => form.setValue("startTime", null)}
+                              onClick={() => setCurrentTime(null)}
                             >
                               <XIcon className="h-2 w-2" />
                             </Button>
                           </>
                         )}
                       </div>
-                      <Button type="submit" className="">
-                        Add Comment
+                      <Button
+                        type="submit"
+                        className=""
+                        disabled={isSaving || !form.formState.isValid}
+                      >
+                        {isSaving ? (
+                          <Loader2 className="h-2 w-2 animate-spin" />
+                        ) : (
+                          "Add Comment"
+                        )}
                       </Button>
                     </div>
                   </form>
