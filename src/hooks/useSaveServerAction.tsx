@@ -6,14 +6,14 @@ type ServerAction<T extends any[] = any[], R = any> = (
   ...args: T
 ) => Promise<R>;
 
-interface UseSubmitOptions<T extends any[] = any[], R = any> {
+interface UseSaveServerActionOptions<T extends any[] = any[], R = any> {
   onSuccess?: (result: R) => void;
   onError?: (error: Error) => void;
 }
 
-export function useSubmit<T extends any[] = any[], R = any>(
+export function useSaveServerAction<T extends any[] = any[], R = any>(
   action: ServerAction<T, R>,
-  options?: UseSubmitOptions<T, R>,
+  options?: UseSaveServerActionOptions<T, R>,
 ) {
   const [isSaving, setIsSaving] = useState(false);
 

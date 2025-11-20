@@ -31,7 +31,7 @@ import { addCommentToUserReview } from "~/server/api/userreviews/actions";
 import type { DrizzleComment } from "~/server/db/schema";
 import type { DrizzleUserReviewWithVideoSelect } from "~/server/db/types";
 import ReviewLoading from "./ReviewLoading";
-import { useSubmit } from "~/hooks/useSubmit";
+import { useSaveServerAction } from "~/hooks/useSaveServerAction";
 
 const formSchema = z.object({
   comment: z.string().min(1).max(1000),
@@ -41,13 +41,13 @@ const ReviewPage = ({ data }: { data: DrizzleUserReviewWithVideoSelect }) => {
   const [currentTime, setCurrentTime] = useState<number | null>(null);
   const playerRef = useRef(null);
 
-  const { submit, isSaving } = useSubmit(addCommentToUserReview, {
+  const { submit, isSaving } = useSaveServerAction(addCommentToUserReview, {
     onSuccess: () => {
       setCurrentTime(null);
       form.reset();
     },
     onError: (error: Error) => {
-      console.error("Failed to add comment:", error);
+      form.setError("comment", { message: "Failed to add comment" });
     },
   });
 
