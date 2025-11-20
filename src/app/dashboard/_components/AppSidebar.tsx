@@ -1,6 +1,11 @@
 "use client";
-import { OrganizationSwitcher, UserButton, useSession } from "@clerk/nextjs";
-import { Authenticated, AuthLoading } from "convex/react";
+import {
+  ClerkLoading,
+  OrganizationSwitcher,
+  SignedIn,
+  UserButton,
+  useSession,
+} from "@clerk/nextjs";
 import { HomeIcon } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -29,10 +34,10 @@ const AppSidebar = () => {
     <Sidebar variant="inset" collapsible="icon">
       <SidebarHeader>
         <div className="p-2">
-          <AuthLoading>
+          <ClerkLoading>
             <Skeleton className="h-8 w-full rounded-full" />
-          </AuthLoading>
-          <Authenticated>
+          </ClerkLoading>
+          <SignedIn>
             <OrganizationSwitcher
               hidePersonal={true}
               createOrganizationUrl={""}
@@ -45,7 +50,7 @@ const AppSidebar = () => {
                 },
               }}
             />
-          </Authenticated>
+          </SignedIn>
         </div>
       </SidebarHeader>
       <SidebarContent className={open ? "px-2" : "px-0"}>
@@ -67,14 +72,14 @@ const AppSidebar = () => {
       </SidebarContent>
       <SidebarFooter>
         <div className="flex flex-row gap-2 p-2">
-          <AuthLoading>
+          <ClerkLoading>
             <Skeleton className="h-8 w-8 rounded-full" />
             <div className="flex w-full flex-col">
               <Skeleton className="h-4 w-full rounded-full" />
               <Skeleton className="h-4 w-full rounded-full" />
             </div>
-          </AuthLoading>
-          <Authenticated>
+          </ClerkLoading>
+          <SignedIn>
             <UserButton />
             {open && (
               <div className="flex w-full flex-col">
@@ -86,7 +91,7 @@ const AppSidebar = () => {
                 </span>
               </div>
             )}
-          </Authenticated>
+          </SignedIn>
         </div>
       </SidebarFooter>
     </Sidebar>

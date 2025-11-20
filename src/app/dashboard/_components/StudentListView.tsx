@@ -1,16 +1,16 @@
 "use client";
-import { api } from "@/convex/_generated/api";
-import { usePreloadedQuery, useQuery, type Preloaded } from "convex/react";
-import { Link } from "lucide-react";
-import { Button } from "~/components/ui/button";
-import type { UserReview } from "../page";
-import CreateReviewHero from "./EmptyCreateReview";
-import { ReviewCard } from "./ReviewCard";
 
-export const StudentListView = (props: {
-  preloaded: Preloaded<typeof api.userReview.listUserReviewsByUserId>;
+import { Button } from "~/components/ui/button";
+import CreateReviewHero from "../../../components/placeholders/EmptyCreateReview";
+import { ReviewCard } from "./ReviewCard";
+import type { DrizzleUserReviewWithVideoSelect } from "~/server/db/types";
+import Link from "next/link";
+
+export const StudentListView = ({
+  reviews,
+}: {
+  reviews: DrizzleUserReviewWithVideoSelect[];
 }) => {
-  const reviews = usePreloadedQuery(props.preloaded);
   return (
     <>
       {reviews?.length === 0 ? (
@@ -24,10 +24,9 @@ export const StudentListView = (props: {
               </Link>
             </Button>
           </div>
-
           <div className="grid grid-cols-1 gap-4 px-8 pb-32 lg:grid-cols-3">
             {reviews?.map((review) => (
-              <ReviewCard review={review as UserReview} key={review._id} />
+              <ReviewCard review={review} key={review.id} />
             ))}
           </div>
         </div>

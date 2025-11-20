@@ -1,22 +1,22 @@
 import { ClerkProvider } from "@clerk/nextjs";
+import { Suspense } from "react";
 import {
   SidebarInset,
   SidebarProvider,
   SidebarTrigger,
 } from "~/components/ui/sidebar";
-import ConvexClientProvider from "~/Providers/ConvexProvider";
 import AppSidebar from "./_components/AppSidebar";
 
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <ClerkProvider
-      appearance={{
-        cssLayerName: "clerk",
-      }}
-    >
-      <ConvexClientProvider>
+    <Suspense fallback={<></>}>
+      <ClerkProvider
+        appearance={{
+          cssLayerName: "clerk",
+        }}
+      >
         <SidebarProvider
           style={
             {
@@ -31,7 +31,7 @@ export default function RootLayout({
             {children}
           </SidebarInset>
         </SidebarProvider>
-      </ConvexClientProvider>
-    </ClerkProvider>
+      </ClerkProvider>
+    </Suspense>
   );
 }

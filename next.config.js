@@ -6,18 +6,15 @@ import "./src/env.js";
 
 /** @type {import("next").NextConfig} */
 const config = {
-  experimental: {
-    reactCompiler: true,
-  },
   images: {
     remotePatterns: [new URL("https://image.mux.com/**")],
   },
   typescript: {
     ignoreBuildErrors: true,
   },
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
+
+  cacheComponents: true,
+  reactCompiler: true,
 };
 
 export default config;

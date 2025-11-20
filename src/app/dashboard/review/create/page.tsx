@@ -1,23 +1,9 @@
-"use client";
-
 import { Button } from "~/components/ui/button";
 
-import {
-  Authenticated,
-  AuthLoading,
-  useAction,
-  useMutation,
-} from "convex/react";
-import { api } from "~/../convex/_generated/api";
+import { Suspense } from "react";
 import Link from "next/link";
 import { ArrowLeftIcon } from "lucide-react";
-import MuxUploader from "@mux/mux-uploader-react";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { Skeleton } from "~/components/ui/skeleton";
-import type { Id } from "@/convex/_generated/dataModel";
-
-export const dynamic = "force-dynamic";
+import FileUpload from "./_components/FileUpload";
 
 export default function Page() {
   return (
@@ -30,60 +16,10 @@ export default function Page() {
           </Link>
         </Button>
       </div>
-      <AuthLoading>
-        <div className="w-full md:w-128">
-          <Skeleton className="h-54 w-full flex-none" />
-        </div>
-      </AuthLoading>
-      <Authenticated>
+
+      <Suspense fallback={<div>Loading...</div>}>
         <FileUpload />
-      </Authenticated>
+      </Suspense>
     </div>
   );
 }
-
-const FileUpload = () => {
-  const [uploadMetadata, setUploadMetadata] = useState<{
-    uploadUrl: string;
-    videoId: string;
-  } | null>(null);
-  const createUploadUrl = useAction(api.videoActions.createUploadUrl);
-  const createUserReview = useMutation(api.userReview.createUserReview);
-
-  const router = useRouter();
-  return (
-    <>
-      <div className="w-full md:w-128">
-        <MuxUploader
-          // endpoint={uploadUrl}
-          className="text-foreground"
-          endpoint={async () => {
-            const uploadUrlResult = await createUploadUrl({
-              description: "",
-              title: "",
-            });
-
-            setUploadMetadata(uploadUrlResult);
-            return uploadUrlResult.uploadUrl;
-          }}
-          onSuccess={async (event) => {
-            // Go to the review page for the newly uploaded video
-            if (uploadMetadata) {
-              const id = await createUserReview({
-                dto: {
-                  videoId: uploadMetadata.videoId as unknown as Id<"videos">,
-                },
-              });
-
-              router.push(`/dashboard/review/${id}`);
-            }
-          }}
-        >
-          <Button size="lg" type="button" slot="file-select">
-            Upload Video
-          </Button>
-        </MuxUploader>
-      </div>
-    </>
-  );
-};
