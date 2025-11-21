@@ -1,33 +1,22 @@
-"use client";
-
 import { Avatar, AvatarImage, AvatarFallback } from "@radix-ui/react-avatar";
-import { Loader2, MessageCircleIcon } from "lucide-react";
+import { MessageCircleIcon } from "lucide-react";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardFooter } from "~/components/ui/card";
 import Link from "next/link";
 import Image from "next/image";
 import type { DrizzleUserReviewWithVideoSelect } from "~/server/db/types";
-import { useEffect, useState } from "react";
 
 export const ReviewCard = ({
   review,
 }: {
   review: DrizzleUserReviewWithVideoSelect;
 }) => {
-  const [isNavigating, setIsNavigating] = useState(false);
-
-  useEffect(() => {
-    setIsNavigating(false);
-  }, []);
-
   return (
     <Card key={review.id}>
       <CardContent>
         {review.video.muxPlaybackId && (
           <div className="relative aspect-video w-full">
             <Image
-              blurDataURL="placeholder_image.svg"
-              placeholder="blur"
               src={`https://image.mux.com/${review.video.muxPlaybackId}/thumbnail.webp`}
               alt={`Thumbnail for review`}
               fill
@@ -88,14 +77,9 @@ export const ReviewCard = ({
         )}
       </CardContent>
       <CardFooter>
-        <Button asChild onClick={() => setIsNavigating(true)}>
-          <Link href={`/dashboard/review/${review.id}`}>
-            {" "}
-            {isNavigating ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
-            ) : (
-              "Edit Review"
-            )}
+        <Button asChild>
+          <Link prefetch={true} href={`/dashboard/review/${review.id}`}>
+            Edit Review
           </Link>
         </Button>
       </CardFooter>
