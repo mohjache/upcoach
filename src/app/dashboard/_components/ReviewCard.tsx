@@ -1,16 +1,25 @@
+"use client";
+
 import { Avatar, AvatarImage, AvatarFallback } from "@radix-ui/react-avatar";
-import { MessageCircleIcon } from "lucide-react";
+import { Loader2, MessageCircleIcon } from "lucide-react";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardFooter } from "~/components/ui/card";
 import Link from "next/link";
 import Image from "next/image";
 import type { DrizzleUserReviewWithVideoSelect } from "~/server/db/types";
+import { useEffect, useState } from "react";
 
 export const ReviewCard = ({
   review,
 }: {
   review: DrizzleUserReviewWithVideoSelect;
 }) => {
+  const [isNavigating, setIsNavigating] = useState(false);
+
+  useEffect(() => {
+    setIsNavigating(false);
+  }, []);
+
   return (
     <Card key={review.id}>
       <CardContent>
@@ -79,8 +88,15 @@ export const ReviewCard = ({
         )}
       </CardContent>
       <CardFooter>
-        <Button asChild>
-          <Link href={`/dashboard/review/${review.id}`}>{"Edit Review"}</Link>
+        <Button asChild onClick={() => setIsNavigating(true)}>
+          <Link href={`/dashboard/review/${review.id}`}>
+            {" "}
+            {isNavigating ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              "Edit Review"
+            )}
+          </Link>
         </Button>
       </CardFooter>
     </Card>

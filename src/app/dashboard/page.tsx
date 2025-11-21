@@ -7,10 +7,6 @@ import { Suspense } from "react";
 import { eq } from "drizzle-orm";
 import { userReviews } from "~/server/db/schema";
 import { StudentListView } from "./_components/StudentListView";
-import type {
-  DrizzleUserReviewSelect,
-  DrizzleUserReviewWithVideoSelect,
-} from "~/server/db/types";
 import LoadingReviewList from "./_components/LoadingReviewList";
 import { redirect } from "next/navigation";
 
