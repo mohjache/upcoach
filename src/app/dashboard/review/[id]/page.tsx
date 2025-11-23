@@ -1,5 +1,3 @@
-import { redirect } from "next/navigation";
-
 import { Suspense } from "react";
 import type { DrizzleUserReviewWithVideoSelect } from "~/server/db/types";
 import { auth } from "@clerk/nextjs/server";
@@ -13,6 +11,7 @@ import { isAllowedToViewReview } from "~/lib/isAllowedToViewReview";
 import { Button } from "~/components/ui/button";
 import Link from "next/link";
 import { ArrowLeftIcon } from "lucide-react";
+import ReviewDropdown from "./_components/ReviewDropdown";
 
 async function GetReview({ id }: { id: string }) {
   const { userId, orgId, orgPermissions } = await auth();
@@ -54,14 +53,20 @@ export default async function Page({
   const { id } = await params;
   return (
     <div className="px-8 pt-8">
-      <div className="w-full pb-2 md:w-128">
-        <Button variant="secondary" asChild>
-          <Link href="/dashboard">
-            <ArrowLeftIcon className="h-4 w-4" />
-            Back to Dashboard
-          </Link>
-        </Button>
+      <div className="flex w-full flex-row justify-between pb-2">
+        <div className="flex">
+          <Button variant="secondary" asChild>
+            <Link href="/dashboard">
+              <ArrowLeftIcon className="h-4 w-4" />
+              Back to Dashboard
+            </Link>
+          </Button>
+        </div>
+        <div className="flex">
+          <ReviewDropdown reviewId={Number(id)} />
+        </div>
       </div>
+
       <Suspense fallback={<ReviewLoading />}>
         <GetReview id={id} />
       </Suspense>

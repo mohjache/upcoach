@@ -69,30 +69,25 @@ export async function addCommentToUserReview(
   refresh();
 }
 
-//   const identity = (await ctx.auth.getUserIdentity()) as ClerkIdentity;
-//     if (identity === null) {
-//       throw new Error("Not authenticated");
-//     }
+export async function removeUserReview(userReviewId: number) {
+  const { userId, orgId } = await auth();
+  const user = await currentUser();
 
-//     const review = await ctx.db.get(args.reviewId);
-//     if (
-//       !review ||
-//       (review.userId !== identity.subject &&
-//         review.organisationId !== identity.organisation_id)
-//     ) {
-//       throw new Error("Not authorized");
-//     }
+  if (!userId || !user) {
+    throw new Error("Not authenticated");
+  }
 
-//     const newComment = {
-//       userId: identity.subject,
-//       userProfilePictureUrl: identity.pictureUrl as string | undefined,
-//       userFullName: identity.name ?? (undefined as string | undefined),
-//       comment: args.comment,
-//       createdAt: new Date().toISOString(),
-//       startTime: args.startTime,
-//     };
+  const review = await db.query.userReviews.findFirst({
+    where: eq(userReviews.id, userReviewId),
+  });
 
-//     await ctx.db.patch(args.reviewId, {
-//       comments: [newComment, ...(review.comments ?? [])],
-//     });
-//   },
+  if (!review) {
+    throw new Error("Review not found");
+  }
+
+  if (review.userId !== userId && review.organisationId !== orgId) {
+    throw new Error("Not authorized");
+  }
+
+  await db.delete(userReviews).where(eq(userReviews.id, userReviewId));
+}
